@@ -31,8 +31,6 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     private static final String TAG = "BasicPhone";
 
     // TODO: change this to point to the script on your public server
-//    private static final String AUTH_PHP_SCRIPT = "https://sosninja.herokuapp.com/token";
-    private static final String AUTH_PHP_SCRIPT = "http://128.199.169.48:3000";
     public interface LoginListener
     {
         public void onLoginStarted();
@@ -58,6 +56,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     }
 
     private static BasicPhone instance;
+
     public static final BasicPhone getInstance(Context context)
     {
         if (instance == null)
@@ -66,21 +65,31 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     }
 
     private final Context context;
+
     private LoginListener loginListener;
+
     private BasicConnectionListener basicConnectionListener;
+
     private BasicDeviceListener basicDeviceListener;
 
     private static boolean twilioSdkInited;
+
     private static boolean twilioSdkInitInProgress;
+
     private boolean queuedConnect;
 
     private Device device;
+
     private Connection pendingIncomingConnection;
+
     private Connection connection;
+
     private boolean speakerEnabled;
 
     private String lastClientName;
+
     private boolean lastAllowOutgoing;
+
     private boolean lastAllowIncoming;
 
     private BasicPhone(Context context)
@@ -88,29 +97,16 @@ public class BasicPhone implements DeviceListener, ConnectionListener
         this.context = context;
     }
 
-    public void setListeners(LoginListener loginListener,
-                             BasicConnectionListener basicConnectionListener,
-                             BasicDeviceListener basicDeviceListener)
+    public void setListeners(LoginListener loginListener, BasicConnectionListener basicConnectionListener, BasicDeviceListener basicDeviceListener)
     {
         this.loginListener = loginListener;
         this.basicConnectionListener = basicConnectionListener;
         this.basicDeviceListener = basicDeviceListener;
     }
 
-    private void obtainCapabilityToken(String clientName,
-                                       boolean allowOutgoing,
-                                       boolean allowIncoming)
+    private void obtainCapabilityToken(String clientName, boolean allowOutgoing, boolean allowIncoming)
     {
-        StringBuilder url = new StringBuilder();
-        url.append(Url.BASE_URL);
-//    	url.append("?allowOutgoing=").append(allowOutgoing);
-//    	if (allowIncoming && (clientName != null)) {
-//    		url.append("&&client=").append(clientName);
-//    	}
-
-        // This runs asynchronously!
-        Log.d("=============>", url.toString());
-        new GetAuthTokenAsyncTask().execute(url.toString());
+        new GetAuthTokenAsyncTask().execute(Url.BASE_URL);
     }
 
     private boolean isCapabilityTokenValid()
@@ -221,8 +217,6 @@ public class BasicPhone implements DeviceListener, ConnectionListener
 
         if (canMakeOutgoing()) {
             disconnect();
-            Log.d("===================>", "==================>");
-            Log.d("=====>", inParams.toString());
             connection = device.connect(inParams, this);
             if (connection == null && basicConnectionListener != null)
                 basicConnectionListener.onConnectionFailedConnecting(new Exception("Couldn't create new connection"));
@@ -419,8 +413,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
                 capabilityToken = token.getToken();
 
             } catch (RetrofitError retrofitError) {
-
-                Log.d("============>", "Server error ");
+                
             }
 
             return capabilityToken;

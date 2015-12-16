@@ -20,38 +20,50 @@ import com.novahub.voipcall.twilio.BasicPhone;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements BasicPhone.LoginListener, BasicPhone.BasicConnectionListener, BasicPhone.BasicDeviceListener, View.OnClickListener ,CompoundButton.OnCheckedChangeListener,
-        RadioGroup.OnCheckedChangeListener{
+public class MainActivity extends AppCompatActivity implements BasicPhone.LoginListener, BasicPhone.BasicConnectionListener, BasicPhone.BasicDeviceListener, View.OnClickListener ,CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener{
 
     private RadioGroup radioGroupSetCurrentClient;
 
     private RadioGroup radioGroupToClient;
-
-    private static final String DEFAULT_CLIENT_NAME = "contact1";
 
     private static final Handler handler = new Handler();
 
     private BasicPhone phone;
 
     private ImageButton mainButton;
+
     private ToggleButton speakerButton;
+
     private ToggleButton muteButton;
 
     private AlertDialog incomingAlert;
 
-    private String toClient = "Contact1";
-    private String currentClient = "Contact1";
+    private String toClient;
 
-    public static Context mainContext;
+    private String currentClient;
 
     private EditText logTextBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        radioGroupSetCurrentClient = (RadioGroup) findViewById(R.id.radioGroupSetCurrentClient);
+        initializeComponents();
+
+        initializeOnChangeRadioButton();
+
+        setDefaultClient();
+    }
+
+    private void setDefaultClient() {
+
+        radioGroupSetCurrentClient.check(R.id.radioButton1);
+    }
+
+    private void initializeOnChangeRadioButton() {
+
         radioGroupSetCurrentClient.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
@@ -60,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
                 switch (checkedId) {
 
-                    case R.id.radioButton1 :
+                    case R.id.radioButton1:
                         Toast.makeText(getApplicationContext(), "choice: radioButton1",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact1";
@@ -68,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
                         break;
 
-                    case R.id.radioButton2 :
+                    case R.id.radioButton2:
                         Toast.makeText(getApplicationContext(), "choice: radioButton2",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact2";
@@ -76,21 +88,21 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
                         break;
 
-                    case R.id.radioButton3 :
+                    case R.id.radioButton3:
                         Toast.makeText(getApplicationContext(), "choice: radioButton3",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact3";
                         phone.login("Contact3", true, true);
                         break;
 
-                    case R.id.radioButton4 :
+                    case R.id.radioButton4:
                         Toast.makeText(getApplicationContext(), "choice: radioButton4",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact4";
                         phone.login("Contact4", true, true);
                         break;
 
-                    case R.id.radioButton5 :
+                    case R.id.radioButton5:
                         Toast.makeText(getApplicationContext(), "choice: radioButton5",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact5";
@@ -103,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         });
 
-        radioGroupToClient = (RadioGroup) findViewById(R.id.radioGroupToClient);
+
 
         radioGroupToClient.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -112,31 +124,31 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                 // find which radio button is selected
                 switch (checkedId) {
 
-                    case R.id.radioButton1Client :
+                    case R.id.radioButton1Client:
                         Toast.makeText(getApplicationContext(), "choice: Contact1",
                                 Toast.LENGTH_SHORT).show();
                         toClient = "Contact1";
                         break;
 
-                    case R.id.radioButton2Client :
+                    case R.id.radioButton2Client:
                         Toast.makeText(getApplicationContext(), "choice: Contact2",
                                 Toast.LENGTH_SHORT).show();
                         toClient = "Contact2";
                         break;
 
-                    case R.id.radioButton3Client :
+                    case R.id.radioButton3Client:
                         Toast.makeText(getApplicationContext(), "choice: Contact3",
                                 Toast.LENGTH_SHORT).show();
                         toClient = "Contact3";
                         break;
 
-                    case R.id.radioButton4Client :
+                    case R.id.radioButton4Client:
                         Toast.makeText(getApplicationContext(), "choice: Contact4",
                                 Toast.LENGTH_SHORT).show();
                         toClient = "Contact4";
                         break;
 
-                    case R.id.radioButton5Client :
+                    case R.id.radioButton5Client:
                         Toast.makeText(getApplicationContext(), "choice: Contact5",
                                 Toast.LENGTH_SHORT).show();
                         toClient = "Contact5";
@@ -146,17 +158,35 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             }
 
         });
+    }
+
+    private void initializeComponents() {
+
+        toClient = "Contact1";
+
+        currentClient = "Contact1";
+
+        radioGroupSetCurrentClient = (RadioGroup) findViewById(R.id.radioGroupSetCurrentClient);
+
+        radioGroupToClient = (RadioGroup) findViewById(R.id.radioGroupToClient);
+
         logTextBox = (EditText)findViewById(R.id.log_text_box);
+
         mainButton = (ImageButton)findViewById(R.id.main_button);
+
         mainButton.setOnClickListener(this);
+
         speakerButton = (ToggleButton)findViewById(R.id.speaker_toggle);
+
         speakerButton.setOnCheckedChangeListener(this);
+
         muteButton = (ToggleButton)findViewById(R.id.mute_toggle);
+
         muteButton.setOnCheckedChangeListener(this);
+
         phone = BasicPhone.getInstance(getApplicationContext());
+
         phone.setListeners(this, this, this);
-        mainContext = this.getApplicationContext();
-        radioGroupSetCurrentClient.check(R.id.radioButton1);
 
     }
 
@@ -166,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         if (view.getId() == R.id.main_button) {
             if (!phone.isConnected()) {
                 Map<String, String> params = new HashMap<String, String>();
-                String number = "Contact1";
                 params.put("To", toClient);
                 phone.connect(params);
             }
