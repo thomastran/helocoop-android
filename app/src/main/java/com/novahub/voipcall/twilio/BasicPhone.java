@@ -7,7 +7,8 @@ import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.novahub.voipcall.MainActivity;
+import com.novahub.voipcall.activity.IncomingCallActivity;
+import com.novahub.voipcall.activity.MainActivity;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Token;
 import com.novahub.voipcall.utils.Url;
@@ -168,7 +169,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
             if (device == null) {
                 device = Twilio.createDevice(capabilityToken, this);
                 Intent intent = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                 device.setIncomingIntent(pendingIntent);
             } else
                 device.updateCapabilityToken(capabilityToken);
@@ -294,6 +295,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
             return false;
 
         Map<Device.Capability, Object> caps = device.getCapabilities();
+
         return caps.containsKey(Device.Capability.OUTGOING) && (Boolean)caps.get(Device.Capability.OUTGOING);
     }
 
@@ -413,7 +415,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
                 capabilityToken = token.getToken();
 
             } catch (RetrofitError retrofitError) {
-                
+
             }
 
             return capabilityToken;

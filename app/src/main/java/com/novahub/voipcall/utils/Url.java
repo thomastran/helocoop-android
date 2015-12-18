@@ -5,5 +5,5 @@ package com.novahub.voipcall.utils;
  */
 public class Url {
 
-    public static final String BASE_URL = "http://128.199.169.48:3000";
+    public static final String BASE_URL = "https://3e17bb48.ngrok.io";
 }

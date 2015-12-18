@@ -1,13 +1,14 @@
-package com.novahub.voipcall;
+package com.novahub.voipcall.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.novahub.voipcall.R;
 import com.novahub.voipcall.twilio.BasicPhone;
 
 import java.util.HashMap;
@@ -23,8 +25,6 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements BasicPhone.LoginListener, BasicPhone.BasicConnectionListener, BasicPhone.BasicDeviceListener, View.OnClickListener ,CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener{
 
     private RadioGroup radioGroupSetCurrentClient;
-
-    private RadioGroup radioGroupToClient;
 
     private static final Handler handler = new Handler();
 
@@ -38,11 +38,23 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private AlertDialog incomingAlert;
 
+    private AlertDialog incomingConferenceAlert;
+
     private String toClient;
 
     private String currentClient;
 
     private EditText logTextBox;
+
+    private CheckBox checkBox1;
+
+    private CheckBox checkBox2;
+
+    private CheckBox checkBox3;
+
+    private CheckBox checkBox4;
+
+    private CheckBox checkBox5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         setContentView(R.layout.activity_main);
 
         initializeComponents();
+
+        initializeCheckBox();
 
         initializeOnChangeRadioButton();
 
@@ -76,88 +90,41 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                         Toast.makeText(getApplicationContext(), "choice: radioButton1",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact1";
-                        phone.login("Contact1", true, true);
-
                         break;
 
                     case R.id.radioButton2:
                         Toast.makeText(getApplicationContext(), "choice: radioButton2",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact2";
-                        phone.login("Contact2", true, true);
-
                         break;
 
                     case R.id.radioButton3:
                         Toast.makeText(getApplicationContext(), "choice: radioButton3",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact3";
-                        phone.login("Contact3", true, true);
                         break;
 
                     case R.id.radioButton4:
                         Toast.makeText(getApplicationContext(), "choice: radioButton4",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact4";
-                        phone.login("Contact4", true, true);
                         break;
 
                     case R.id.radioButton5:
                         Toast.makeText(getApplicationContext(), "choice: radioButton5",
                                 Toast.LENGTH_SHORT).show();
                         currentClient = "Contact5";
-                        phone.login("Contact5", true, true);
                         break;
 
                 }
+
+                phone.login(currentClient, true, true);
 
             }
 
         });
 
 
-
-        radioGroupToClient.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // find which radio button is selected
-                switch (checkedId) {
-
-                    case R.id.radioButton1Client:
-                        Toast.makeText(getApplicationContext(), "choice: Contact1",
-                                Toast.LENGTH_SHORT).show();
-                        toClient = "Contact1";
-                        break;
-
-                    case R.id.radioButton2Client:
-                        Toast.makeText(getApplicationContext(), "choice: Contact2",
-                                Toast.LENGTH_SHORT).show();
-                        toClient = "Contact2";
-                        break;
-
-                    case R.id.radioButton3Client:
-                        Toast.makeText(getApplicationContext(), "choice: Contact3",
-                                Toast.LENGTH_SHORT).show();
-                        toClient = "Contact3";
-                        break;
-
-                    case R.id.radioButton4Client:
-                        Toast.makeText(getApplicationContext(), "choice: Contact4",
-                                Toast.LENGTH_SHORT).show();
-                        toClient = "Contact4";
-                        break;
-
-                    case R.id.radioButton5Client:
-                        Toast.makeText(getApplicationContext(), "choice: Contact5",
-                                Toast.LENGTH_SHORT).show();
-                        toClient = "Contact5";
-                        break;
-
-                }
-            }
-
-        });
     }
 
     private void initializeComponents() {
@@ -168,19 +135,27 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         radioGroupSetCurrentClient = (RadioGroup) findViewById(R.id.radioGroupSetCurrentClient);
 
-        radioGroupToClient = (RadioGroup) findViewById(R.id.radioGroupToClient);
+        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
 
-        logTextBox = (EditText)findViewById(R.id.log_text_box);
+        checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
 
-        mainButton = (ImageButton)findViewById(R.id.main_button);
+        checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+
+        checkBox4 = (CheckBox) findViewById(R.id.checkBox4);
+
+        checkBox5 = (CheckBox) findViewById(R.id.checkBox5);
+
+        logTextBox = (EditText) findViewById(R.id.log_text_box);
+
+        mainButton = (ImageButton) findViewById(R.id.main_button);
 
         mainButton.setOnClickListener(this);
 
-        speakerButton = (ToggleButton)findViewById(R.id.speaker_toggle);
+        speakerButton = (ToggleButton) findViewById(R.id.speaker_toggle);
 
         speakerButton.setOnCheckedChangeListener(this);
 
-        muteButton = (ToggleButton)findViewById(R.id.mute_toggle);
+        muteButton = (ToggleButton) findViewById(R.id.mute_toggle);
 
         muteButton.setOnCheckedChangeListener(this);
 
@@ -190,13 +165,87 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     }
 
+    private void initializeCheckBox() {
+
+        checkBox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bro1, try Android :)", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        checkBox2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bro2, try Android :)", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        checkBox3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bro3, try Android :)", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        checkBox4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bro4, try Android :)", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        checkBox5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bro5, try Android :)", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+    }
+
     @Override
     public void onClick(View view)
     {
         if (view.getId() == R.id.main_button) {
             if (!phone.isConnected()) {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("To", toClient);
+                params.put("Conference", "Myroom");
+
+                StringBuilder stringBuilder = new StringBuilder();
+                if(checkBox1.isChecked())
+                    stringBuilder.append("Contact1 ");
+                if(checkBox2.isChecked())
+                    stringBuilder.append("Contact2 ");
+                if(checkBox3.isChecked())
+                    stringBuilder.append("Contact3 ");
+                if(checkBox4.isChecked())
+                    stringBuilder.append("Contact4 ");
+                if(checkBox5.isChecked())
+                    stringBuilder.append("Contact5 ");
+                Log.d("===========>", stringBuilder.toString());
+                params.put("People", stringBuilder.toString());
+//                params.put("To", "Client:+14157809231");
                 phone.connect(params);
             }
             else
@@ -216,7 +265,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     {
         super.onResume();
         if (phone.handleIncomingIntent(getIntent())) {
-            showIncomingAlert();
+//            showIncomingAlert();
+            showIncomingConferenceAlert();
             addStatusMessage(R.string.got_incoming);
             syncMainButton();
         }
@@ -235,11 +285,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private void addStatusMessage(final String message)
     {
-        handler.post(new Runnable()
-        {
+        handler.post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 logTextBox.append('-' + message + '\n');
             }
         });
@@ -252,11 +300,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private void syncMainButton()
     {
-        handler.post(new Runnable()
-        {
+        handler.post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (phone.isConnected()) {
                     switch (phone.getConnectionState()) {
                         case DISCONNECTED:
@@ -295,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                                 {
                                     phone.acceptConnection();
                                     incomingAlert = null;
+
                                 }
                             })
                             .setNegativeButton(R.string.ignore, new DialogInterface.OnClickListener()
@@ -315,7 +362,58 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                                 }
                             })
                             .create();
+
+                    Log.d("========>", "KEKE, DAY ROI BABAY");
                     incomingAlert.show();
+                }
+            }
+        });
+    }
+
+    private void showIncomingConferenceAlert() {
+
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (incomingConferenceAlert == null) {
+                    incomingConferenceAlert = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle(R.string.incoming_call)
+                            .setMessage(R.string.incoming_call_message)
+                            .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    phone.ignoreIncomingConnection();
+
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("Conference", "Myroom");
+                                    phone.connect(params);
+                                    incomingConferenceAlert = null;
+                                }
+                            })
+                            .setNegativeButton(R.string.ignore, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    phone.ignoreIncomingConnection();
+                                    incomingConferenceAlert = null;
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener()
+                            {
+                                @Override
+                                public void onCancel(DialogInterface dialog)
+                                {
+                                    phone.ignoreIncomingConnection();
+                                }
+                            })
+                            .create();
+
+                    incomingConferenceAlert.show();
                 }
             }
         });

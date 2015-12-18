@@ -37,5 +37,6 @@
     <string name="input_number">Number</string>
     <string name="outgoing_client">BPOutgoingClient</string>
     <string name="outgoing_number">+14151112233</string>
+    <string name="title_activity_incoming_call">IncomingCallActivity</string>
 
 </resources>

@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.novahub.voipcall.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,7 +15,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:background="#ffffff">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -35,10 +36,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Current Client"
+                    android:text="Choose Current Client"
                     android:id="@+id/textView"
                     android:layout_gravity="center_horizontal"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="15sp" />
 
                 <RadioGroup
                     android:layout_width="match_parent"
@@ -90,7 +92,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right">
 
@@ -101,55 +103,48 @@
                     android:text="Choose Client To Call"
                     android:id="@+id/textView2"
                     android:layout_gravity="center_horizontal"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="15sp" />
 
-                <RadioGroup
+                <CheckBox
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="0.33"
-                    android:id="@+id/radioGroupToClient"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical|center|center_horizontal">
+                    android:text="Contact1"
+                    android:id="@+id/checkBox1"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp" />
 
-                    <RadioButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Contact 1"
-                        android:id="@+id/radioButton1Client"
-                        android:layout_gravity="center_horizontal" />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact2"
+                    android:id="@+id/checkBox2"
+                    android:layout_weight="1" />
 
-                    <RadioButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Contact 2"
-                        android:id="@+id/radioButton2Client"
-                        android:layout_gravity="center_horizontal"
-                        android:checked="false" />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact3"
+                    android:id="@+id/checkBox3"
+                    android:layout_weight="1" />
 
-                    <RadioButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Contact 3"
-                        android:id="@+id/radioButton3Client"
-                        android:layout_gravity="center_horizontal" />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact4"
+                    android:id="@+id/checkBox4"
+                    android:layout_weight="1" />
 
-                    <RadioButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Contact 4"
-                        android:id="@+id/radioButton4Client"
-                        android:layout_gravity="center_horizontal" />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact5"
+                    android:id="@+id/checkBox5"
+                    android:layout_weight="1" />
 
-                    <RadioButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Contact 5"
-                        android:id="@+id/radioButton5Client"
-                        android:layout_gravity="center_horizontal" />
-                </RadioGroup>
 
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -184,13 +179,13 @@
                     android:layout_height="120dp"
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentTop="true"
-                    android:background="#000"
                     android:padding="0dp"
                     android:gravity="center"
                     android:src="@drawable/idle"
                     android:scaleType="centerInside"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginRight="20dp"
+                    android:background="#ffffff" />
 
                 <ToggleButton
                     android:id="@+id/mute_toggle"
