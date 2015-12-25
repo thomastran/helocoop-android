@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.novahub.voipcall.activity.LoginActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Please choose an account to log in !"
+                    android:id="@+id/textView"
+                    android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="#000000" />
+
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.33"
+                    android:id="@+id/radioGroupSetCurrentClient"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Contact 1"
+                        android:id="@+id/radioButton1"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:textColor="#000000"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Contact 2"
+                        android:id="@+id/radioButton2"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="#000000"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Contact 3"
+                        android:id="@+id/radioButton3"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Contact 4"
+                        android:id="@+id/radioButton4"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="#000000"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Contact 5"
+                        android:id="@+id/radioButton5"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="You can log in with user name you want !"
+                    android:id="@+id/textView4"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="20dp"
+                    android:hint="type your username that you want" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Log In "
+                    android:id="@+id/button"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

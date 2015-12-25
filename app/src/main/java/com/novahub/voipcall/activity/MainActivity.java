@@ -6,35 +6,40 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.novahub.voipcall.R;
+import com.novahub.voipcall.adapter.ChooseClientAdapter;
 import com.novahub.voipcall.twilio.BasicPhone;
+import com.novahub.voipcall.utils.Asset;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MainActivity extends AppCompatActivity implements BasicPhone.LoginListener, BasicPhone.BasicConnectionListener, BasicPhone.BasicDeviceListener, View.OnClickListener ,CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener{
-
-    private RadioGroup radioGroupSetCurrentClient;
 
     private static final Handler handler = new Handler();
 
     private BasicPhone phone;
-
-    private ImageButton mainButton;
-
-    private ToggleButton speakerButton;
-
-    private ToggleButton muteButton;
 
     private AlertDialog incomingAlert;
 
@@ -44,17 +49,43 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private String currentClient;
 
-    private EditText logTextBox;
+    private RecyclerView recyclerViewList;
 
-    private CheckBox checkBox1;
+    private RecyclerView.LayoutManager layoutManager;
 
-    private CheckBox checkBox2;
+    private ChooseClientAdapter chooseClientAdapter;
 
-    private CheckBox checkBox3;
+    private List<String> listContact;
 
-    private CheckBox checkBox4;
+    private StringBuilder stringBuilder;
 
-    private CheckBox checkBox5;
+    private ImageView imageViewCall;
+
+    private Toolbar toolbar;
+
+    private LinearLayout linearLayoutMain;
+
+    private LinearLayout linearLayoutMakeCall;
+
+    private TextView textViewCurrentUser;
+
+    private ImageView imageViewBack;
+
+    private ImageView imageViewMuted;
+
+    private ImageView imageViewSpeaker;
+
+    private Button buttonDisconnect;
+
+    private TextView textViewCoutTime;
+
+    private TextView textViewConnectAlert;
+
+    private Timer timer;
+
+    private boolean isMuted;
+
+    private boolean isSpeaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,193 +95,225 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         initializeComponents();
 
-        initializeCheckBox();
+        if(getIntent().getStringExtra(Asset.CURRENT_CONTACT) != null) {
 
-        initializeOnChangeRadioButton();
+            currentClient = getIntent().getStringExtra(Asset.CURRENT_CONTACT);
 
-        setDefaultClient();
-    }
+            phone.login(currentClient, true, true);
+        } else {
 
-    private void setDefaultClient() {
+            linearLayoutMain.setVisibility(View.GONE);
 
-        radioGroupSetCurrentClient.check(R.id.radioButton1);
-    }
+            linearLayoutMakeCall.setVisibility(View.VISIBLE);
 
-    private void initializeOnChangeRadioButton() {
-
-        radioGroupSetCurrentClient.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // find which radio button is selected
-
-                switch (checkedId) {
-
-                    case R.id.radioButton1:
-                        Toast.makeText(getApplicationContext(), "choice: radioButton1",
-                                Toast.LENGTH_SHORT).show();
-                        currentClient = "Contact1";
-                        break;
-
-                    case R.id.radioButton2:
-                        Toast.makeText(getApplicationContext(), "choice: radioButton2",
-                                Toast.LENGTH_SHORT).show();
-                        currentClient = "Contact2";
-                        break;
-
-                    case R.id.radioButton3:
-                        Toast.makeText(getApplicationContext(), "choice: radioButton3",
-                                Toast.LENGTH_SHORT).show();
-                        currentClient = "Contact3";
-                        break;
-
-                    case R.id.radioButton4:
-                        Toast.makeText(getApplicationContext(), "choice: radioButton4",
-                                Toast.LENGTH_SHORT).show();
-                        currentClient = "Contact4";
-                        break;
-
-                    case R.id.radioButton5:
-                        Toast.makeText(getApplicationContext(), "choice: radioButton5",
-                                Toast.LENGTH_SHORT).show();
-                        currentClient = "Contact5";
-                        break;
-
-                }
-
-                phone.login(currentClient, true, true);
-
-            }
-
-        });
-
+            textViewCurrentUser.setText("Connecting to confference call ...");
+        }
 
     }
+
 
     private void initializeComponents() {
+
+        isMuted = false;
+
+        isSpeaker = false;
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        imageViewCall = (ImageView) findViewById(R.id.imageViewCall);
+
+        imageViewCall.setOnClickListener(this);
+
+        textViewCurrentUser = (TextView) findViewById(R.id.textViewCurrentUser);
+
+        imageViewBack = (ImageView) findViewById(R.id.imageViewBack);
+
+        imageViewBack.setOnClickListener(this);
 
         toClient = "Contact1";
 
         currentClient = "Contact1";
 
-        radioGroupSetCurrentClient = (RadioGroup) findViewById(R.id.radioGroupSetCurrentClient);
 
-        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+        imageViewMuted = (ImageView) findViewById(R.id.imageViewMuted);
 
-        checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+        imageViewMuted.setOnClickListener(this);
 
-        checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+        imageViewSpeaker = (ImageView) findViewById(R.id.imageViewSpeaker);
 
-        checkBox4 = (CheckBox) findViewById(R.id.checkBox4);
+        imageViewSpeaker.setOnClickListener(this);
 
-        checkBox5 = (CheckBox) findViewById(R.id.checkBox5);
+        textViewConnectAlert = (TextView) findViewById(R.id.textViewConnectAlert);
 
-        logTextBox = (EditText) findViewById(R.id.log_text_box);
+        buttonDisconnect = (Button) findViewById(R.id.buttonDisconnect);
 
-        mainButton = (ImageButton) findViewById(R.id.main_button);
+        buttonDisconnect.setOnClickListener(this);
 
-        mainButton.setOnClickListener(this);
+        textViewCoutTime = (TextView) findViewById(R.id.textViewCoutTime);
 
-        speakerButton = (ToggleButton) findViewById(R.id.speaker_toggle);
-
-        speakerButton.setOnCheckedChangeListener(this);
-
-        muteButton = (ToggleButton) findViewById(R.id.mute_toggle);
-
-        muteButton.setOnCheckedChangeListener(this);
-
-        phone = BasicPhone.getInstance(getApplicationContext());
+        phone = BasicPhone.getInstance(MainActivity.this);
 
         phone.setListeners(this, this, this);
 
+        linearLayoutMain = (LinearLayout) findViewById(R.id.linearLayoutMain);
+
+        linearLayoutMakeCall = (LinearLayout) findViewById(R.id.linearLayoutMakeCall);
+
+        recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
+
+        layoutManager = new LinearLayoutManager(MainActivity.this);
+
+        recyclerViewList.setLayoutManager(layoutManager);
+
+        recyclerViewList.setHasFixedSize(true);
+
+        stringBuilder = new StringBuilder();
+
+        initializeListContact();
     }
 
-    private void initializeCheckBox() {
+    private void initializeListContact() {
 
-        checkBox1.setOnClickListener(new View.OnClickListener() {
+        listContact = new ArrayList<>();
+
+        for(int i = 0; i < 11; i++) {
+
+            listContact.add("Contact" + i);
+
+        }
+
+        chooseClientAdapter = new ChooseClientAdapter(listContact);
+
+        recyclerViewList.setAdapter(chooseClientAdapter);
+
+        chooseClientAdapter.setOnItemClickListener(new ChooseClientAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bro1, try Android :)", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        checkBox2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bro2, try Android :)", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        checkBox3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bro3, try Android :)", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        checkBox4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bro4, try Android :)", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        checkBox5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bro5, try Android :)", Toast.LENGTH_LONG).show();
-                }
-
+            public void onItemClick(View view, int position) {
+                Log.d("===============>", listContact.get(position));
+                stringBuilder.append(listContact.get(position) + " ");
+                Log.d("===========>", stringBuilder.toString());
             }
         });
 
     }
+
+
 
     @Override
     public void onClick(View view)
     {
-        if (view.getId() == R.id.main_button) {
-            if (!phone.isConnected()) {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Conference", "Myroom");
+        switch (view.getId()) {
 
-                StringBuilder stringBuilder = new StringBuilder();
-                if(checkBox1.isChecked())
-                    stringBuilder.append("Contact1 ");
-                if(checkBox2.isChecked())
-                    stringBuilder.append("Contact2 ");
-                if(checkBox3.isChecked())
-                    stringBuilder.append("Contact3 ");
-                if(checkBox4.isChecked())
-                    stringBuilder.append("Contact4 ");
-                if(checkBox5.isChecked())
-                    stringBuilder.append("Contact5 ");
-                Log.d("===========>", stringBuilder.toString());
-                params.put("People", stringBuilder.toString());
-//                params.put("To", "Client:+14157809231");
-                phone.connect(params);
-            }
-            else
+            case R.id.main_button :
+                connectToTwllio();
+                break;
+
+            case R.id.imageViewCall :
+                connectToTwllio();
+                break;
+
+            case R.id.imageViewBack :
+                moveBack();
+                break;
+
+            case R.id.buttonDisconnect :
                 phone.disconnect();
+                timer.cancel();
+                textViewConnectAlert.setText("Connecting");
+                textViewCoutTime.setText("00:00:00");
+                linearLayoutMakeCall.setVisibility(View.GONE);
+                linearLayoutMain.setVisibility(View.VISIBLE);
+                textViewCurrentUser.setText("You are in account " + currentClient);
+                break;
+            case R.id.imageViewMuted :
+                isMuted = !isMuted;
+                phone.setCallMuted(isMuted);
+                break;
+
+            case R.id.imageViewSpeaker :
+                isSpeaker = !isSpeaker;
+                phone.setSpeakerEnabled(isSpeaker);
+                break;
         }
+
+    }
+
+    private void countingTime() {
+
+        timer=new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int hour = 0;
+            int minute = 0;
+            int second = 0;
+            String hourText;
+            String minuteText;
+            String secondText;
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(second > 0 && (second % 60 == 0) ) {
+
+                            minute ++;
+                            second = 0;
+                        }
+                        if(minute > 0 && (minute % 60 == 0)) {
+
+                            hour ++;
+                            minute = 0;
+                        }
+
+                        if(hour < 10)
+                            hourText = "0" + hour;
+                        else
+                            hourText = "" + hour;
+
+                        if (minute < 10)
+                            minuteText = "0" + minute;
+                        else
+                            minuteText = "" + minute;
+
+                        if(second < 10)
+                            secondText = "0" + second;
+                        else
+                            secondText = "" + second;
+                        textViewCoutTime.setText(hourText + ":" + minuteText + ":" +  secondText);
+                        second++;
+                    }
+                });
+            }
+        }, 1000, 1000);
+
+    }
+
+    private void moveBack() {
+
+        phone = null;
+
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+
+        startActivity(intent);
+
+        finish();
+    }
+
+    private void connectToTwllio() {
+
+        if (!phone.isConnected()) {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
+            Log.d("===========>", stringBuilder.toString());
+            params.put(Asset.Twillio_People, stringBuilder.toString());
+//                params.put("To", "Client:+14157809231");
+            phone.connect(params);
+
+            linearLayoutMain.setVisibility(View.GONE);
+            linearLayoutMakeCall.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -269,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             showIncomingConferenceAlert();
             addStatusMessage(R.string.got_incoming);
             syncMainButton();
+
         }
     }
 
@@ -288,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         handler.post(new Runnable() {
             @Override
             public void run() {
-                logTextBox.append('-' + message + '\n');
+                Log.d("============>", message);
             }
         });
     }
@@ -306,19 +370,20 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                 if (phone.isConnected()) {
                     switch (phone.getConnectionState()) {
                         case DISCONNECTED:
-                            mainButton.setImageResource(R.drawable.idle);
+                            Log.d("============>", "Disconnect");
                             break;
                         case CONNECTED:
-                            mainButton.setImageResource(R.drawable.inprogress);
+                            Log.d("============>", "Connected");
+                            textViewConnectAlert.setText(R.string.connected);
                             break;
                         default:
-                            mainButton.setImageResource(R.drawable.dialing);
+                            Log.d("============>", "Nothing");
                             break;
                     }
                 } else if (phone.hasPendingConnection())
-                    mainButton.setImageResource(R.drawable.dialing);
+                    Log.d("============>", "Calling");
                 else
-                    mainButton.setImageResource(R.drawable.idle);
+                    Log.d("============>", "Idle");
             }
         });
     }
@@ -363,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                             })
                             .create();
 
-                    Log.d("========>", "KEKE, DAY ROI BABAY");
                     incomingAlert.show();
                 }
             }
@@ -437,7 +501,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     @Override
     public void onLoginStarted()
     {
-        logTextBox.setText("");
         addStatusMessage("Log in with account " + currentClient);
     }
 
@@ -447,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         addStatusMessage(phone.canMakeOutgoing() ? R.string.outgoing_ok : R.string.no_outgoing_capability);
         addStatusMessage(phone.canAcceptIncoming() ? R.string.incoming_ok : R.string.no_incoming_capability);
         syncMainButton();
+        textViewCurrentUser.setText("You are in account " + currentClient);
     }
 
     @Override
@@ -475,10 +539,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     }
 
     @Override
-    public void onConnectionConnected()
-    {
+    public void onConnectionConnected() {
         addStatusMessage(R.string.connected);
         syncMainButton();
+        countingTime();
     }
 
     @Override

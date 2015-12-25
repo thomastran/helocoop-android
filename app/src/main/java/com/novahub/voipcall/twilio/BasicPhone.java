@@ -1,11 +1,13 @@
 package com.novahub.voipcall.twilio;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.novahub.voipcall.activity.IncomingCallActivity;
 import com.novahub.voipcall.activity.MainActivity;
@@ -107,7 +109,8 @@ public class BasicPhone implements DeviceListener, ConnectionListener
 
     private void obtainCapabilityToken(String clientName, boolean allowOutgoing, boolean allowIncoming)
     {
-        new GetAuthTokenAsyncTask().execute(Url.BASE_URL);
+        GetAuthTokenAsyncTask getAuthTokenAsyncTask = new GetAuthTokenAsyncTask(this.context, clientName);
+        getAuthTokenAsyncTask.execute(Url.BASE_URL);
     }
 
     private boolean isCapabilityTokenValid()
@@ -169,8 +172,9 @@ public class BasicPhone implements DeviceListener, ConnectionListener
             if (device == null) {
                 device = Twilio.createDevice(capabilityToken, this);
                 Intent intent = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 device.setIncomingIntent(pendingIntent);
+
             } else
                 device.updateCapabilityToken(capabilityToken);
 
@@ -386,16 +390,38 @@ public class BasicPhone implements DeviceListener, ConnectionListener
 
     private class GetAuthTokenAsyncTask extends AsyncTask<String, Void, String> {
 
+        private ProgressDialog progressDialog;
+
+        private String currentClient;
+
+        private Context context;
+
+
+        public GetAuthTokenAsyncTask(Context context, String currentClient) {
+
+            this.context = context;
+
+            this.currentClient = currentClient;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            this.progressDialog = new ProgressDialog(this.context);
+            this.progressDialog.setMessage("You are log in with user name " + this.currentClient);
+            this.progressDialog.setCancelable(false);
+            this.progressDialog.setIndeterminate(true);
+            this.progressDialog.show();
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             BasicPhone.this.reallyLogin(result);
-
+            if( this.progressDialog.isShowing() ) {
+                this.progressDialog.dismiss();
+            }
+            Toast.makeText(this.context, "Log in successfully !", Toast.LENGTH_LONG);
         }
 
         @Override
