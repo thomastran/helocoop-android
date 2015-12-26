@@ -22,4 +22,8 @@ public class Asset {
     public static final String Twillio_Room = "Myroom";
 
     public static final String Twillio_People = "People";
+
+    public static final String VIOP_CALL = "VIOPCALL";
+
+    public static final String Current_Client = "CurrentClient";
 }

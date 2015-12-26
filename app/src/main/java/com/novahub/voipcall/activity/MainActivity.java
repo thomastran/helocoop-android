@@ -1,8 +1,10 @@
 package com.novahub.voipcall.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private boolean isSpeaker;
 
+    private SharedPreferences sharedPreferences;
+
+    private int temp = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +105,12 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
             currentClient = getIntent().getStringExtra(Asset.CURRENT_CONTACT);
 
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putString(Asset.Current_Client, currentClient);
+
+            editor.commit();
+
             phone.login(currentClient, true, true);
         } else {
 
@@ -107,12 +119,16 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             linearLayoutMakeCall.setVisibility(View.VISIBLE);
 
             textViewCurrentUser.setText("Connecting to confference call ...");
+
+            currentClient = sharedPreferences.getString(Asset.Current_Client, "");
         }
 
     }
 
 
     private void initializeComponents() {
+
+        sharedPreferences = getSharedPreferences(Asset.VIOP_CALL, Context.MODE_PRIVATE);
 
         isMuted = false;
 
@@ -132,9 +148,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         imageViewBack.setOnClickListener(this);
 
         toClient = "Contact1";
-
-        currentClient = "Contact1";
-
 
         imageViewMuted = (ImageView) findViewById(R.id.imageViewMuted);
 
@@ -303,11 +316,11 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     private void connectToTwllio() {
 
         if (!phone.isConnected()) {
+            textViewConnectAlert.setText("Connecting...");
             Map<String, String> params = new HashMap<String, String>();
             params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
             Log.d("===========>", stringBuilder.toString());
             params.put(Asset.Twillio_People, stringBuilder.toString());
-//                params.put("To", "Client:+14157809231");
             phone.connect(params);
 
             linearLayoutMain.setVisibility(View.GONE);
@@ -465,6 +478,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                                 {
                                     phone.ignoreIncomingConnection();
                                     incomingConferenceAlert = null;
+                                    linearLayoutMakeCall.setVisibility(View.GONE);
+                                    linearLayoutMain.setVisibility(View.VISIBLE);
                                 }
                             })
                             .setOnCancelListener(new DialogInterface.OnCancelListener()
@@ -581,6 +596,15 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     @Override
     public void onDeviceStartedListening()
     {
+//        temp++;
+//        if(temp > 1) {
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    buttonDisconnect.performClick();
+//                }
+//            });
+//        }
         addStatusMessage(R.string.device_listening);
     }
 
