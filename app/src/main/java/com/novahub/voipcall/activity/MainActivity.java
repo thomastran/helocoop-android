@@ -311,6 +311,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         startActivity(intent);
 
         finish();
+
+        System.exit(0);
     }
 
     private void connectToTwllio() {
@@ -358,6 +360,14 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             phone.setListeners(null, null, null);
             phone = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        System.exit(0);
+
     }
 
     private void addStatusMessage(final String message)
