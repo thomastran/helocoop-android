@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra(Asset.CURRENT_CONTACT, currentClient);
         startActivity(intent);
-        finish();
+//        finish();
     }
 
     @Override

@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         setContentView(R.layout.activity_main);
 
+        phone = BasicPhone.getInstance(MainActivity.this);
+
+        phone.setListeners(this, this, this);
+
         initializeComponents();
 
         if(getIntent().getStringExtra(Asset.CURRENT_CONTACT) != null) {
@@ -164,10 +168,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         buttonDisconnect.setOnClickListener(this);
 
         textViewCoutTime = (TextView) findViewById(R.id.textViewCoutTime);
-
-        phone = BasicPhone.getInstance(MainActivity.this);
-
-        phone.setListeners(this, this, this);
 
         linearLayoutMain = (LinearLayout) findViewById(R.id.linearLayoutMain);
 
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private void moveBack() {
 
-        phone = null;
+        exitTwillio();
 
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 
@@ -312,7 +312,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         finish();
 
-        System.exit(0);
     }
 
     private void connectToTwllio() {
@@ -365,9 +364,20 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-        System.exit(0);
 
+        exitTwillio();
+
+    }
+
+    private void exitTwillio() {
+        if (phone != null) {
+            phone.shutDownTwillio();
+            phone.setListeners(null, null, null);
+            phone = null;
+        }
+
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
 
     private void addStatusMessage(final String message)

@@ -127,6 +127,10 @@ public class BasicPhone implements DeviceListener, ConnectionListener
         audioManager.setSpeakerphoneOn(speakerEnabled);
     }
 
+    public void shutDownTwillio() {
+        Twilio.shutdown();
+    }
+
     public void login(final String clientName, final boolean allowOutgoing, final boolean allowIncoming)
     {
         if (loginListener != null)
