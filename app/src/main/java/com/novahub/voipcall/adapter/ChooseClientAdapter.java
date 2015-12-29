@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.novahub.voipcall.R;
+import com.novahub.voipcall.model.ClientToCall;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class ChooseClientAdapter extends RecyclerView.Adapter<ChooseClientAdapter.ViewHolder> {
 
-    private List<String> listContacts;
+    private List<ClientToCall> clientToCallList;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -55,8 +56,8 @@ public class ChooseClientAdapter extends RecyclerView.Adapter<ChooseClientAdapte
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ChooseClientAdapter(List<String> listContacts) {
-        this.listContacts = listContacts;
+    public ChooseClientAdapter(List<ClientToCall> clientToCallList) {
+        this.clientToCallList = clientToCallList;
     }
 
     // Create new views (invoked by the layout manager)
@@ -76,13 +77,13 @@ public class ChooseClientAdapter extends RecyclerView.Adapter<ChooseClientAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textViewContact.setText(this.listContacts.get(position));
+        holder.textViewContact.setText(this.clientToCallList.get(position).getName());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return listContacts.size();
+        return clientToCallList.size();
     }
 }
 

@@ -1,5 +1,6 @@
 package com.novahub.voipcall.apiendpoint;
 
+import com.novahub.voipcall.model.Status;
 import com.novahub.voipcall.model.Token;
 
 import retrofit.http.Field;
@@ -14,4 +15,8 @@ public interface EndPointInterface {
     @FormUrlEncoded
     @POST("/token/generate/")
     Token getAuthToken(@Field("from_contact") String from_contact);
+
+    @FormUrlEncoded
+    @POST("/conference/")
+    Status getStatusAfterCall(@Field("People") String people);
 }

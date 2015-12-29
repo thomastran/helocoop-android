@@ -1,10 +1,13 @@
 package com.novahub.voipcall.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,19 +18,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ChooseClientAdapter;
+import com.novahub.voipcall.apiendpoint.EndPointInterface;
+import com.novahub.voipcall.model.ClientToCall;
+import com.novahub.voipcall.model.Status;
+import com.novahub.voipcall.model.Token;
 import com.novahub.voipcall.twilio.BasicPhone;
 import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.Url;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 
 public class MainActivity extends AppCompatActivity implements BasicPhone.LoginListener, BasicPhone.BasicConnectionListener, BasicPhone.BasicDeviceListener, View.OnClickListener ,CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener{
@@ -57,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private ChooseClientAdapter chooseClientAdapter;
 
-    private List<String> listContact;
+    private List<ClientToCall> clientToCallList;
 
     private StringBuilder stringBuilder;
 
@@ -92,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     private SharedPreferences sharedPreferences;
 
     private int temp = 0;
+
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,24 +198,32 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private void initializeListContact() {
 
-        listContact = new ArrayList<>();
+        clientToCallList = new ArrayList<>();
 
         for(int i = 0; i < 11; i++) {
 
-            listContact.add("Contact" + i);
+            clientToCallList.add(new ClientToCall(false, "Contact" + i));
 
         }
 
-        chooseClientAdapter = new ChooseClientAdapter(listContact);
+        chooseClientAdapter = new ChooseClientAdapter(clientToCallList);
 
         recyclerViewList.setAdapter(chooseClientAdapter);
 
         chooseClientAdapter.setOnItemClickListener(new ChooseClientAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Log.d("===============>", listContact.get(position));
-                stringBuilder.append(listContact.get(position) + " ");
-                Log.d("===========>", stringBuilder.toString());
+
+                if(clientToCallList.get(position).isCalled()) {
+
+                    clientToCallList.get(position).setIsCalled(false);
+
+                } else {
+
+                    clientToCallList.get(position).setIsCalled(true);
+
+                }
+
             }
         });
 
@@ -252,6 +270,29 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     }
 
+    private void setCountDownTimer() {
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(30000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        Log.d("====>", millisUntilFinished / 1000 + "");
+                    }
+
+                    public void onFinish() {
+                        Log.d("====>", "keke");
+                        GetStatusAsyncTask getStatusAsyncTask = new GetStatusAsyncTask(stringBuilder.toString());
+                        getStatusAsyncTask.execute();
+                    }
+                }.start();
+            }
+        });
+
+
+    }
+
     private void countingTime() {
 
         timer=new Timer();
@@ -263,23 +304,24 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             String hourText;
             String minuteText;
             String secondText;
+
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(second > 0 && (second % 60 == 0) ) {
+                        if (second > 0 && (second % 60 == 0)) {
 
-                            minute ++;
+                            minute++;
                             second = 0;
                         }
-                        if(minute > 0 && (minute % 60 == 0)) {
+                        if (minute > 0 && (minute % 60 == 0)) {
 
-                            hour ++;
+                            hour++;
                             minute = 0;
                         }
 
-                        if(hour < 10)
+                        if (hour < 10)
                             hourText = "0" + hour;
                         else
                             hourText = "" + hour;
@@ -289,11 +331,11 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                         else
                             minuteText = "" + minute;
 
-                        if(second < 10)
+                        if (second < 10)
                             secondText = "0" + second;
                         else
                             secondText = "" + second;
-                        textViewCoutTime.setText(hourText + ":" + minuteText + ":" +  secondText);
+                        textViewCoutTime.setText(hourText + ":" + minuteText + ":" + secondText);
                         second++;
                     }
                 });
@@ -321,6 +363,13 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             Map<String, String> params = new HashMap<String, String>();
             params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
             Log.d("===========>", stringBuilder.toString());
+            for(int i = 0; i < clientToCallList.size(); i++) {
+                if(clientToCallList.get(i).isCalled()) {
+
+                    stringBuilder.append(clientToCallList.get(i).getName() + " ");
+                }
+            }
+            Log.d("================>", stringBuilder.toString());
             params.put(Asset.Twillio_People, stringBuilder.toString());
             phone.connect(params);
 
@@ -578,6 +627,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         addStatusMessage(R.string.connected);
         syncMainButton();
         countingTime();
+
+        // Here well do count down timer
+        setCountDownTimer();
+
     }
 
     @Override
@@ -650,5 +703,63 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
 
     }
+
+    private class GetStatusAsyncTask extends AsyncTask<String, Void, Boolean> {
+
+        private String people;
+
+        public GetStatusAsyncTask(String people) {
+
+            this.people = people;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSomeOneJoined) {
+            super.onPostExecute(isSomeOneJoined);
+
+            if(isSomeOneJoined) {
+                Toast.makeText(MainActivity.this, "The others has joined", Toast.LENGTH_LONG);
+            } else {
+                Toast.makeText(MainActivity.this, "No one has joined", Toast.LENGTH_LONG);
+                buttonDisconnect.performClick();
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(Url.BASE_URL)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+
+            com.novahub.voipcall.model.Status status = null;
+
+            EndPointInterface apiService =
+                    restAdapter.create(EndPointInterface.class);
+            boolean isSomeOneJoined = true;
+            try {
+                status = apiService.getStatusAfterCall(people);
+
+                isSomeOneJoined = status.isStatus();
+
+                Log.d("======>", isSomeOneJoined + "");
+
+            } catch (RetrofitError retrofitError) {
+
+            }
+
+            return isSomeOneJoined;
+        }
+    }
+
+
+
 }
 

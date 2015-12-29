@@ -65,10 +65,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startMainActivity(listContact.get(position));
             }
         });
-
-
-
-
     }
     // After choose the name for account !
     private void startMainActivity(String currentClient) {

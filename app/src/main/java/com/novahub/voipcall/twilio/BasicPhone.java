@@ -341,6 +341,8 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     {
         if (basicDeviceListener != null)
             basicDeviceListener.onDeviceStoppedListening(new Exception(inErrorMessage));
+
+        Log.d("===============>", "Go");
     }
 
     @Override  /* DeviceListener */
