@@ -5,5 +5,5 @@ package com.novahub.voipcall.utils;
  */
 public class Url {
 
-    public static final String BASE_URL = "https://sleepy-tundra-5643.herokuapp.com";
+    public static final String BASE_URL = "https://4aa85513.ngrok.io";
 }

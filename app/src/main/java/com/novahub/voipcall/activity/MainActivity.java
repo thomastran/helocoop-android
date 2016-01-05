@@ -1,11 +1,11 @@
 package com.novahub.voipcall.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,8 +29,6 @@ import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ChooseClientAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.ClientToCall;
-import com.novahub.voipcall.model.Status;
-import com.novahub.voipcall.model.Token;
 import com.novahub.voipcall.twilio.BasicPhone;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.Url;
@@ -51,11 +50,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private BasicPhone phone;
 
-    private AlertDialog incomingAlert;
-
     private AlertDialog incomingConferenceAlert;
-
-    private String toClient;
 
     private String currentClient;
 
@@ -99,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     private SharedPreferences sharedPreferences;
 
-    private int temp = 0;
+    private MediaPlayer mPlayer;
 
-    private CountDownTimer countDownTimer;
+    private boolean isMakingCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +104,25 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         setContentView(R.layout.activity_main);
 
+        initializeBasicPhone();
+
+        initializeComponents();
+
+        // this will prevent an Android device from going to sleep
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        checkIntentComing();
+
+    }
+
+    private void initializeBasicPhone() {
+
         phone = BasicPhone.getInstance(MainActivity.this);
 
         phone.setListeners(this, this, this);
+    }
 
-        initializeComponents();
+    private void checkIntentComing() {
 
         if(getIntent().getStringExtra(Asset.CURRENT_CONTACT) != null) {
 
@@ -126,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             editor.commit();
 
             phone.login(currentClient, true, true);
+
         } else {
 
             linearLayoutMain.setVisibility(View.GONE);
@@ -139,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     }
 
-
     private void initializeComponents() {
 
         sharedPreferences = getSharedPreferences(Asset.VIOP_CALL, Context.MODE_PRIVATE);
@@ -148,7 +157,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         isSpeaker = false;
 
+        isMakingCall = false;
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         imageViewCall = (ImageView) findViewById(R.id.imageViewCall);
@@ -160,8 +172,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         imageViewBack = (ImageView) findViewById(R.id.imageViewBack);
 
         imageViewBack.setOnClickListener(this);
-
-        toClient = "Contact1";
 
         imageViewMuted = (ImageView) findViewById(R.id.imageViewMuted);
 
@@ -194,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         stringBuilder = new StringBuilder();
 
         initializeListContact();
+
+        mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.ringtone);
     }
 
     private void initializeListContact() {
@@ -214,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             @Override
             public void onItemClick(View view, int position) {
 
-                if(clientToCallList.get(position).isCalled()) {
+                if (clientToCallList.get(position).isCalled()) {
 
                     clientToCallList.get(position).setIsCalled(false);
 
@@ -236,10 +248,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     {
         switch (view.getId()) {
 
-            case R.id.main_button :
-                connectToTwllio();
-                break;
-
             case R.id.imageViewCall :
                 connectToTwllio();
                 break;
@@ -249,8 +257,10 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                 break;
 
             case R.id.buttonDisconnect :
+                isMakingCall = false;
                 phone.disconnect();
-                timer.cancel();
+                if(timer != null)
+                    timer.cancel();
                 textViewConnectAlert.setText("Connecting");
                 textViewCoutTime.setText("00:00:00");
                 linearLayoutMakeCall.setVisibility(View.GONE);
@@ -270,6 +280,35 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     }
 
+    private void setCountDownTimerToHideAlert() {
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(30000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        Log.d("====>", millisUntilFinished / 1000 + "");
+                    }
+
+                    public void onFinish() {
+                        if(incomingConferenceAlert != null) {
+                            if(incomingConferenceAlert.isShowing()) {
+                                hideIncomingAlert();
+                                phone.ignoreIncomingConnection();
+                                mPlayer.stop();
+                                exchangeViewCallAndConnected(true);
+                            }
+                        }
+
+                    }
+                }.start();
+            }
+        });
+
+
+    }
+
     private void setCountDownTimer() {
 
         handler.post(new Runnable() {
@@ -282,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                     }
 
                     public void onFinish() {
-                        Log.d("====>", "keke");
                         GetStatusAsyncTask getStatusAsyncTask = new GetStatusAsyncTask(stringBuilder.toString());
                         getStatusAsyncTask.execute();
                     }
@@ -359,24 +397,35 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     private void connectToTwllio() {
 
         if (!phone.isConnected()) {
+            isMakingCall = true;
             textViewConnectAlert.setText("Connecting...");
             Map<String, String> params = new HashMap<String, String>();
             params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
-            Log.d("===========>", stringBuilder.toString());
+            stringBuilder = null;
+            stringBuilder = new StringBuilder();
             for(int i = 0; i < clientToCallList.size(); i++) {
                 if(clientToCallList.get(i).isCalled()) {
 
                     stringBuilder.append(clientToCallList.get(i).getName() + " ");
                 }
             }
-            Log.d("================>", stringBuilder.toString());
             params.put(Asset.Twillio_People, stringBuilder.toString());
             phone.connect(params);
-
             linearLayoutMain.setVisibility(View.GONE);
             linearLayoutMakeCall.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void exchangeViewCallAndConnected(boolean waiting) {
+
+        if(waiting) {
+            linearLayoutMain.setVisibility(View.VISIBLE);
+            linearLayoutMakeCall.setVisibility(View.GONE);
+        } else {
+            linearLayoutMain.setVisibility(View.GONE);
+            linearLayoutMakeCall.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -391,10 +440,17 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     {
         super.onResume();
         if (phone.handleIncomingIntent(getIntent())) {
-//            showIncomingAlert();
+            mPlayer.start();
             showIncomingConferenceAlert();
             addStatusMessage(R.string.got_incoming);
             syncMainButton();
+            setCountDownTimerToHideAlert();
+
+        } else {
+            linearLayoutMain.setVisibility(View.VISIBLE);
+            linearLayoutMakeCall.setVisibility(View.GONE);
+            textViewCurrentUser.setText("You are in " + currentClient);
+            phone.ignoreIncomingConnection();
 
         }
     }
@@ -470,51 +526,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         });
     }
 
-    private void showIncomingAlert()
-    {
-        handler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (incomingAlert == null) {
-                    incomingAlert = new AlertDialog.Builder(MainActivity.this)
-                            .setTitle(R.string.incoming_call)
-                            .setMessage(R.string.incoming_call_message)
-                            .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    phone.acceptConnection();
-                                    incomingAlert = null;
 
-                                }
-                            })
-                            .setNegativeButton(R.string.ignore, new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    phone.ignoreIncomingConnection();
-                                    incomingAlert = null;
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener()
-                            {
-                                @Override
-                                public void onCancel(DialogInterface dialog)
-                                {
-                                    phone.ignoreIncomingConnection();
-                                }
-                            })
-                            .create();
-
-                    incomingAlert.show();
-                }
-            }
-        });
-    }
 
     private void showIncomingConferenceAlert() {
 
@@ -533,9 +545,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     phone.ignoreIncomingConnection();
-
+                                    mPlayer.stop();
                                     Map<String, String> params = new HashMap<String, String>();
-                                    params.put("Conference", "Myroom");
+                                    params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
                                     phone.connect(params);
                                     incomingConferenceAlert = null;
                                 }
@@ -546,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     phone.ignoreIncomingConnection();
+                                    mPlayer.stop();
                                     incomingConferenceAlert = null;
                                     linearLayoutMakeCall.setVisibility(View.GONE);
                                     linearLayoutMain.setVisibility(View.VISIBLE);
@@ -574,9 +587,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             @Override
             public void run()
             {
-                if (incomingAlert != null) {
-                    incomingAlert.dismiss();
-                    incomingAlert = null;
+                if (incomingConferenceAlert != null) {
+                    incomingConferenceAlert.dismiss();
+                    incomingConferenceAlert = null;
                 }
             }
         });
@@ -610,6 +623,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     @Override
     public void onIncomingConnectionDisconnected()
     {
+        Log.d("====>", "Pending incoming connection disconnected");
         hideIncomingAlert();
         addStatusMessage(R.string.incoming_disconnected);
         syncMainButton();
@@ -627,9 +641,9 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
         addStatusMessage(R.string.connected);
         syncMainButton();
         countingTime();
-
         // Here well do count down timer
-        setCountDownTimer();
+        if(isMakingCall)
+            setCountDownTimer();
 
     }
 
@@ -669,15 +683,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
     @Override
     public void onDeviceStartedListening()
     {
-//        temp++;
-//        if(temp > 1) {
-//            handler.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    buttonDisconnect.performClick();
-//                }
-//            });
-//        }
+
         addStatusMessage(R.string.device_listening);
     }
 
@@ -692,11 +698,11 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     @Override
     public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-        if (button.getId() == R.id.speaker_toggle) {
-            phone.setSpeakerEnabled(isChecked);
-        } else if (button.getId() == R.id.mute_toggle){
-            phone.setCallMuted(isChecked);
-        }
+//        if (button.getId() == R.id.speaker_toggle) {
+//            phone.setSpeakerEnabled(isChecked);
+//        } else if (button.getId() == R.id.mute_toggle){
+//            phone.setCallMuted(isChecked);
+//        }
     }
 
     @Override
@@ -724,7 +730,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
             super.onPostExecute(isSomeOneJoined);
 
             if(isSomeOneJoined) {
-                Toast.makeText(MainActivity.this, "The others has joined", Toast.LENGTH_LONG);
+                Toast.makeText(MainActivity.this, "The others has joined", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(MainActivity.this, "No one has joined", Toast.LENGTH_LONG);
                 buttonDisconnect.performClick();

@@ -341,8 +341,6 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     {
         if (basicDeviceListener != null)
             basicDeviceListener.onDeviceStoppedListening(new Exception(inErrorMessage));
-
-        Log.d("===============>", "Go");
     }
 
     @Override  /* DeviceListener */
@@ -374,12 +372,20 @@ public class BasicPhone implements DeviceListener, ConnectionListener
     {
         if (inConnection == connection) {
             connection = null;
-            if (basicConnectionListener != null)
+            Log.d("=======>", "connection");
+            if (basicConnectionListener != null) {
+                Log.d("=======>", "basicConnectionListener");
                 basicConnectionListener.onConnectionDisconnected();
+            }
+
         } else if (inConnection == pendingIncomingConnection) {
+            Log.d("=======>", "pendingIncomingConnection");
             pendingIncomingConnection = null;
-            if (basicConnectionListener != null)
+            if (basicConnectionListener != null) {
                 basicConnectionListener.onIncomingConnectionDisconnected();
+                Log.d("=======>", "basicConnectionListener");
+            }
+
         }
     }
 
@@ -427,7 +433,7 @@ public class BasicPhone implements DeviceListener, ConnectionListener
             if( this.progressDialog.isShowing() ) {
                 this.progressDialog.dismiss();
             }
-            Toast.makeText(this.context, "Log in successfully !", Toast.LENGTH_LONG);
+            Toast.makeText(this.context, "Log in successfully !", Toast.LENGTH_LONG).show();
         }
 
         @Override
