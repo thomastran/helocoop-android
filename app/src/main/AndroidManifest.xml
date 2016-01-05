@@ -22,11 +22,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.twilio.client.TwilioClientService"
@@ -34,23 +33,32 @@
             android:stopWithTask="true" />
 
         <activity
-            android:name=".activity.IncomingCallActivity"
-            android:label="@string/title_activity_incoming_call"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
-        <activity android:name=".activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8341a3edd71d469edbfa4e926c07ddc1dae4ff14" />
+
+        <activity
+            android:name=".activity.GetPhoneNumberActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="8341a3edd71d469edbfa4e926c07ddc1dae4ff14" />
+        <activity
+            android:name=".activity.GetInfoActivity"
+            android:label="@string/title_activity_get_info"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.ActivateActivity"
+            android:label="@string/title_activity_activate"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

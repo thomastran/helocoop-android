@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VoipCall</string>
+    <string name="app_name">HelpCoop</string>
     <string name="logging_in">Logging in...</string>
     <string name="outgoing_ok">Outgoing calls allowed</string>
     <string name="incoming_ok">Incoming calls allowed</string>
@@ -55,4 +55,17 @@
 
     <string name="login_message">You are log in with</string>
 
+    <string name="connecting">Connecting...</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+    <!-- Register Activity-->
+    <string name="name_hint">Enter your name</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="phonenumber_hint">Enter your phone number</string>
+    <string name="address_hint">Enter your address</string>
+    <string name="title_activity_get_info">GetInfoActivity</string>
+    <string name="title_activity_activate">ActivateActivity</string>
+    <string name="activate_hint">Enter activate code</string>
+
+    <!-- Register Activity-->
 </resources>

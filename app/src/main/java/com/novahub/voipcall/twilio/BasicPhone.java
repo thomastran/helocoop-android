@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.novahub.voipcall.activity.IncomingCallActivity;
 import com.novahub.voipcall.activity.MainActivity;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Token;

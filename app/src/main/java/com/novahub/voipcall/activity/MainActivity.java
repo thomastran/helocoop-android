@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         if (!phone.isConnected()) {
             isMakingCall = true;
-            textViewConnectAlert.setText("Connecting...");
+            textViewConnectAlert.setText(R.string.connecting);
             Map<String, String> params = new HashMap<String, String>();
             params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
             stringBuilder = null;
@@ -698,11 +698,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
     @Override
     public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-//        if (button.getId() == R.id.speaker_toggle) {
-//            phone.setSpeakerEnabled(isChecked);
-//        } else if (button.getId() == R.id.mute_toggle){
-//            phone.setCallMuted(isChecked);
-//        }
+
     }
 
     @Override
