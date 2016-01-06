@@ -1,5 +1,6 @@
 package com.novahub.voipcall.apiendpoint;
 
+import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.model.Status;
 import com.novahub.voipcall.model.Token;
 
@@ -19,4 +20,8 @@ public interface EndPointInterface {
     @FormUrlEncoded
     @POST("/conference/")
     Status getStatusAfterCall(@Field("People") String people);
+
+    @FormUrlEncoded
+    @POST("/users/register/")
+    Response registerNewPhoneNumber(@Field("phone_number") String phone_number);
 }

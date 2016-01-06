@@ -58,6 +58,18 @@
         <activity
             android:name=".activity.ActivateActivity"
             android:label="@string/title_activity_activate"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.MakingCallConferenceActivity"
+            android:label="@string/title_activity_making_call_conference"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.ConferenceCallActivity"
+            android:label="@string/title_activity_conference_call"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.RatingActivity"
+            android:label="@string/title_activity_rating"
             android:theme="@style/AppTheme"></activity>
     </application>
 

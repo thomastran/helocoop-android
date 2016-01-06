@@ -41,7 +41,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:text="@string/activate_action"
                 android:id="@+id/buttonActivate"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
