@@ -92,39 +92,11 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <RadioGroup
+            <RatingBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:id="@+id/ratingBar" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Good"
-                    android:id="@+id/radioButtonGood"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ok"
-                    android:id="@+id/radioButtonOk"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Not Good"
-                    android:id="@+id/radioButtonNotGood"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Abusive"
-                    android:id="@+id/radioButtonAbusive"
-                    android:textStyle="bold" />
-            </RadioGroup>
         </LinearLayout>
 
         <LinearLayout
@@ -140,7 +112,9 @@
                 android:id="@+id/buttonSubmit"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:background="@color/material_green_500"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
 
     </LinearLayout>

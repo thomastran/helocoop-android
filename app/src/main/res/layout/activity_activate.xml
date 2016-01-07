@@ -45,7 +45,8 @@
                 android:id="@+id/buttonActivate"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/colorWhite"
+                android:background="@color/material_green_500" />
         </LinearLayout>
 
         <LinearLayout
