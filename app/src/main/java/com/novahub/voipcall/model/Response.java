@@ -12,6 +12,23 @@ public class Response {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("token")
+    private String token;
+
+    public Response(boolean success, String message, String token) {
+        this.success = success;
+        this.message = message;
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public Response(String message, boolean success) {
         this.message = message;
         this.success = success;

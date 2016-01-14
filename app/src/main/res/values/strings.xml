@@ -81,4 +81,23 @@
     <string name="token_error_message">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
+
+    <string name="request_code">Please wait for requesting activate code !</string>
+    <string name="request_code_success">Requested code successfully !</string>
+    <string name="request_code_unsuccess">Requested code unsuccessfully !</string>
+
+    <string name="activate_code">Please wait for requesting activate code !</string>
+    <string name="activate_code_success">Activated code successfully !</string>
+    <string name="activate_code_unsuccess">Activated code unsuccessfully !</string>
+
+
+    <string name="request_gcm">Please wait for request code from GCM!</string>
+    <string name="activate">Activate</string>
+    <string name="confirm_info">Confirm Information</string>
+
+    <string name="update_success">Updated info successfully !</string>
+    <string name="update_unsuccess">Updated info unsuccessfully !</string>
+
+    <string name="fill_alert">Please fill the fields!</string>
+
 </resources>
