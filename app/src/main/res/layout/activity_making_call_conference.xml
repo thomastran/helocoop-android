@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.2"
+            android:layout_weight="0.4"
             android:weightSum="2"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -34,110 +34,122 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:id="@+id/linearLayoutMainButton"
-                android:background="@drawable/circle"
-                android:weightSum="4">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center|center_vertical|center_horizontal">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text=" Help Coop"
+                    android:id="@+id/textView4"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1.1"></LinearLayout>
+                    android:textStyle="bold"
+                    android:textColor="@color/green_for_home"
+                    android:textSize="50sp" />
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.9"
-                    android:gravity="center_vertical|center|center_horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="people helping people - be a Good Samaritan today"
+                    android:id="@+id/textView3"
+                    android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_for_home" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Good Samaritans"
-                        android:id="@+id/textView3"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        android:textIsSelectable="false"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="www.helpcoop.org"
+                    android:id="@+id/textView5"
+                    android:textColor="@color/green_for_home" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Ready to Help you"
-                        android:id="@+id/textView4"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.9"
-                    android:gravity="center_vertical|center|center_horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="PRESS HERE"
-                        android:id="@+id/textView5"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="TO TALK"
-                        android:id="@+id/textView6"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.1"></LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.8"
-            android:weightSum="2"
-            android:background="@color/material_green_500"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8"
-                android:gravity="center_vertical|center|center_horizontal">
+                android:layout_weight="0.5"
+                android:gravity="center|center_vertical|center_horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Good Samaritan Volunteer"
-                    android:id="@+id/textView2"
-                    android:layout_gravity="center_horizontal"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="15sp" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:id="@+id/linearLayoutMainButton"
+                    android:background="@drawable/main_button"
+                    android:weightSum="4"
+                    android:gravity="center|center_vertical|center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="REGISTER"
+                        android:id="@+id/textViewAction"
+                        android:textStyle="bold"
+                        android:textColor="#ffffff"
+                        android:textSize="40sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6"
+            android:weightSum="2"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:background="@color/material_green_500"
+                android:id="@+id/linearLayoutStatus">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:gravity="center_vertical|center|center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Good Samaritan Volunteer"
+                        android:id="@+id/textView2"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.2"
+                    android:gravity="center_vertical|center|center_horizontal">
+
+                    <Switch
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Off"
+                        android:id="@+id/switchOnOff"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/colorWhite" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -145,13 +157,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1.2"
-                android:gravity="center_vertical|center|center_horizontal">
+                android:gravity="fill_horizontal|bottom">
 
-                <Switch
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="On/Off"
-                    android:id="@+id/switchOnOff"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="\@ 2016 SOSbeacon Inc. v1.0"
                     android:layout_gravity="center_horizontal" />
             </LinearLayout>
         </LinearLayout>

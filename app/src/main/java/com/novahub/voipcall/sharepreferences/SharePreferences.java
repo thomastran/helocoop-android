@@ -31,6 +31,8 @@ public class SharePreferences {
 
     public static final String ON_SAMARITANS = "IS_ON_SAMARITANS";
 
+
+
     public static void saveData(Context context, String typeOfAction, String data) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(typeOfAction, Context.MODE_PRIVATE);

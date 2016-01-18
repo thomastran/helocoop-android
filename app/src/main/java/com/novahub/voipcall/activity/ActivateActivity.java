@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +27,7 @@ import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.services.QuickstartPreferences;
 import com.novahub.voipcall.services.RegistrationIntentService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
+import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
 import com.novahub.voipcall.utils.Url;
 
@@ -37,19 +37,12 @@ import retrofit.RetrofitError;
 public class ActivateActivity extends AppCompatActivity implements View.OnClickListener{
 
     private TextView textViewTitle;
-
     private EditText editTextActivateCode;
-
     private Button buttonActivate;
-
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-
     private static final String TAG = "MainActivity";
-
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
     private ProgressDialog progressDialog;
-
     private String activateCode;
 
     @Override
@@ -58,31 +51,32 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_activate);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         initializeComponents();
-
-        if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM.
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
+        if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == null) {
+            if (NetworkUtil.isOnline(getApplicationContext())) {
+                if (checkPlayServices()) {
+                    // Start IntentService to register this application with GCM.
+                    Intent intent = new Intent(this, RegistrationIntentService.class);
+                    startService(intent);
+                    progressDialog.show();
+                }
+            } else {
+                Toast.makeText(ActivateActivity.this, getString(R.string.turn_on_the_internet),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
     private void initializeComponents() {
-
         progressDialog = new ProgressDialog(ActivateActivity.this);
         progressDialog.setMessage(getString(R.string.request_gcm));
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
-        progressDialog.show();
 
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.activate));
-
         editTextActivateCode = (EditText)  findViewById(R.id.editTextActivateCode);
-
         buttonActivate = (Button) findViewById(R.id.buttonActivate);
         buttonActivate.setOnClickListener(this);
-
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -103,13 +97,24 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonActivate:
-                activateCode = editTextActivateCode.getText().toString();
-                if(!StringUtils.isEmpty(activateCode)) {
-                    verifyCode(activateCode);
-                } else {
-                    Toast.makeText(ActivateActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
-                }
+                doRequest();
                 break;
+        }
+    }
+
+    private void doRequest()  {
+        activateCode = editTextActivateCode.getText().toString();
+        if(!StringUtils.isEmpty(activateCode)) {
+            if (NetworkUtil.isOnline(getApplicationContext())) {
+                verifyCode(activateCode);
+            } else {
+                Toast.makeText(ActivateActivity.this, getString(R.string.turn_on_the_internet),
+                        Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+            Toast.makeText(ActivateActivity.this, getString(R.string.fill_alert),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -137,22 +142,16 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startGetInfoActivity() {
-
         Intent intent = new Intent(ActivateActivity.this, GetInfoActivity.class);
-
         startActivity(intent);
-
         finish();
     }
 
     private class ActivateCodeAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 
         private ProgressDialog progressDialog;
-
         private String activeCode;
-
         private String phoneNumber;
-
         private String instanceId;
 
         public ActivateCodeAsyncTask(String activeCode, String phoneNumber, String instanceId) {
@@ -174,15 +173,10 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-//            if( this.progressDialog.isShowing() ) {
-//                this.progressDialog.dismiss();
-//            }
-
             if(result) {
                 SharePreferences.setDoneAction(ActivateActivity.this, SharePreferences.IS_ACTIVATED_CODE);
                 Toast.makeText(ActivateActivity.this, getString(R.string.activate_code_success), Toast.LENGTH_LONG).show();
                 startGetInfoActivity();
-
             } else {
                 if(this.progressDialog.isShowing()) {
                     this.progressDialog.dismiss();
@@ -199,8 +193,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();
 
-            Response response = null;
-
+            Response response;
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
@@ -211,7 +204,6 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
             } catch (RetrofitError retrofitError) {
 
             }
-
             return success;
         }
     }
@@ -229,3 +221,4 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         super.onPause();
     }
 }
+

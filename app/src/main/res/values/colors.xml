@@ -295,5 +295,6 @@
     <color name="material_brown_700">#5d4037</color>
     <color name="material_brown_800">#4e342e</color>
     <color name="material_brown_900">#3e2722</color>
+    <color name="green_for_home">#5bfd03</color>
 
 </resources>

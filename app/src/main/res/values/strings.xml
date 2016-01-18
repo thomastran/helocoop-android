@@ -99,5 +99,23 @@
     <string name="update_unsuccess">Updated info unsuccessfully !</string>
 
     <string name="fill_alert">Please fill the fields!</string>
+    <string name="making_call">Making Call</string>
+
+    <string name="update_location">Turning on Samaritan, Updating location !</string>
+    <string name="update_location_success">Turned on Samaritan and updated location successfully</string>
+    <string name="update_location_unsuccess">Turned on Samaritan and updated location unsuccessfully</string>
+
+    <string name="turn_off_samaritan">Turning off Samaritan</string>
+    <string name="turn_off_samaritan_success">Turned off Samaritan successfully</string>
+    <string name="turn_off_samaritan_unsuccess">Turned off Samaritan unsuccessfully</string>
+
+    <string name="turn_on_the_internet">There is no internet connection</string>
+    <string name="register">REGISTER</string>
+    <string name="help">HELP</string>
+
+    <string name="turn_on_samaritan_alert">Please turn on your Samaritan status</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+
 
 </resources>

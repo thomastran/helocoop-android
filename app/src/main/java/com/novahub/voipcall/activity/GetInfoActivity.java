@@ -16,6 +16,7 @@ import com.novahub.voipcall.R;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
+import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
 import com.novahub.voipcall.utils.Url;
 
@@ -25,19 +26,12 @@ import retrofit.RetrofitError;
 public class GetInfoActivity extends AppCompatActivity implements View.OnClickListener{
 
     private TextView textViewTitle;
-
     private EditText editTextEmail;
-
     private EditText editTextName;
-
     private EditText editTextAddress;
-
     private Button buttonUpdateInfo;
-
     private String emailUser;
-
     private String nameUser;
-
     private String homeCity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +39,16 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_get_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         initializeComponents();
     }
 
     private void initializeComponents() {
-
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-
         textViewTitle.setText(getString(R.string.confirm_info));
-
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-
         editTextName = (EditText) findViewById(R.id.editTextName);
-
         editTextAddress = (EditText) findViewById(R.id.editTextAddress);
-
         buttonUpdateInfo = (Button) findViewById(R.id.buttonUpdateInfo);
-
         buttonUpdateInfo.setOnClickListener(this);
     }
 
@@ -71,26 +57,32 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
 
         switch (v.getId()) {
             case R.id.buttonUpdateInfo:
-                emailUser = editTextEmail.getText().toString();
-                nameUser = editTextName.getText().toString();
-                homeCity = editTextAddress.getText().toString();
-                String phoneNumber = SharePreferences.getData(GetInfoActivity.this, SharePreferences.PHONE_NUMBER);
-                if(!StringUtils.isEmpty(emailUser) && !StringUtils.isEmpty(nameUser) && !StringUtils.isEmpty(homeCity)) {
-                    UpdateInfoAsyncTask updateInfoAsyncTask = new UpdateInfoAsyncTask(emailUser, phoneNumber, homeCity, nameUser);
-                    updateInfoAsyncTask.execute();
-                } else {
-                    Toast.makeText(GetInfoActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
-                }
+                doRequest();
                 break;
         }
     }
 
+    private void doRequest() {
+        emailUser = editTextEmail.getText().toString();
+        nameUser = editTextName.getText().toString();
+        homeCity = editTextAddress.getText().toString();
+        String phoneNumber = SharePreferences.getData(GetInfoActivity.this, SharePreferences.PHONE_NUMBER);
+        if(!StringUtils.isEmpty(emailUser) && !StringUtils.isEmpty(nameUser) && !StringUtils.isEmpty(homeCity)) {
+            if (NetworkUtil.isOnline(getApplicationContext())) {
+                UpdateInfoAsyncTask updateInfoAsyncTask = new UpdateInfoAsyncTask(emailUser, phoneNumber, homeCity, nameUser);
+                updateInfoAsyncTask.execute();
+            } else {
+                Toast.makeText(GetInfoActivity.this, getString(R.string.turn_on_the_internet), Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+            Toast.makeText(GetInfoActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void startMakingCallActivity() {
-
         Intent intent = new Intent(GetInfoActivity.this, MakingCallConferenceActivity.class);
-
         startActivity(intent);
-
         finish();
     }
 
@@ -122,23 +114,17 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(Response result) {
             super.onPostExecute(result);
-//            if( this.progressDialog.isShowing() ) {
-//                this.progressDialog.dismiss();
-//            }
-
             if(result.isSuccess()) {
                 SharePreferences.setDoneAction(GetInfoActivity.this, SharePreferences.IS_UPDATED_INFO);
                 SharePreferences.saveData(GetInfoActivity.this, SharePreferences.TOKEN, result.getToken());
                 Toast.makeText(GetInfoActivity.this, getString(R.string.update_success), Toast.LENGTH_LONG).show();
                 startMakingCallActivity();
-
             } else {
                 if(this.progressDialog.isShowing()) {
                     this.progressDialog.dismiss();
                 }
                 Toast.makeText(GetInfoActivity.this, getString(R.string.update_unsuccess), Toast.LENGTH_LONG).show();
             }
-
         }
 
         @Override
@@ -147,13 +133,11 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
                     .setEndpoint(Url.BASE_URL)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();
-
             Response response = null;
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
             try {
                 response = apiService.updateInfo(this.phoneNumber, this.email, this.address, this.name);
-
             } catch (RetrofitError retrofitError) {
 
             }

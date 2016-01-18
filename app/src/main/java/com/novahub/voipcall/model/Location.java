@@ -9,15 +9,9 @@ public class Location {
 
     private float longtitude;
 
-    private String address;
-
-    private String dateCreated;
-
-    public Location(float latitude, float longtitude, String dateCreated, String address) {
+    public Location(float latitude, float longtitude) {
         this.latitude = latitude;
         this.longtitude = longtitude;
-        this.dateCreated = dateCreated;
-        this.address = address;
     }
 
     public float getLatitude() {
@@ -36,19 +30,5 @@ public class Location {
         this.longtitude = longtitude;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
-    }
 }

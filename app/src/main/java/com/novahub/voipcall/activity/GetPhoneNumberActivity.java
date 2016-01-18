@@ -17,6 +17,7 @@ import com.novahub.voipcall.R;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
+import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
 import com.novahub.voipcall.utils.Url;
 
@@ -42,12 +43,9 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
     }
 
     private void initilizeComponents() {
-
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
-
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         buttonRegister.setOnClickListener(this);
-
     }
 
     private void checkActionsHaveDone(Context context) {
@@ -60,7 +58,6 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
 
         switch (whatAtionsHaveDone) {
             case 1: // Just fill phone number get the code successfully
-
                 break;
             case 2:
                 Intent intentActivateCode = new Intent(context, ActivateActivity.class);
@@ -88,36 +85,38 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonRegister:
-                phoneNumber = editTextPhoneNumber.getText().toString();
-                if(!StringUtils.isEmpty(phoneNumber)) {
-                    requestCode(phoneNumber);
-                } else {
-                    Toast.makeText(GetPhoneNumberActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
-                }
-                startActivateActivity();
+                doRequest();
                 break;
         }
     }
+    private void doRequest() {
+        phoneNumber = editTextPhoneNumber.getText().toString();
+        if(!StringUtils.isEmpty(phoneNumber)) {
+            if(NetworkUtil.isOnline(getApplicationContext())) {
+                requestCode(phoneNumber);
+            } else {
+                Toast.makeText(GetPhoneNumberActivity.this, getString(R.string.turn_on_the_internet), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(GetPhoneNumberActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
+        }
+
+    }
 
     private void requestCode(String phoneNumber) {
-
         RequestCodeAsyncTask requestCodeAsyncTask = new RequestCodeAsyncTask(phoneNumber);
         requestCodeAsyncTask.execute();
     }
 
     private void startActivateActivity() {
-
         Intent intent = new Intent(GetPhoneNumberActivity.this, ActivateActivity.class);
         startActivity(intent);
         finish();
     }
 
     private class RequestCodeAsyncTask extends AsyncTask<String, Boolean, Boolean> {
-
         private ProgressDialog progressDialog;
-
         private String phoneNumber;
-
         public RequestCodeAsyncTask(String phoneNumber) {
             this.phoneNumber = phoneNumber;
         }
@@ -140,7 +139,6 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
                 SharePreferences.saveData(GetPhoneNumberActivity.this, SharePreferences.PHONE_NUMBER, phoneNumber);
                 Toast.makeText(GetPhoneNumberActivity.this, getString(R.string.request_code_success), Toast.LENGTH_LONG).show();
                 startActivateActivity();
-
             } else {
                 if(this.progressDialog.isShowing()) {
                     this.progressDialog.dismiss();
@@ -157,7 +155,7 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();
 
-            Response response = null;
+            Response response;
 
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
@@ -165,11 +163,9 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
             try {
                 response = apiService.requestActivateCode(phoneNumber);
                 success = response.isSuccess();
-
             } catch (RetrofitError retrofitError) {
 
             }
-
             return success;
         }
     }

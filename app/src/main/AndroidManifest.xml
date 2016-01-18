@@ -91,11 +91,7 @@
             android:name=".activity.GetPhoneNumberActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.GetInfoActivity"
@@ -107,8 +103,14 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.MakingCallConferenceActivity"
-            android:label="@string/title_activity_making_call_conference"
-            android:theme="@style/AppTheme" />
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.ConferenceCallActivity"
             android:label="@string/title_activity_conference_call"
