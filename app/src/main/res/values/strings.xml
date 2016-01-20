@@ -121,5 +121,9 @@
     <string name="make_conference_call">Please wait we are setting up a room for you, you will recieve an incoming call soon !</string>
     <string name="make_conference_call_success">The conference room has been set up, please wait for incoming call</string>
     <string name="make_conference_call_unsuccess">Something wrong happened !</string>
+    <string name="gsp_setting">GPS is settings</string>
+    <string name="gps_message">GPS is not enabled. You have to turn on the location identification</string>
+    <string name="setting">Settings</string>
+    <string name="gps_cancel">Cancel</string>
 
 </resources>

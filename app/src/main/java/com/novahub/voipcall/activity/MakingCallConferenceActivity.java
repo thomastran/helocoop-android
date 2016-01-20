@@ -57,6 +57,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private RecyclerView recyclerViewList;
     private RecyclerView.LayoutManager layoutManager;
     private ConnectedPeopleAdapter connectedPeopleAdapter;
+    private boolean isShowingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,14 +120,16 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 textViewAction.setText(getString(R.string.help));
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                 if (!gps.canGetLocation()) {
-                    gps.showSettingsAlert();
+                    if(!isShowingDialog)
+                        gps.showSettingsAlert();
+
                 }
                 break;
         }
     }
 
     private void initilizeComponents() {
-
+        isShowingDialog = false;
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.app_name));
 
@@ -157,7 +160,13 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                             turnOnSamaritanAsyncTask.execute();
 
                         } else {
-                            switchOnOff.setChecked(false);
+                            if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
+                                switchOnOff.setChecked(true);
+                            } else {
+                                switchOnOff.setChecked(false);
+                            }
+
+                            isShowingDialog = true;
                             GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                             gps.showSettingsAlert();
                         }
