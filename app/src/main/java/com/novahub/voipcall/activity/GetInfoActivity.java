@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,10 +30,8 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
     private EditText editTextEmail;
     private EditText editTextName;
     private EditText editTextAddress;
+    private EditText editTextDescription;
     private Button buttonUpdateInfo;
-    private String emailUser;
-    private String nameUser;
-    private String homeCity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +47,7 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextAddress = (EditText) findViewById(R.id.editTextAddress);
+        editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         buttonUpdateInfo = (Button) findViewById(R.id.buttonUpdateInfo);
         buttonUpdateInfo.setOnClickListener(this);
     }
@@ -63,17 +63,27 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void doRequest() {
-        emailUser = editTextEmail.getText().toString();
-        nameUser = editTextName.getText().toString();
-        homeCity = editTextAddress.getText().toString();
+        String emailUser = editTextEmail.getText().toString();
+        String nameUser = editTextName.getText().toString();
+        String homeCity = editTextAddress.getText().toString();
+        String description = editTextDescription.getText().toString();
         String phoneNumber = SharePreferences.getData(GetInfoActivity.this, SharePreferences.PHONE_NUMBER);
-        if(!StringUtils.isEmpty(emailUser) && !StringUtils.isEmpty(nameUser) && !StringUtils.isEmpty(homeCity)) {
+        if(!StringUtils.isEmpty(emailUser) &&
+                !StringUtils.isEmpty(nameUser) &&
+                !StringUtils.isEmpty(homeCity) &&
+                !StringUtils.isEmpty(description)) {
+
             if (NetworkUtil.isOnline(getApplicationContext())) {
-                UpdateInfoAsyncTask updateInfoAsyncTask = new UpdateInfoAsyncTask(emailUser, phoneNumber, homeCity, nameUser);
+
+                UpdateInfoAsyncTask updateInfoAsyncTask = new UpdateInfoAsyncTask(emailUser,
+                        phoneNumber, homeCity, nameUser, description);
+
                 updateInfoAsyncTask.execute();
+
             } else {
                 Toast.makeText(GetInfoActivity.this, getString(R.string.turn_on_the_internet), Toast.LENGTH_LONG).show();
             }
+
 
         } else {
             Toast.makeText(GetInfoActivity.this, getString(R.string.fill_alert), Toast.LENGTH_LONG).show();
@@ -93,12 +103,16 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         private String phoneNumber;
         private String address;
         private String name;
+        private String description;
 
-        public UpdateInfoAsyncTask(String email, String phoneNumber, String address, String name) {
+        public UpdateInfoAsyncTask(String email, String phoneNumber,
+                                   String address, String name, String description) {
+
             this.email = email;
             this.phoneNumber = phoneNumber;
             this.address = address;
             this.name = name;
+            this.description = description;
         }
 
         @Override
@@ -137,7 +151,8 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
             try {
-                response = apiService.updateInfo(this.phoneNumber, this.email, this.address, this.name);
+                response = apiService.updateInfo(this.phoneNumber, this.email, this.address, this.name, this.description);
+
             } catch (RetrofitError retrofitError) {
 
             }

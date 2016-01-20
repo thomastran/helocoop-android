@@ -27,19 +27,33 @@ public interface EndPointInterface {
 
     @FormUrlEncoded
     @POST("/users/verifycode/")
-    Response verifyActivateCode(@Field("phone_number") String phone_number, @Field("activate_code") String activate_code,@Field("instance_id") String instance_id );
+    Response verifyActivateCode(@Field("phone_number") String phone_number,
+                                @Field("activate_code") String activate_code,
+                                @Field("instance_id") String instance_id );
 
     @FormUrlEncoded
     @POST("/users/update/")
-    Response updateInfo(@Field("phone_number") String phone_number, @Field("email") String email, @Field("address") String address, @Field("name") String name);
+    Response updateInfo(
+                        @Field("phone_number") String phone_number,
+                        @Field("email") String email,
+                        @Field("address") String address,
+                        @Field("name") String name,
+                        @Field("description") String description
+    );
 
     @FormUrlEncoded
     @POST("/users/updatelocation/")
-    Response updateLocation(@Field("latitude") float latitude, @Field("longitude") float longitude, @Field("token") String token);
+    Response updateLocation(@Field("latitude") float latitude,
+                            @Field("longitude") float longitude,
+                            @Field("token") String token);
 
     @FormUrlEncoded
     @POST("/users/turnoff/")
     Response turnOffSamaritan(@Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("/users/makeconferencecall/")
+    Response makeConferenceCall(@Field("token") String token);
 
 
 }

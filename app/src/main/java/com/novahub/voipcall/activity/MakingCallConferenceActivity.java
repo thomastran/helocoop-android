@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -22,13 +24,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.novahub.voipcall.R;
+import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.locationtracker.GPSTracker;
+import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Location;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.Url;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -44,6 +51,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private LinearLayout linearLayoutStatus;
     private static final int statusOffSamaritan = Color.parseColor("#db3126");
     private static final int statusOnSamaritan = Color.parseColor("#4cae4e");
+    private List<Distance> distanceListMain;
+    private LinearLayout linearLayoutShowConnectedPeople;
+    private LinearLayout linearLayoutMain;
+    private RecyclerView recyclerViewList;
+    private RecyclerView.LayoutManager layoutManager;
+    private ConnectedPeopleAdapter connectedPeopleAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +80,17 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
     private void checkActionsHaveDone(Context context) {
 
-        boolean isRequestedCode = SharePreferences.isDoneAction(context, SharePreferences.IS_REQUESTED_CODE);
-        boolean isActivatedCode = SharePreferences.isDoneAction(context, SharePreferences.IS_ACTIVATED_CODE);
-        boolean isUpdatedInfo = SharePreferences.isDoneAction(context, SharePreferences.IS_UPDATED_INFO);
+        boolean isRequestedCode =
+                SharePreferences.isDoneAction(context, SharePreferences.IS_REQUESTED_CODE);
 
-        int whatAtionsHaveDone = SharePreferences.checkDoneAction(isRequestedCode, isActivatedCode, isUpdatedInfo);
+        boolean isActivatedCode =
+                SharePreferences.isDoneAction(context, SharePreferences.IS_ACTIVATED_CODE);
+
+        boolean isUpdatedInfo =
+                SharePreferences.isDoneAction(context, SharePreferences.IS_UPDATED_INFO);
+
+        int whatAtionsHaveDone =
+                SharePreferences.checkDoneAction(isRequestedCode, isActivatedCode, isUpdatedInfo);
 
         switch (whatAtionsHaveDone) {
             case 1: // Just fill phone number get the code successfully
@@ -98,6 +117,10 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 //                context.startActivity(intentMakingCallConference);
 //                finish();
                 textViewAction.setText(getString(R.string.help));
+                GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
+                if (!gps.canGetLocation()) {
+                    gps.showSettingsAlert();
+                }
                 break;
         }
     }
@@ -109,6 +132,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
         linearLayoutMainButton = (LinearLayout) findViewById(R.id.linearLayoutMainButton);
         linearLayoutMainButton.setOnClickListener(this);
+
+        linearLayoutShowConnectedPeople = (LinearLayout) findViewById(R.id.linearLayoutShowConnectedPeople);
+        linearLayoutMain = (LinearLayout) findViewById(R.id.linearLayoutMain);
 
         linearLayoutStatus = (LinearLayout) findViewById(R.id.linearLayoutStatus);
 
@@ -123,14 +149,23 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     if (isChecked) {
                         Location location = getLocation();
                         if (location != null) {
+
                             TurnOnSamaritanAsyncTask turnOnSamaritanAsyncTask = new
                                     TurnOnSamaritanAsyncTask(location.getLatitude(),
                                     location.getLongtitude(), token);
+
                             turnOnSamaritanAsyncTask.execute();
+
+                        } else {
+                            switchOnOff.setChecked(false);
+                            GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
+                            gps.showSettingsAlert();
                         }
                     } else {
+
                         TurnOffSamaritanAsyncTask turnOffSamaritanAsyncTask = new
                                 TurnOffSamaritanAsyncTask(token);
+
                         turnOffSamaritanAsyncTask.execute();
                     }
                 } else {
@@ -143,6 +178,11 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         });
 
         textViewAction = (TextView) findViewById(R.id.textViewAction);
+        distanceListMain = new ArrayList<>();
+        recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
+        layoutManager = new LinearLayoutManager(MakingCallConferenceActivity.this);
+        recyclerViewList.setLayoutManager(layoutManager);
+        recyclerViewList.setHasFixedSize(true);
 
     }
 
@@ -161,8 +201,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             // can't get location
             // GPS or Network is not enabled
             // Ask user to enable GPS/network in settings
-            switchOnOff.setChecked(false);
-            gps.showSettingsAlert();
+            switchOnOff.setChecked(true);
+//            gps.showSettingsAlert();
         }
         return null;
     }
@@ -173,7 +213,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             case R.id.linearLayoutMainButton:
                 if (isRegistered) {
                     if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
-                        startConferenceCallActivity();
+                        makeConferenceCall();
                     } else {
                         Toast.makeText(MakingCallConferenceActivity.this,
                                 getString(R.string.turn_on_samaritan_alert),
@@ -185,6 +225,17 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                 break;
         }
+    }
+
+    private void makeConferenceCall() {
+        String token = SharePreferences.getData(getApplicationContext(),
+                SharePreferences.TOKEN);
+
+        MakeConferenceCallAsyncTask makeConferenceCallAsyncTask = new
+                MakeConferenceCallAsyncTask(token);
+
+        makeConferenceCallAsyncTask.execute();
+
     }
 
     @SuppressLint("LongLogTag")
@@ -237,13 +288,15 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 SharePreferences.saveData(getApplicationContext(),
                         SharePreferences.ON_SAMARITANS, true);
                 Toast.makeText(MakingCallConferenceActivity.this,
-                        getString(R.string.update_location_success), Toast.LENGTH_LONG).show();
+                        getString(R.string.update_location_success),
+                        Toast.LENGTH_LONG).show();
                 switchOnOff.setText(getString(R.string.on));
                 linearLayoutStatus.setBackgroundColor(statusOnSamaritan);
 
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,
-                        getString(R.string.update_location_unsuccess), Toast.LENGTH_LONG).show();
+                        getString(R.string.update_location_unsuccess),
+                        Toast.LENGTH_LONG).show();
                 switchOnOff.setText(getString(R.string.off));
                 linearLayoutStatus.setBackgroundColor(statusOffSamaritan);
             }
@@ -322,6 +375,75 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             Boolean success = false;
             try {
                 response = apiService.turnOffSamaritan(this.token);
+                success = response.isSuccess();
+
+            } catch (RetrofitError retrofitError) {
+
+            }
+            return success;
+        }
+    }
+
+    private class MakeConferenceCallAsyncTask extends AsyncTask<String, Boolean, Boolean> {
+
+        private ProgressDialog progressDialog;
+        private String token;
+        private List<Distance> distanceList;
+        public MakeConferenceCallAsyncTask(String token) {
+            this.token = token;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            this.distanceList = new ArrayList<>();
+            this.progressDialog = new ProgressDialog(MakingCallConferenceActivity.this);
+            this.progressDialog.setMessage(getString(R.string.make_conference_call));
+            this.progressDialog.setCancelable(false);
+            this.progressDialog.setIndeterminate(true);
+            this.progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result) {
+
+                Toast.makeText(MakingCallConferenceActivity.this,
+                        getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
+
+                distanceListMain.addAll(this.distanceList);
+                distanceListMain.remove(0);
+                connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceListMain);
+                recyclerViewList.setAdapter(connectedPeopleAdapter);
+                linearLayoutMain.setVisibility(View.GONE);
+                linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
+
+            } else {
+                Toast.makeText(MakingCallConferenceActivity.this,
+                        getString(R.string.make_conference_call_unsuccess), Toast.LENGTH_LONG).show();
+            }
+            if(this.progressDialog.isShowing()) {
+                this.progressDialog.dismiss();
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(Url.BASE_URL)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+            Response response;
+            EndPointInterface apiService =
+                    restAdapter.create(EndPointInterface.class);
+            Boolean success = false;
+            try {
+                response = apiService.makeConferenceCall(this.token);
+                for (int i = 0; i < response.getDistanceList().size(); i++) {
+                    Log.d("======>", response.getDistanceList().get(i).getName());
+                }
+                this.distanceList.addAll(response.getDistanceList());
                 success = response.isSuccess();
 
             } catch (RetrofitError retrofitError) {

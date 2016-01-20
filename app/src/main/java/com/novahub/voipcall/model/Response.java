@@ -2,6 +2,8 @@ package com.novahub.voipcall.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by samnguyen on 06/01/2016.
  */
@@ -15,10 +17,20 @@ public class Response {
     @SerializedName("token")
     private String token;
 
+    @SerializedName("distances")
+    private List<Distance> distanceList;
+
     public Response(boolean success, String message, String token) {
         this.success = success;
         this.message = message;
         this.token = token;
+    }
+
+    public Response(boolean success, String message, String token, List<Distance> distanceList) {
+        this.success = success;
+        this.message = message;
+        this.token = token;
+        this.distanceList = distanceList;
     }
 
     public String getToken() {
@@ -48,5 +60,13 @@ public class Response {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Distance> getDistanceList() {
+        return distanceList;
+    }
+
+    public void setDistanceList(List<Distance> distanceList) {
+        this.distanceList = distanceList;
     }
 }
