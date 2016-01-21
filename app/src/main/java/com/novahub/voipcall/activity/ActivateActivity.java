@@ -121,7 +121,10 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
     private void verifyCode(String activateCode) {
         String phoneNumber = SharePreferences.getData(ActivateActivity.this, SharePreferences.PHONE_NUMBER);
         String instanceId = SharePreferences.getData(ActivateActivity.this, SharePreferences.INSTANCE_ID);
-        ActivateCodeAsyncTask activateCodeAsyncTask = new ActivateCodeAsyncTask(activateCode, phoneNumber, instanceId);
+
+        ActivateCodeAsyncTask activateCodeAsyncTask =
+                new ActivateCodeAsyncTask(activateCode, phoneNumber, instanceId);
+
         activateCodeAsyncTask.execute();
     }
 

@@ -53,7 +53,7 @@ public interface EndPointInterface {
 
     @FormUrlEncoded
     @POST("/users/makeconferencecall/")
-    Response makeConferenceCall(@Field("token") String token);
+    Response makeConferenceCall(@Field("token") String token, @Field("name_room") String nameRoom);
 
 
 }

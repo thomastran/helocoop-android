@@ -9,12 +9,6 @@ public class Distance {
     @SerializedName("mile")
     private float mile;
 
-    @SerializedName("token")
-    private String token;
-
-    @SerializedName("instance_id")
-    private String instanceId;
-
     @SerializedName("phone_number")
     private String phoneNumber;
 
@@ -27,20 +21,16 @@ public class Distance {
     @SerializedName("address")
     private String address;
 
-    public Distance(float mile, String token, String instanceId, String phoneNumber, String name, String description, String address) {
+    public Distance(float mile, String phoneNumber, String name, String description, String address) {
         this.mile = mile;
-        this.token = token;
-        this.instanceId = instanceId;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.description = description;
         this.address = address;
     }
 
-    public Distance(float mile, String token, String instanceId, String phoneNumber) {
+    public Distance(float mile, String phoneNumber) {
         this.mile = mile;
-        this.token = token;
-        this.instanceId = instanceId;
         this.phoneNumber = phoneNumber;
     }
 
@@ -50,22 +40,6 @@ public class Distance {
 
     public void setMile(float mile) {
         this.mile = mile;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
     }
 
     public String getPhoneNumber() {

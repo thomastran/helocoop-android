@@ -76,7 +76,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         }
         testSharePreference();
         checkActionsHaveDone(getApplicationContext());
-
     }
 
     private void checkActionsHaveDone(Context context) {
@@ -447,8 +446,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
+            String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
             try {
-                response = apiService.makeConferenceCall(this.token);
+                response = apiService.makeConferenceCall(this.token, nameRoom);
                 for (int i = 0; i < response.getDistanceList().size(); i++) {
                     Log.d("======>", response.getDistanceList().get(i).getName());
                 }

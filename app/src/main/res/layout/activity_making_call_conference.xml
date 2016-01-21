@@ -47,7 +47,7 @@
                     android:id="@+id/textView4"
                     android:layout_gravity="center_horizontal"
                     android:textStyle="bold"
-                    android:textColor="@color/green_for_home"
+                    android:textColor="@color/material_green_A700"
                     android:textSize="50sp" />
 
                 <TextView
@@ -58,7 +58,7 @@
                     android:id="@+id/textView3"
                     android:layout_gravity="center_horizontal"
                     android:textStyle="bold"
-                    android:textColor="@color/green_for_home" />
+                    android:textColor="@color/material_green_A700" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="www.helpcoop.org"
                     android:id="@+id/textView5"
-                    android:textColor="@color/green_for_home" />
+                    android:textColor="@color/material_blue_grey_900" />
 
             </LinearLayout>
 
@@ -163,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="\@ 2016 SOSbeacon Inc. v1.0"
+                    android:text="\@ 2016 Help Coop v0.1"
                     android:layout_gravity="center_horizontal" />
             </LinearLayout>
         </LinearLayout>
@@ -194,7 +194,7 @@
                 android:layout_gravity="center_horizontal"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/green_for_home" />
+                android:textColor="@color/material_blue_grey_900" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -203,7 +203,7 @@
                 android:text="Waiting for the incoming call from server"
                 android:id="@+id/textView12"
                 android:layout_gravity="center_horizontal"
-                android:textColor="@color/green_for_home" />
+                android:textColor="@color/material_blue_grey_900" />
         </LinearLayout>
 
         <LinearLayout

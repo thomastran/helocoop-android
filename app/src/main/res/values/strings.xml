@@ -125,5 +125,6 @@
     <string name="gps_message">GPS is not enabled. You have to turn on the location identification</string>
     <string name="setting">Settings</string>
     <string name="gps_cancel">Cancel</string>
+    <string name="app_version">\@ 2016 Help Coop v0.1</string>
 
 </resources>
