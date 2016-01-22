@@ -167,7 +167,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         protected void onPreExecute() {
             super.onPreExecute();
             this.progressDialog = new ProgressDialog(ActivateActivity.this);
-            this.progressDialog.setMessage(getString(R.string.request_code));
+            this.progressDialog.setMessage(getString(R.string.activate_code));
             this.progressDialog.setCancelable(false);
             this.progressDialog.setIndeterminate(true);
             this.progressDialog.show();

@@ -82,7 +82,7 @@
                     android:layout_width="280dp"
                     android:layout_height="280dp"
                     android:id="@+id/linearLayoutMainButton"
-                    android:background="@drawable/main_button"
+                    android:background="@drawable/background"
                     android:weightSum="4"
                     android:gravity="center|center_vertical|center_horizontal">
 
@@ -183,27 +183,46 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:gravity="center|center_vertical|center_horizontal">
+            android:gravity="center|center_vertical|center_horizontal"
+            android:weightSum="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="We have found 2 people are ready for helping you"
-                android:id="@+id/textView11"
-                android:layout_gravity="center_horizontal"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/material_blue_grey_900" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:visibility="visible"
+                android:id="@+id/linearLayoutResult">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Waiting for the incoming call from server"
-                android:id="@+id/textView12"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/material_blue_grey_900" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textViewNumberFound"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/material_blue_grey_900" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textViewWait"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/material_blue_grey_900"
+                    android:text="@string/waiting_incoming_call" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

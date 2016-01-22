@@ -160,7 +160,7 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.setTitle("GPS is settings");
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. You have to turn on the location identification");
+        alertDialog.setMessage("Please turn on your location services so HelpCoop can find your closest helpers");
 
         alertDialog.setCancelable(false);
 

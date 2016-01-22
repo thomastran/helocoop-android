@@ -58,6 +58,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private RecyclerView.LayoutManager layoutManager;
     private ConnectedPeopleAdapter connectedPeopleAdapter;
     private boolean isShowingDialog;
+    private TextView textViewNumberFound;
+    private TextView textViewWait;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
         linearLayoutStatus = (LinearLayout) findViewById(R.id.linearLayoutStatus);
 
+        textViewNumberFound =  (TextView) findViewById(R.id.textViewNumberFound);
+        textViewWait = (TextView) findViewById(R.id.textViewWait);
+
         switchOnOff = (Switch) findViewById(R.id.switchOnOff);
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("LongLogTag")
@@ -220,13 +225,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         switch (v.getId()) {
             case R.id.linearLayoutMainButton:
                 if (isRegistered) {
-                    if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
-                        makeConferenceCall();
-                    } else {
-                        Toast.makeText(MakingCallConferenceActivity.this,
-                                getString(R.string.turn_on_samaritan_alert),
-                                Toast.LENGTH_LONG).show();
-                    }
+                    makeConferenceCall();
                 } else {
                     startGetPhoneNumberActivity();
                 }
@@ -419,10 +418,23 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                 Toast.makeText(MakingCallConferenceActivity.this,
                         getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
-
-                distanceListMain.addAll(this.distanceList);
-                distanceListMain.remove(0);
-                connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceListMain);
+//                this.distanceList.remove(0);
+                String messageDisplay = "";
+                switch (this.distanceList.size()) {
+                    case 0:
+                        messageDisplay = getString(R.string.found_zero);
+                        textViewWait.setText(messageDisplay);
+                        break;
+                    case 1:
+                        messageDisplay = getString(R.string.found_one);
+                        textViewNumberFound.setText(messageDisplay);
+                        break;
+                    case 2:
+                        messageDisplay = getString(R.string.found_two);
+                        textViewNumberFound.setText(messageDisplay);
+                        break;
+                }
+                connectedPeopleAdapter = new ConnectedPeopleAdapter(this.distanceList);
                 recyclerViewList.setAdapter(connectedPeopleAdapter);
                 linearLayoutMain.setVisibility(View.GONE);
                 linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
@@ -449,9 +461,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
             try {
                 response = apiService.makeConferenceCall(this.token, nameRoom);
-                for (int i = 0; i < response.getDistanceList().size(); i++) {
-                    Log.d("======>", response.getDistanceList().get(i).getName());
-                }
                 this.distanceList.addAll(response.getDistanceList());
                 success = response.isSuccess();
 

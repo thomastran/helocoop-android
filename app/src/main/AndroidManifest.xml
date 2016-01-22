@@ -96,7 +96,8 @@
         <activity
             android:name=".activity.GetInfoActivity"
             android:label="@string/title_activity_get_info"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.ActivateActivity"
             android:label="@string/title_activity_activate"

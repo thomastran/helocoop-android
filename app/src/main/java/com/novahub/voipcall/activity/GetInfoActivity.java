@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -119,7 +120,7 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPreExecute() {
             super.onPreExecute();
             this.progressDialog = new ProgressDialog(GetInfoActivity.this);
-            this.progressDialog.setMessage(getString(R.string.request_code));
+            this.progressDialog.setMessage(getString(R.string.updating_info));
             this.progressDialog.setCancelable(false);
             this.progressDialog.setIndeterminate(true);
             this.progressDialog.show();
