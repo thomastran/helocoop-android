@@ -154,12 +154,16 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                         SharePreferences.TOKEN);
                 if (NetworkUtil.isOnline(getApplicationContext())) {
                     if (isChecked) {
+                        String message = getString(R.string.update_location);
+                        if (SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
+                            message = getString(R.string.update_location_without_turn_on);
+                        }
                         Location location = getLocation();
                         if (location != null) {
 
                             TurnOnSamaritanAsyncTask turnOnSamaritanAsyncTask = new
                                     TurnOnSamaritanAsyncTask(location.getLatitude(),
-                                    location.getLongtitude(), token);
+                                    location.getLongtitude(), token, message);
 
                             turnOnSamaritanAsyncTask.execute();
 
@@ -225,7 +229,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         switch (v.getId()) {
             case R.id.linearLayoutMainButton:
                 if (isRegistered) {
-                    makeConferenceCall();
+                    if (NetworkUtil.isOnline(getApplicationContext())) {
+                        makeConferenceCall();
+                    } else {
+                        Toast.makeText(MakingCallConferenceActivity.this,
+                                getString(R.string.turn_on_the_internet), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     startGetPhoneNumberActivity();
                 }
@@ -271,18 +280,20 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         private float latitude;
         private float longitude;
         private String token;
+        private String message;
 
-        public TurnOnSamaritanAsyncTask(float latitude, float longitude, String token) {
+        public TurnOnSamaritanAsyncTask(float latitude, float longitude, String token, String message) {
             this.latitude = latitude;
             this.longitude = longitude;
             this.token = token;
+            this.message = message;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             this.progressDialog = new ProgressDialog(MakingCallConferenceActivity.this);
-            this.progressDialog.setMessage(getString(R.string.update_location));
+            this.progressDialog.setMessage(message);
             this.progressDialog.setCancelable(false);
             this.progressDialog.setIndeterminate(true);
             this.progressDialog.show();
@@ -418,7 +429,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                 Toast.makeText(MakingCallConferenceActivity.this,
                         getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
-//                this.distanceList.remove(0);
+                this.distanceList.remove(0);
                 String messageDisplay = "";
                 switch (this.distanceList.size()) {
                     case 0:

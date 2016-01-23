@@ -104,6 +104,7 @@
     <string name="making_call">Making Call</string>
 
     <string name="update_location">Turning on Samaritan, Updating location !</string>
+    <string name="update_location_without_turn_on">Updating location !</string>
     <string name="update_location_success">Turned on Samaritan and updated location successfully</string>
     <string name="update_location_unsuccess">Turned on Samaritan and updated location unsuccessfully</string>
 
