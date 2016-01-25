@@ -1,5 +1,9 @@
 package com.novahub.voipcall.utils;
 
+import com.novahub.voipcall.model.Distance;
+
+import java.util.List;
+
 /**
  * Created by samnguyen on 18/12/2015.
  */
@@ -26,4 +30,8 @@ public class Asset {
     public static final String VIOP_CALL = "VIOPCALL";
 
     public static final String Current_Client = "CurrentClient";
+
+    public static final String FROM_INCOMING_CALL = "FROM_INCOMING_CALL";
+
+    public static List<Distance> distanceList;
 }

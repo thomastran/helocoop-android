@@ -133,5 +133,6 @@
     <string name="found_one">We have found 1 person ready to help you</string>
     <string name="found_two">We have found 2 people ready to help you</string>
     <string name="waiting_incoming_call">Waiting for the incoming call from server</string>
+    <string name="title_activity_show_results">ShowResultsActivity</string>
 
 </resources>

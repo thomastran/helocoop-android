@@ -52,8 +52,17 @@ public interface EndPointInterface {
     Response turnOffSamaritan(@Field("token") String token);
 
     @FormUrlEncoded
+    @POST("/users/turnon/")
+    Response turnOnSamaritan(@Field("token") String token);
+
+    @FormUrlEncoded
     @POST("/users/makeconferencecall/")
     Response makeConferenceCall(@Field("token") String token, @Field("name_room") String nameRoom);
+
+    @FormUrlEncoded
+    @POST("/users/updatelocationservice/")
+    Response updateLocationService(@Field("latitude") float latitude,
+                                   @Field("longitude") float longitude, @Field("token") String token);
 
 
 }

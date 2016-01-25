@@ -52,7 +52,11 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeComponents();
-        if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == null) {
+        //After get the activate code from server, this will help us to get InstanceId To send GCM
+//        requestGcmInstanceId();
+    }
+    private void requestGcmInstanceId() {
+        if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == SharePreferences.EMPTY) {
             if (NetworkUtil.isOnline(getApplicationContext())) {
                 if (checkPlayServices()) {
                     // Start IntentService to register this application with GCM.

@@ -1,20 +1,25 @@
 package com.novahub.voipcall.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -30,7 +35,10 @@ import com.novahub.voipcall.locationtracker.GPSTracker;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Location;
 import com.novahub.voipcall.model.Response;
+import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
+import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.EndCallListener;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.Url;
 
@@ -60,6 +68,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private boolean isShowingDialog;
     private TextView textViewNumberFound;
     private TextView textViewWait;
+    private boolean flagSwitchDoNothing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,17 +76,44 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initilizeComponents();
-        if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
-            switchOnOff.setChecked(true);
-            switchOnOff.setText(getString(R.string.on));
-            linearLayoutStatus.setBackgroundColor(statusOnSamaritan);
-        } else {
-            switchOnOff.setChecked(false);
-            switchOnOff.setText(getString(R.string.off));
-            linearLayoutStatus.setBackgroundColor(statusOffSamaritan);
-        }
-        testSharePreference();
+        checkSamaritan();
+        startServiceUpdateLocation();
         checkActionsHaveDone(getApplicationContext());
+        checkIntentFromIncomingCall();
+    }
+    private void checkIntentFromIncomingCall() {
+        if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
+            listenForEndCall();
+        }
+    }
+
+    private void startServiceUpdateLocation() {
+        if (NetworkUtil.isOnline(getApplicationContext()) &&
+                SharePreferences.isDoneAction(getApplicationContext(), SharePreferences.TOKEN)) {
+            Intent intent = new Intent(MakingCallConferenceActivity.this, UpdateLocationService.class);
+            startService(intent);
+        }
+    }
+
+    private void checkSamaritan() {
+        flagSwitchDoNothing = true;
+        if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
+            setStatusSamaritan(true, getString(R.string.on), statusOnSamaritan);
+        } else {
+            setStatusSamaritan(false, getString(R.string.off), statusOffSamaritan);
+        }
+    }
+
+    private void setStatusSamaritan(boolean isChecked, String text, int color) {
+        switchOnOff.setChecked(isChecked);
+        switchOnOff.setText(text);
+        linearLayoutStatus.setBackgroundColor(color);
+    }
+
+    private void listenForEndCall() {
+        EndCallListener callListener = new EndCallListener(MakingCallConferenceActivity.this);
+        TelephonyManager mTM = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        mTM.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     private void checkActionsHaveDone(Context context) {
@@ -114,22 +150,20 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 finish();
                 break;
             case 4:
-//                Intent intentMakingCallConference = new Intent(context, MakingCallConferenceActivity.class);
-//                intentMakingCallConference.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intentMakingCallConference);
-//                finish();
                 textViewAction.setText(getString(R.string.help));
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                 if (!gps.canGetLocation()) {
-                    if(!isShowingDialog)
+                    if(!isShowingDialog){
+                        retryGetLocationAlert();
                         gps.showSettingsAlert();
-
+                    }
                 }
                 break;
         }
     }
 
     private void initilizeComponents() {
+        flagSwitchDoNothing = false;
         isShowingDialog = false;
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.app_name));
@@ -152,45 +186,50 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String token = SharePreferences.getData(getApplicationContext(),
                         SharePreferences.TOKEN);
-                if (NetworkUtil.isOnline(getApplicationContext())) {
-                    if (isChecked) {
-                        String message = getString(R.string.update_location);
-                        if (SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
-                            message = getString(R.string.update_location_without_turn_on);
-                        }
-                        Location location = getLocation();
-                        if (location != null) {
-
-                            TurnOnSamaritanAsyncTask turnOnSamaritanAsyncTask = new
-                                    TurnOnSamaritanAsyncTask(location.getLatitude(),
-                                    location.getLongtitude(), token, message);
-
-                            turnOnSamaritanAsyncTask.execute();
-
-                        } else {
-                            if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
-                                switchOnOff.setChecked(true);
-                            } else {
-                                switchOnOff.setChecked(false);
+                if (!flagSwitchDoNothing) {
+                    if (NetworkUtil.isOnline(getApplicationContext())) {
+                        if (isChecked) {
+                            String message = getString(R.string.update_location);
+                            if (SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
+                                message = getString(R.string.update_location_without_turn_on);
                             }
+                            Location location = getLocation();
+                            if (location != null) {
 
-                            isShowingDialog = true;
-                            GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
-                            gps.showSettingsAlert();
+                                TurnOnSamaritanAsyncTask turnOnSamaritanAsyncTask = new
+                                        TurnOnSamaritanAsyncTask(location.getLatitude(),
+                                        location.getLongtitude(), token, message);
+
+                                turnOnSamaritanAsyncTask.execute();
+
+                            } else {
+                                flagSwitchDoNothing =true;
+                                if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
+                                    switchOnOff.setChecked(true);
+                                } else {
+                                    switchOnOff.setChecked(false);
+                                }
+
+                                isShowingDialog = true;
+                                retryGetLocationAlert();
+                                GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
+                                gps.showSettingsAlert();
+                            }
+                        } else {
+
+                            TurnOffSamaritanAsyncTask turnOffSamaritanAsyncTask = new
+                                    TurnOffSamaritanAsyncTask(token);
+
+                            turnOffSamaritanAsyncTask.execute();
                         }
                     } else {
-
-                        TurnOffSamaritanAsyncTask turnOffSamaritanAsyncTask = new
-                                TurnOffSamaritanAsyncTask(token);
-
-                        turnOffSamaritanAsyncTask.execute();
+                        Toast.makeText(MakingCallConferenceActivity.this,
+                                getString(R.string.turn_on_the_internet),
+                                Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(MakingCallConferenceActivity.this,
-                            getString(R.string.turn_on_the_internet),
-                            Toast.LENGTH_LONG).show();
+                    flagSwitchDoNothing = false;
                 }
-
             }
         });
 
@@ -201,6 +240,30 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
 
+    }
+
+    public void retryGetLocationAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS settings");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("Did you turn on the location identification");
+
+        alertDialog.setCancelable(false);
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                dialog.cancel();
+                Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        alertDialog.show();
     }
 
     private Location getLocation() {
@@ -238,7 +301,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 } else {
                     startGetPhoneNumberActivity();
                 }
-
                 break;
         }
     }
@@ -246,10 +308,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private void makeConferenceCall() {
         String token = SharePreferences.getData(getApplicationContext(),
                 SharePreferences.TOKEN);
-
         MakeConferenceCallAsyncTask makeConferenceCallAsyncTask = new
                 MakeConferenceCallAsyncTask(token);
-
         makeConferenceCallAsyncTask.execute();
 
     }
@@ -305,9 +365,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             if(result) {
                 SharePreferences.saveData(getApplicationContext(),
                         SharePreferences.ON_SAMARITANS, true);
-                Toast.makeText(MakingCallConferenceActivity.this,
-                        getString(R.string.update_location_success),
-                        Toast.LENGTH_LONG).show();
+//                Toast.makeText(MakingCallConferenceActivity.this,
+//                        getString(R.string.update_location_success),
+//                        Toast.LENGTH_LONG).show();
                 switchOnOff.setText(getString(R.string.on));
                 linearLayoutStatus.setBackgroundColor(statusOnSamaritan);
 
@@ -318,9 +378,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 switchOnOff.setText(getString(R.string.off));
                 linearLayoutStatus.setBackgroundColor(statusOffSamaritan);
             }
-            if(this.progressDialog.isShowing()) {
-                this.progressDialog.dismiss();
+            if (!MakingCallConferenceActivity.this.isFinishing()) { // or call isFinishing() if min sdk version < 17
+                if(this.progressDialog != null && this.progressDialog.isShowing()) {
+                    this.progressDialog.dismiss();
+                }
             }
+
         }
 
         @Override
@@ -426,11 +489,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if(result) {
-
-                Toast.makeText(MakingCallConferenceActivity.this,
-                        getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
-                this.distanceList.remove(0);
+//                Toast.makeText(MakingCallConferenceActivity.this,
+//                        getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
+//                this.distanceList.remove(0);
                 String messageDisplay = "";
+                Asset.distanceList = new ArrayList<>();
+                Asset.distanceList.addAll(distanceList);
                 switch (this.distanceList.size()) {
                     case 0:
                         messageDisplay = getString(R.string.found_zero);
