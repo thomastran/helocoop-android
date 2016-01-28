@@ -8,12 +8,12 @@ import android.content.SharedPreferences;
  * Created by samnguyen on 11/01/2016.
  */
 public class SharePreferences {
-
     public static final String PHONE_NUMBER = "PHONE_NUMBER";
     public static final String ACTIVATE_CODE = "ACTIVATE_CODE";
     public static final String NAME_OF_USER = "NAME_OF_USER";
     public static final String EMAIL_OF_USER = "EMAIL_OF_USER";
     public static final String HOME_CITY = "HOME_CITY";
+    public static final String DESCRIPTION = "DESCRIPTION";
     public static final String TOKEN = "TOKEN";
     public static final String INSTANCE_ID = "INSTANCE_ID";
     public static final String IS_REQUESTED_CODE = "IS_REQUESTED_CODE";

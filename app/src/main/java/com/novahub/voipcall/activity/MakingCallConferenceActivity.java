@@ -7,13 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +64,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private TextView textViewNumberFound;
     private TextView textViewWait;
     private boolean flagSwitchDoNothing;
+    private LinearLayout linearLayoutChangeInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +73,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         setSupportActionBar(toolbar);
         initilizeComponents();
         checkSamaritan();
+        if(!NetworkUtil.isOnline(getApplicationContext())) {
+            showAlert("Internet Available", "Please turn on the internet");
+        }
         startServiceUpdateLocation();
         checkActionsHaveDone(getApplicationContext());
         checkIntentFromIncomingCall();
@@ -86,6 +85,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             listenForEndCall();
         }
     }
+
 
     private void startServiceUpdateLocation() {
         if (NetworkUtil.isOnline(getApplicationContext()) &&
@@ -154,7 +154,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                 if (!gps.canGetLocation()) {
                     if(!isShowingDialog){
-                        retryGetLocationAlert();
+                        showAlert("GSP Setting", "Did you turn on Location Indentification");
                         gps.showSettingsAlert();
                     }
                 }
@@ -175,6 +175,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         linearLayoutMain = (LinearLayout) findViewById(R.id.linearLayoutMain);
 
         linearLayoutStatus = (LinearLayout) findViewById(R.id.linearLayoutStatus);
+        linearLayoutChangeInfo = (LinearLayout) findViewById(R.id.linearLayoutChangeInfo);
+        linearLayoutChangeInfo.setOnClickListener(this);
 
         textViewNumberFound =  (TextView) findViewById(R.id.textViewNumberFound);
         textViewWait = (TextView) findViewById(R.id.textViewWait);
@@ -211,7 +213,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                                 }
 
                                 isShowingDialog = true;
-                                retryGetLocationAlert();
+                                showAlert("GPS Setting", "Did you turn on Location Identification");
                                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                                 gps.showSettingsAlert();
                             }
@@ -242,14 +244,14 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
     }
 
-    public void retryGetLocationAlert(){
+    public void showAlert(String title, String message){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS settings");
+        alertDialog.setTitle(title);
 
         // Setting Dialog Message
-        alertDialog.setMessage("Did you turn on the location identification");
+        alertDialog.setMessage(message);
 
         alertDialog.setCancelable(false);
 
@@ -301,6 +303,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 } else {
                     startGetPhoneNumberActivity();
                 }
+                break;
+            case R.id.linearLayoutChangeInfo:
+                Intent intent = new Intent(MakingCallConferenceActivity.this, GetInfoActivity.class);
+                intent.putExtra(Asset.IS_CHANGED_INFO, true);
+                startActivity(intent);
+                finish();
                 break;
         }
     }

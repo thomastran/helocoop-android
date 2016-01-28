@@ -42,6 +42,16 @@ public interface EndPointInterface {
     );
 
     @FormUrlEncoded
+    @POST("/users/changeinfo/")
+    Response changeInfo(
+            @Field("token") String token,
+            @Field("email") String email,
+            @Field("address") String address,
+            @Field("name") String name,
+            @Field("description") String description
+    );
+
+    @FormUrlEncoded
     @POST("/users/updatelocation/")
     Response updateLocation(@Field("latitude") float latitude,
                             @Field("longitude") float longitude,
