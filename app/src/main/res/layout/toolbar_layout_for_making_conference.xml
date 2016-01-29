@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="2"
+        android:weightSum="1"
         android:background="@color/primary_dark"
         android:gravity="center_vertical|center|center_horizontal">
 
@@ -19,7 +19,13 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
             android:gravity="center|center_vertical|center_horizontal">
 
             <TextView
@@ -36,10 +42,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.7"
             android:id="@+id/linearLayoutChangeInfo"
             android:gravity="center|center_vertical|center_horizontal"
-            android:background="@drawable/background_back">
+            android:background="@drawable/background_back"
+            android:layout_weight="0.4">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -47,6 +53,7 @@
                 android:id="@+id/imageView2"
                 android:src="@drawable/ic_account_circle_white_18dp" />
         </LinearLayout>
+
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

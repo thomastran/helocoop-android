@@ -96,7 +96,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     }
 
     private void checkSamaritan() {
-        flagSwitchDoNothing = true;
+        if (SharePreferences.getDataBoolean(MakingCallConferenceActivity.this, SharePreferences.ON_SAMARITANS))
+            flagSwitchDoNothing = true;
         if(SharePreferences.getDataBoolean(getApplicationContext(), SharePreferences.ON_SAMARITANS)) {
             setStatusSamaritan(true, getString(R.string.on), statusOnSamaritan);
         } else {
@@ -497,9 +498,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if(result) {
-//                Toast.makeText(MakingCallConferenceActivity.this,
-//                        getString(R.string.make_conference_call_success), Toast.LENGTH_LONG).show();
-//                this.distanceList.remove(0);
                 String messageDisplay = "";
                 Asset.distanceList = new ArrayList<>();
                 Asset.distanceList.addAll(distanceList);
