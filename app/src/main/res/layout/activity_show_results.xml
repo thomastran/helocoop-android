@@ -12,13 +12,23 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5">
+        android:layout_weight="0.5"
+        android:weightSum="1">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_weight="0.15" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Rate"
+            android:id="@+id/buttonRate"
+            android:layout_weight="0.85"
+            android:layout_margin="10dp" />
     </LinearLayout>
 </LinearLayout>

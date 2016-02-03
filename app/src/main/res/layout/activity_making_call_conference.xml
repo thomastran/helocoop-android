@@ -163,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="\@ 2016 Help Coop v0.1"
+                    android:text="\@ 2016 Help Coop v0.2_02/02/16"
                     android:layout_gravity="center_horizontal" />
             </LinearLayout>
         </LinearLayout>

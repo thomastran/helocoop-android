@@ -1,20 +1,35 @@
 package com.novahub.voipcall.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
+import com.novahub.voipcall.apiendpoint.EndPointInterface;
+import com.novahub.voipcall.model.Rate;
+import com.novahub.voipcall.model.Response;
+import com.novahub.voipcall.model.WrapperRate;
+import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.Url;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 public class ShowResultsActivity extends AppCompatActivity implements View.OnClickListener{
     private RecyclerView recyclerViewList;
@@ -22,6 +37,9 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
     private ConnectedPeopleAdapter connectedPeopleAdapter;
     private LinearLayout linearLayoutBack;
     private TextView textViewTitle;
+    private Button buttonRate;
+    private List<Rate> rateList;
+    private boolean isRated = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,12 +55,26 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
         connectedPeopleAdapter = new ConnectedPeopleAdapter(Asset.distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        buttonRate = (Button) findViewById(R.id.buttonRate);
+        buttonRate.setOnClickListener(this);
         String toBe = "are ";
         if(Asset.distanceList.size() == 1) {
             toBe = "is ";
         }
         String message = "There " + toBe + Asset.distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
+
+        rateList = new ArrayList<>();
+        for (int i = 0; i < Asset.distanceList.size(); i++) {
+            rateList.add(new Rate(null, Asset.distanceList.get(i).getToken()));
+        }
+        connectedPeopleAdapter.setOnItemClickListener(new ConnectedPeopleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String estimation, int position) {
+                isRated = true;
+                rateList.get(position).setRateStatus(estimation);
+            }
+        });
     }
 
     @Override
@@ -54,6 +86,77 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.buttonRate:
+                if (isRated) {
+                    Asset.distanceList = null;
+                    String token = SharePreferences.getData(ShowResultsActivity.this, SharePreferences.TOKEN);
+                    for (int i = 0; i < rateList.size(); i++) {
+                        if(rateList.get(i).getRateStatus() == null)
+                            rateList.remove(i);
+                    }
+                    Asset.wrapperRate = new WrapperRate(token, Asset.nameRoom, rateList);
+                    RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
+                    rateAsyncTask.execute();
+                } else {
+                    Toast.makeText(ShowResultsActivity.this,
+                            getString(R.string.rate_toast), Toast.LENGTH_LONG).show();
+                }
+
+                break;
+        }
+    }
+
+    private class RateAsyncTask extends AsyncTask<String, Boolean, Boolean> {
+
+        private ProgressDialog progressDialog;
+        private WrapperRate wrapperRate;
+        public RateAsyncTask(WrapperRate wrapperRate) {
+            this.wrapperRate = wrapperRate;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            this.progressDialog = new ProgressDialog(ShowResultsActivity.this);
+            this.progressDialog.setMessage(getString(R.string.rating));
+            this.progressDialog.setCancelable(false);
+            this.progressDialog.setIndeterminate(true);
+            this.progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result) {
+                Intent intent = new Intent(ShowResultsActivity.this, MakingCallConferenceActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(ShowResultsActivity.this,
+                        getString(R.string.make_conference_call_unsuccess), Toast.LENGTH_LONG).show();
+            }
+            if(this.progressDialog.isShowing()) {
+                this.progressDialog.dismiss();
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(Url.BASE_URL)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .build();
+            Response response;
+            EndPointInterface apiService =
+                    restAdapter.create(EndPointInterface.class);
+            Boolean success = false;
+            try {
+                response = apiService.rate(wrapperRate);
+                success = response.isSuccess();
+            } catch (RetrofitError retrofitError) {
+
+            }
+            return success;
         }
     }
 }

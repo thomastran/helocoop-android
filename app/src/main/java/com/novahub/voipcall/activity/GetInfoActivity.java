@@ -74,6 +74,20 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
     private boolean isChangeInformation() {
         return getIntent().getBooleanExtra(Asset.IS_CHANGED_INFO, false);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isChangedInfo) {
+            Intent intent = new Intent(GetInfoActivity.this, MakingCallConferenceActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            finish();
+        }
+
+    }
+
     @Override
     public void onClick(View v) {
 

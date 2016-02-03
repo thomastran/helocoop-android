@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +30,9 @@ import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.locationtracker.GPSTracker;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Location;
+import com.novahub.voipcall.model.Rate;
 import com.novahub.voipcall.model.Response;
+import com.novahub.voipcall.model.WrapperRate;
 import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
@@ -497,14 +500,16 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+            if(this.progressDialog.isShowing()) {
+                this.progressDialog.dismiss();
+            }
             if(result) {
                 String messageDisplay = "";
                 Asset.distanceList = new ArrayList<>();
                 Asset.distanceList.addAll(distanceList);
                 switch (this.distanceList.size()) {
                     case 0:
-                        messageDisplay = getString(R.string.found_zero);
-                        textViewWait.setText(messageDisplay);
+                        showDialogNotFound();
                         break;
                     case 1:
                         messageDisplay = getString(R.string.found_one);
@@ -515,18 +520,17 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                         textViewNumberFound.setText(messageDisplay);
                         break;
                 }
-                connectedPeopleAdapter = new ConnectedPeopleAdapter(this.distanceList);
-                recyclerViewList.setAdapter(connectedPeopleAdapter);
-                linearLayoutMain.setVisibility(View.GONE);
-                linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
-
+                if (this.distanceList.size() > 0) {
+                    connectedPeopleAdapter = new ConnectedPeopleAdapter(this.distanceList);
+                    recyclerViewList.setAdapter(connectedPeopleAdapter);
+                    linearLayoutMain.setVisibility(View.GONE);
+                    linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
+                }
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,
                         getString(R.string.make_conference_call_unsuccess), Toast.LENGTH_LONG).show();
             }
-            if(this.progressDialog.isShowing()) {
-                this.progressDialog.dismiss();
-            }
+
         }
 
         @Override
@@ -540,6 +544,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
             String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            Asset.nameRoom = nameRoom;
             try {
                 response = apiService.makeConferenceCall(this.token, nameRoom);
                 this.distanceList.addAll(response.getDistanceList());
@@ -550,6 +555,39 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             }
             return success;
         }
+    }
+
+    public void showDialogNotFound() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Alert");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(getString(R.string.found_zero));
+
+        alertDialog.setCancelable(false);
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                dialog.cancel();
+                Asset.distanceList = null;
+                Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
+                MakingCallConferenceActivity.this.startActivity(intent);
+                MakingCallConferenceActivity.this.finish();
+            }
+        });
+
+        // on pressing cancel button
+//        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
 }

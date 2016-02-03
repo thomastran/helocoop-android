@@ -1,6 +1,7 @@
 package com.novahub.voipcall.utils;
 
 import com.novahub.voipcall.model.Distance;
+import com.novahub.voipcall.model.WrapperRate;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class Asset {
     public static final String FROM_INCOMING_CALL = "FROM_INCOMING_CALL";
 
     public static List<Distance> distanceList;
+
+    public static WrapperRate wrapperRate;
+
+    public static String nameRoom;
 
     public static final String IS_CHANGED_INFO = "IS_CHANGED_INFO";
 }

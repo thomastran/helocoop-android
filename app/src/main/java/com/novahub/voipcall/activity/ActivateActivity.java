@@ -53,7 +53,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         initializeComponents();
         //After get the activate code from server, this will help us to get InstanceId To send GCM
-//        requestGcmInstanceId();
+        requestGcmInstanceId();
     }
     private void requestGcmInstanceId() {
         if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == SharePreferences.EMPTY) {

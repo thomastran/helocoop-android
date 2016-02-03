@@ -134,5 +134,7 @@
     <string name="found_two">We have found 2 people ready to help you</string>
     <string name="waiting_incoming_call">Waiting for the incoming call from server</string>
     <string name="title_activity_show_results">ShowResultsActivity</string>
+    <string name="rating">Please wait </string>
+    <string name="rate_toast">Please rate for Samaritans </string>
 
 </resources>

@@ -1,9 +1,11 @@
 package com.novahub.voipcall.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.novahub.voipcall.R;
@@ -23,7 +25,7 @@ public class ConnectedPeopleAdapter extends RecyclerView.Adapter<ConnectedPeople
     private static OnItemClickListener listener;
     // Define the listener interface
     public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
+        void onItemClick(String value, int position);
     }
     // Define the method that allows the parent activity or fragment to define the listener
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -36,12 +38,43 @@ public class ConnectedPeopleAdapter extends RecyclerView.Adapter<ConnectedPeople
         public TextView textViewDescription;
         public TextView textViewLiving;
         public TextView textViewDistance;
+        public RadioGroup radioGroup;
+        private final String Abusive = "Abusive";
+        private final String Not_Good = "Not Good";
+        private final String Ok = "Ok";
+        private final String Good = "Good";
+
         public ViewHolder(final View itemView) {
             super(itemView);
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
             textViewDescription = (TextView) itemView.findViewById(R.id.textViewDescription);
             textViewLiving = (TextView) itemView.findViewById(R.id.textViewLiving);
             textViewDistance = (TextView) itemView.findViewById(R.id.textViewDistance);
+            radioGroup = (RadioGroup) itemView.findViewById(R.id.radioGroup);
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    if (listener != null) {
+                        String estimation;
+                        switch (checkedId) {
+                            case R.id.radioButtonAbusive:
+                                estimation = Abusive;
+                                break;
+                            case R.id.radioButtonNotGood:
+                                estimation = Not_Good;
+                                break;
+                            case R.id.radioButtonOk:
+                                estimation = Ok;
+                                break;
+                            case R.id.radioButtonGood:
+                                estimation = Good;
+                                break;
+                            default: estimation = Good;
+                        }
+                        listener.onItemClick(estimation, getLayoutPosition());
+                    }
+                }
+            });
         }
 
     }

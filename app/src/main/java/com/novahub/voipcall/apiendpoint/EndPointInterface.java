@@ -3,7 +3,9 @@ package com.novahub.voipcall.apiendpoint;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.model.Status;
 import com.novahub.voipcall.model.Token;
+import com.novahub.voipcall.model.WrapperRate;
 
+import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
@@ -74,5 +76,8 @@ public interface EndPointInterface {
     Response updateLocationService(@Field("latitude") float latitude,
                                    @Field("longitude") float longitude, @Field("token") String token);
 
+
+    @POST("/users/rating")
+    Response rate(@Body WrapperRate wrapperRate);
 
 }

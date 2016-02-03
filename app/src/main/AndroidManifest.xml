@@ -73,7 +73,6 @@
         <service
             android:name=".services.RegistrationIntentService"
             android:exported="false" />
-
         <service
             android:name=".services.UpdateLocationService"
             android:exported="false" />
@@ -81,7 +80,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -90,7 +89,7 @@
         <activity
             android:name=".activity.GetPhoneNumberActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.GetInfoActivity"
             android:label="@string/title_activity_get_info"
@@ -118,11 +117,12 @@
             android:name=".activity.RatingActivity"
             android:label="@string/title_activity_rating"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.GcmActivity"></activity>
+        <activity android:name=".activity.GcmActivity" />
         <activity
             android:name=".activity.ShowResultsActivity"
             android:label="@string/title_activity_show_results"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.IncomingGcmRequestActivity"></activity>
     </application>
 
 </manifest>
