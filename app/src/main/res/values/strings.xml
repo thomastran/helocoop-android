@@ -127,7 +127,7 @@
     <string name="gps_message">GPS is not enabled. You have to turn on the location identification</string>
     <string name="setting">Settings</string>
     <string name="gps_cancel">Cancel</string>
-    <string name="app_version">\@ 2016 Help Coop v0.1</string>
+    <string name="app_version">\@ 2016 Help Coop v0.2.1</string>
     <string name="not_found">We are sorry about that !</string>
     <string name="found_zero">We could not find any one with radius within 10 miles</string>
     <string name="found_one">We have found 1 person ready to help you</string>

@@ -40,5 +40,27 @@ public class Asset {
 
     public static String nameRoom;
 
+    public static String nameOfCaller = null;
+
+    public static String addressOfCaller = null;
+
+    public static String descriptionOfCaller = null;
+
+    public static float latitude;
+
+    public static float longitude;
+
+    public static final String IS_FROM_SERVER = "IS_FROM_SERVER";
+
     public static final String IS_CHANGED_INFO = "IS_CHANGED_INFO";
+
+    public static final String GCM_NAME_CALLER = "gcm_name_caller";
+
+    public static final String GCM_ADDRESS_CALLER = "gcm_address_caller";
+
+    public static final String GCM_DESCRIPTION_CALLER = "gcm_description_caller";
+
+    public static final String LATITUDE =  "latitude";
+
+    public static final String LONGITUDE = "longitude";
 }

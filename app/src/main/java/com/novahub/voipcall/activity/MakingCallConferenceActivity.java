@@ -115,7 +115,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     }
 
     private void listenForEndCall() {
-        EndCallListener callListener = new EndCallListener(MakingCallConferenceActivity.this);
+        EndCallListener callListener = new EndCallListener(MakingCallConferenceActivity.this, false);
         TelephonyManager mTM = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         mTM.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
     }

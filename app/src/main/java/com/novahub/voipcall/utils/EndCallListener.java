@@ -6,6 +6,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.activity.MakingCallConferenceActivity;
 import com.novahub.voipcall.activity.ShowResultsActivity;
 
@@ -15,8 +16,10 @@ import com.novahub.voipcall.activity.ShowResultsActivity;
 public class EndCallListener extends PhoneStateListener {
     private static String LOG_TAG = "EndCallListener";
     private Activity activity;
-    public EndCallListener(Activity activity) {
+    private boolean isChecked;
+    public EndCallListener(Activity activity, boolean isChecked) {
         this.activity = activity;
+        this.isChecked = isChecked;
     }
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
@@ -26,6 +29,14 @@ public class EndCallListener extends PhoneStateListener {
             activity.startActivity(intent);
             activity.finish();
         }
+
+        if (isChecked) {
+            Intent intent = new Intent(activity, IncomingGcmRequestActivity.class);
+            intent.putExtra(Asset.IS_FROM_SERVER, false);
+            activity.startActivity(intent);
+            activity.finish();
+        }
+
         if(TelephonyManager.CALL_STATE_RINGING == state) {
             Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
 

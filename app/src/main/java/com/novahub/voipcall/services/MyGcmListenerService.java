@@ -29,7 +29,9 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.activity.GetPhoneNumberActivity;
+import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.activity.MainActivity;
+import com.novahub.voipcall.utils.Asset;
 
 public class                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         MyGcmListenerService extends GcmListenerService {
 
@@ -45,31 +47,18 @@ public class                                                                    
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
         Log.d("=========>", data.toString());
         Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        Log.d(TAG, "Message: " + data.toString());
 
         if (from.startsWith("/topics/")) {
             // message received from some topic.
         } else {
             // normal downstream message.
         }
+        startIncomingGcmActivity(data);
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification(message);
-        // [END_EXCLUDE]
     }
     // [END receive_message]
 
@@ -97,5 +86,25 @@ public class                                                                    
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    private void startIncomingGcmActivity(Bundle data) {
+        if (data != null) {
+            String gcmNameCaller = data.getString(Asset.GCM_NAME_CALLER);
+            String gcmAddressCaller = data.getString(Asset.GCM_ADDRESS_CALLER);
+            String gcmDescription = data.getString(Asset.GCM_DESCRIPTION_CALLER);
+            String latitude = data.getString(Asset.LATITUDE);
+            String longitude = data.getString(Asset.LONGITUDE);
+            Intent intent = new Intent(getApplicationContext(), IncomingGcmRequestActivity.class);
+            intent.putExtra(Asset.IS_FROM_SERVER, true);
+            intent.putExtra(Asset.GCM_NAME_CALLER, gcmNameCaller);
+            intent.putExtra(Asset.GCM_ADDRESS_CALLER, gcmAddressCaller);
+            intent.putExtra(Asset.GCM_DESCRIPTION_CALLER, gcmDescription);
+            intent.putExtra(Asset.LATITUDE, latitude);
+            intent.putExtra(Asset.LONGITUDE, longitude);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
     }
 }
