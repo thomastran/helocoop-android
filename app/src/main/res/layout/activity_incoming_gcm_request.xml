@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="You will received an incoming call"
+                android:text="You will receive an incoming call"
                 android:id="@+id/textView6"
                 android:layout_marginTop="10dp"
                 android:textStyle="bold"

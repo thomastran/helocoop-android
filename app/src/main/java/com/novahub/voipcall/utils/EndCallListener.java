@@ -10,6 +10,9 @@ import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.activity.MakingCallConferenceActivity;
 import com.novahub.voipcall.activity.ShowResultsActivity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by samnguyen on 25/01/2016.
  */
@@ -23,6 +26,7 @@ public class EndCallListener extends PhoneStateListener {
     }
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
+
         if (Asset.distanceList != null) {
             Intent intent = new Intent(activity, ShowResultsActivity.class);
             intent.putExtra(Asset.FROM_INCOMING_CALL, Asset.FROM_INCOMING_CALL);
@@ -39,18 +43,20 @@ public class EndCallListener extends PhoneStateListener {
 
         if(TelephonyManager.CALL_STATE_RINGING == state) {
             Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
-
-        }
-        if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
-            //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
-
-            Log.i(LOG_TAG, "OFFHOOK");
-
-
+            Asset.isRinging = true;
         }
         if(TelephonyManager.CALL_STATE_IDLE == state) {
             //when this state occurs, and your flag is set, restart your app
-            Log.i(LOG_TAG, "IDLE");
+            if (isChecked & Asset.isRinging) {
+                Intent intent = new Intent(activity, ShowResultsActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+            }
         }
+        if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
+            //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
+            Log.i(LOG_TAG, "OFFHOOK");
+        }
+
     }
 }

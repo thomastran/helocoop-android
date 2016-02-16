@@ -52,19 +52,29 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
         layoutManager = new LinearLayoutManager(ShowResultsActivity.this);
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
-        connectedPeopleAdapter = new ConnectedPeopleAdapter(Asset.distanceList);
-        recyclerViewList.setAdapter(connectedPeopleAdapter);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         buttonRate = (Button) findViewById(R.id.buttonRate);
         buttonRate.setOnClickListener(this);
+
+        if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
+            Asset.distanceList = new ArrayList<>();
+            Asset.distanceList.addAll(Asset.distanceListRates);
+            Log.d("size", Asset.distanceList.size() + "");
+            Asset.isRinging = false;
+        }
+        connectedPeopleAdapter = new ConnectedPeopleAdapter(Asset.distanceList);
+        recyclerViewList.setAdapter(connectedPeopleAdapter);
         String toBe = "are ";
         if(Asset.distanceList.size() == 1) {
             toBe = "is ";
         }
+
         String message = "There " + toBe + Asset.distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
 
         rateList = new ArrayList<>();
+
+        // Intent from here to check
         for (int i = 0; i < Asset.distanceList.size(); i++) {
             rateList.add(new Rate(null, Asset.distanceList.get(i).getToken()));
         }

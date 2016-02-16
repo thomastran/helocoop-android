@@ -3,10 +3,10 @@ package com.novahub.voipcall.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +27,7 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
     private TextView textViewDescription;
     private LinearLayout linearLayoutBack;
     private TextView textViewTitle;
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
             String descriptionCaller = getIntent().getStringExtra(Asset.GCM_DESCRIPTION_CALLER);
             String latitude = getIntent().getStringExtra(Asset.LATITUDE);
             String longitude = getIntent().getStringExtra(Asset.LONGITUDE);
+            String gcm_users = getIntent().getStringExtra(Asset.GCM_USERS);
             textViewTitle.setText(nameCaller + " need help");
             Asset.nameOfCaller = nameCaller;
             Asset.addressOfCaller = addressCaller;
@@ -103,13 +104,13 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(Asset.latitude, Asset.longitude);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        this.googleMap.addMarker(new MarkerOptions().position(sydney).title("Location"));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
 
     }
 }

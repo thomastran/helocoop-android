@@ -27,11 +27,22 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.activity.GetPhoneNumberActivity;
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.activity.MainActivity;
+import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.utils.Asset;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         MyGcmListenerService extends GcmListenerService {
 
@@ -90,21 +101,71 @@ public class                                                                    
 
     private void startIncomingGcmActivity(Bundle data) {
         if (data != null) {
-            String gcmNameCaller = data.getString(Asset.GCM_NAME_CALLER);
-            String gcmAddressCaller = data.getString(Asset.GCM_ADDRESS_CALLER);
-            String gcmDescription = data.getString(Asset.GCM_DESCRIPTION_CALLER);
-            String latitude = data.getString(Asset.LATITUDE);
-            String longitude = data.getString(Asset.LONGITUDE);
+            String nameOfInitialUser = "";
+            String addressOfInitialUser = "";
+            String descriptionOfInitialUser = "";
+            String latitude = "";
+            String longitude = "";
+            String gcm_intial_user = data.getString(Asset.GCM_INITIAL_USER);
+            String gcm_users = data.getString(Asset.GCM_USERS);
+            String gcm_name_room = data.getString(Asset.GCM_NAME_ROOM);
+            Log.d("===============>", gcm_name_room);
+            Asset.distanceListRates = new ArrayList<>();
+            Asset.distanceListRates.addAll(convertData(gcm_intial_user, gcm_users));
+            Asset.nameRoom = gcm_name_room;
+            try {
+                JSONObject jsonObj = new JSONObject(gcm_intial_user);
+                nameOfInitialUser = jsonObj.getString(Asset.GCM_NAME_CALLER);
+                addressOfInitialUser = jsonObj.getString(Asset.GCM_ADDRESS_CALLER);
+                descriptionOfInitialUser = jsonObj.getString(Asset.GCM_DESCRIPTION_CALLER);
+                latitude = jsonObj.getString(Asset.LATITUDE);
+                longitude = jsonObj.getString(Asset.LONGITUDE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent(getApplicationContext(), IncomingGcmRequestActivity.class);
             intent.putExtra(Asset.IS_FROM_SERVER, true);
-            intent.putExtra(Asset.GCM_NAME_CALLER, gcmNameCaller);
-            intent.putExtra(Asset.GCM_ADDRESS_CALLER, gcmAddressCaller);
-            intent.putExtra(Asset.GCM_DESCRIPTION_CALLER, gcmDescription);
+            intent.putExtra(Asset.GCM_NAME_CALLER, nameOfInitialUser);
+            intent.putExtra(Asset.GCM_ADDRESS_CALLER, addressOfInitialUser);
+            intent.putExtra(Asset.GCM_DESCRIPTION_CALLER, descriptionOfInitialUser);
             intent.putExtra(Asset.LATITUDE, latitude);
             intent.putExtra(Asset.LONGITUDE, longitude);
+            intent.putExtra(Asset.GCM_USERS, gcm_users);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+
+    }
+
+    private List<Distance> convertData(String initialUser, String gcm_users) {
+        List<Distance> distanceList = new ArrayList<>();
+        try {
+            JSONObject jsonObj = new JSONObject(initialUser);
+            String nameOfInitialUser = jsonObj.getString(Asset.GCM_NAME_CALLER);
+            String addressOfInitialUser = jsonObj.getString(Asset.GCM_ADDRESS_CALLER);
+            String descriptionOfInitialUser = jsonObj.getString(Asset.GCM_DESCRIPTION_CALLER);
+            String token = jsonObj.getString(Asset.GCM_TOKEN);
+            distanceList.add(new Distance(descriptionOfInitialUser, nameOfInitialUser, addressOfInitialUser, token));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONArray jsonArray = new JSONArray(gcm_users);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String nameOfInitialUser = jsonObject.getString(Asset.GCM_NAME_CALLER);
+                String addressOfInitialUser = jsonObject.getString(Asset.GCM_ADDRESS_CALLER);
+                String descriptionOfInitialUser = jsonObject.getString(Asset.GCM_DESCRIPTION_CALLER);
+                String token = jsonObject.getString(Asset.GCM_TOKEN);
+                distanceList.add(new Distance(descriptionOfInitialUser, nameOfInitialUser, addressOfInitialUser, token));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return distanceList;
 
     }
 }

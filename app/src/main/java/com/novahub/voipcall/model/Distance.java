@@ -33,6 +33,14 @@ public class Distance {
         this.token = token;
     }
 
+    public Distance(String description, String name, String address, String token) {
+        this.description = description;
+        this.name = name;
+        this.address = address;
+        this.token = token;
+    }
+
+
 
     public Distance(float mile, String phoneNumber, String name, String description, String address) {
         this.mile = mile;

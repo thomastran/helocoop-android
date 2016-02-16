@@ -36,6 +36,8 @@ public class Asset {
 
     public static List<Distance> distanceList;
 
+    public static List<Distance> distanceListRates;
+
     public static WrapperRate wrapperRate;
 
     public static String nameRoom;
@@ -54,13 +56,23 @@ public class Asset {
 
     public static final String IS_CHANGED_INFO = "IS_CHANGED_INFO";
 
-    public static final String GCM_NAME_CALLER = "gcm_name_caller";
+    public static final String GCM_TOKEN = "token";
 
-    public static final String GCM_ADDRESS_CALLER = "gcm_address_caller";
+    public static final String GCM_NAME_CALLER = "name";
 
-    public static final String GCM_DESCRIPTION_CALLER = "gcm_description_caller";
+    public static final String GCM_ADDRESS_CALLER = "address";
+
+    public static final String GCM_DESCRIPTION_CALLER = "description";
 
     public static final String LATITUDE =  "latitude";
 
     public static final String LONGITUDE = "longitude";
+
+    public static final String GCM_INITIAL_USER = "gcm_initial_user";
+
+    public static final String GCM_USERS = "gcm_users";
+
+    public static final String GCM_NAME_ROOM = "gcm_name_room";
+
+    public static boolean isRinging = false;
 }
