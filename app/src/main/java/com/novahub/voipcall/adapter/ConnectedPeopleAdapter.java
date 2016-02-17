@@ -104,7 +104,10 @@ public class ConnectedPeopleAdapter extends RecyclerView.Adapter<ConnectedPeople
         holder.textViewName.setText(this.distanceList.get(position).getName());
         holder.textViewDescription.setText(this.distanceList.get(position).getDescription());
         holder.textViewLiving.setText(this.distanceList.get(position).getAddress());
-        holder.textViewDistance.setText(this.distanceList.get(position).getMile() + " miles");
+        if (this.distanceList.get(position).getMile() > 0.0) {
+            holder.textViewDistance.setText(this.distanceList.get(position).getMile() + " miles");
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

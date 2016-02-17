@@ -100,6 +100,7 @@ public class                                                                    
     }
 
     private void startIncomingGcmActivity(Bundle data) {
+        Asset.distanceList = null;
         if (data != null) {
             String nameOfInitialUser = "";
             String addressOfInitialUser = "";
