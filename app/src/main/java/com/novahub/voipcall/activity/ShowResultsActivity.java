@@ -116,6 +116,16 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Asset.distanceList = null;
+        Intent intent = new Intent(ShowResultsActivity.this, MakingCallConferenceActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
     private class RateAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 
         private ProgressDialog progressDialog;

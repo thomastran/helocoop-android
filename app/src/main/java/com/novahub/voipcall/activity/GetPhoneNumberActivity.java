@@ -7,15 +7,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Response;
+import com.novahub.voipcall.services.RegistrationIntentService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
@@ -30,6 +34,8 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
     private EditText editTextPhoneNumber;
     private Button buttonRegister;
     private String phoneNumber;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +45,40 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initilizeComponents();
+        requestGcmInstanceId();
         checkActionsHaveDone(getApplicationContext());
     }
+    private void requestGcmInstanceId() {
+        if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == SharePreferences.EMPTY) {
+            if (NetworkUtil.isOnline(getApplicationContext())) {
+                if (checkPlayServices()) {
+                    // Start IntentService to register this application with GCM.
+                    Intent intent = new Intent(this, RegistrationIntentService.class);
+                    startService(intent);
+                }
+            } else {
+                Toast.makeText(GetPhoneNumberActivity.this, getString(R.string.turn_on_the_internet),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
 
     private void initilizeComponents() {
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);

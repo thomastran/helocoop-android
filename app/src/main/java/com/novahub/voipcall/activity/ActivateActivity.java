@@ -62,7 +62,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                     // Start IntentService to register this application with GCM.
                     Intent intent = new Intent(this, RegistrationIntentService.class);
                     startService(intent);
-                    progressDialog.show();
+//                    progressDialog.show();
                 }
             } else {
                 Toast.makeText(ActivateActivity.this, getString(R.string.turn_on_the_internet),
@@ -88,11 +88,13 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                if (sentToken) {
-                    if(progressDialog.isShowing())
-                        progressDialog.dismiss();
-                } else {
-                }
+//                if (sentToken) {
+//                    if(progressDialog.isShowing())
+//                        progressDialog.dismiss();
+//                } else {
+//                    if(progressDialog.isShowing())
+//                        progressDialog.dismiss();
+//                }
             }
         };
     }

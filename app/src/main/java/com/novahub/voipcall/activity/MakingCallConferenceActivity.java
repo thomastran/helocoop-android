@@ -24,6 +24,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
@@ -37,8 +38,12 @@ import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.EndCallListener;
+import com.novahub.voipcall.utils.MixPanelUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.Url;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,12 +87,20 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         startServiceUpdateLocation();
         checkActionsHaveDone(getApplicationContext());
         checkIntentFromIncomingCall();
+        resetData();
+    }
+
+    private void resetData() {
+        Asset.distanceList = null;
+        Asset.distanceListRates = null;
+        Asset.isRinging = false;
     }
     private void checkIntentFromIncomingCall() {
         if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
             listenForEndCall();
         }
     }
+
 
 
     private void startServiceUpdateLocation() {
@@ -300,6 +313,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 if (isRegistered) {
                     if (NetworkUtil.isOnline(getApplicationContext())) {
                         makeConferenceCall();
+                        trackMakingCallMixpanel();
                     } else {
                         Toast.makeText(MakingCallConferenceActivity.this,
                                 getString(R.string.turn_on_the_internet), Toast.LENGTH_LONG).show();
@@ -323,6 +337,20 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         MakeConferenceCallAsyncTask makeConferenceCallAsyncTask = new
                 MakeConferenceCallAsyncTask(token);
         makeConferenceCallAsyncTask.execute();
+
+    }
+
+    private void trackMakingCallMixpanel() {
+        String nameOfUser = SharePreferences.getData(getApplicationContext(),
+                SharePreferences.NAME_OF_USER);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Caller", nameOfUser);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MixPanelUtils.pushData(MakingCallConferenceActivity.this, "Making Call Good Samaritans", jsonObject);
+        Log.d("====>", nameOfUser);
 
     }
 

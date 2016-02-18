@@ -48,9 +48,12 @@ public class EndCallListener extends PhoneStateListener {
         if(TelephonyManager.CALL_STATE_IDLE == state) {
             //when this state occurs, and your flag is set, restart your app
             if (isChecked & Asset.isRinging) {
-                Intent intent = new Intent(activity, ShowResultsActivity.class);
-                activity.startActivity(intent);
-                activity.finish();
+                if (Asset.distanceListRates != null) {
+                    Intent intent = new Intent(activity, ShowResultsActivity.class);
+                    activity.startActivity(intent);
+                    activity.finish();
+                }
+
             }
         }
         if(TelephonyManager.CALL_STATE_OFFHOOK == state) {

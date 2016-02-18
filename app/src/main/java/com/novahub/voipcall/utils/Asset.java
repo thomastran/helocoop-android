@@ -75,4 +75,6 @@ public class Asset {
     public static final String GCM_NAME_ROOM = "gcm_name_room";
 
     public static boolean isRinging = false;
+
+    public static String projectToken = "287de2ed49bf63670af7ec0d3c21f7b2";
 }

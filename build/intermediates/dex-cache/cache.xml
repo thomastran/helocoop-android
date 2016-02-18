@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/home/samnguyen/AndroidStudioProjects/VoipCall/app/build/intermediates/exploded-aar/com.mixpanel.android/mixpanel-android/4.8.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5708815f93987761d2919204b084eecd2f23f369">
+        <dex dex="/home/samnguyen/AndroidStudioProjects/VoipCall/app/build/intermediates/pre-dexed/release/com.mixpanel.android-mixpanel-android-4.8.0_e93684b07ef7874d042dc37dd8a2ea247081341d.jar" />
+    </item>
+
+</items>
