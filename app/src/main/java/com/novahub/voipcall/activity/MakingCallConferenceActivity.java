@@ -40,6 +40,7 @@ import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.EndCallListener;
 import com.novahub.voipcall.utils.MixPanelUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
+import com.novahub.voipcall.utils.TempDataUtils;
 import com.novahub.voipcall.utils.Url;
 
 import org.json.JSONException;
@@ -87,21 +88,14 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         startServiceUpdateLocation();
         checkActionsHaveDone(getApplicationContext());
         checkIntentFromIncomingCall();
-        resetData();
+        TempDataUtils.resetData();
     }
 
-    private void resetData() {
-        Asset.distanceList = null;
-        Asset.distanceListRates = null;
-        Asset.isRinging = false;
-    }
     private void checkIntentFromIncomingCall() {
         if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
             listenForEndCall();
         }
     }
-
-
 
     private void startServiceUpdateLocation() {
         if (NetworkUtil.isOnline(getApplicationContext()) &&

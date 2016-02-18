@@ -27,6 +27,7 @@ import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.services.QuickstartPreferences;
 import com.novahub.voipcall.services.RegistrationIntentService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
+import com.novahub.voipcall.utils.GCMUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
 import com.novahub.voipcall.utils.Url;
@@ -39,10 +40,6 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
     private TextView textViewTitle;
     private EditText editTextActivateCode;
     private Button buttonActivate;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private ProgressDialog progressDialog;
     private String activateCode;
 
     @Override
@@ -53,50 +50,14 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         initializeComponents();
         //After get the activate code from server, this will help us to get InstanceId To send GCM
-        requestGcmInstanceId();
-    }
-    private void requestGcmInstanceId() {
-        if(SharePreferences.getData(getApplicationContext(), SharePreferences.INSTANCE_ID) == SharePreferences.EMPTY) {
-            if (NetworkUtil.isOnline(getApplicationContext())) {
-                if (checkPlayServices()) {
-                    // Start IntentService to register this application with GCM.
-                    Intent intent = new Intent(this, RegistrationIntentService.class);
-                    startService(intent);
-//                    progressDialog.show();
-                }
-            } else {
-                Toast.makeText(ActivateActivity.this, getString(R.string.turn_on_the_internet),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
+        GCMUtils.checkGCMInstanceId(getApplicationContext(), ActivateActivity.this);
     }
     private void initializeComponents() {
-        progressDialog = new ProgressDialog(ActivateActivity.this);
-        progressDialog.setMessage(getString(R.string.request_gcm));
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.activate));
         editTextActivateCode = (EditText)  findViewById(R.id.editTextActivateCode);
         buttonActivate = (Button) findViewById(R.id.buttonActivate);
         buttonActivate.setOnClickListener(this);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-//                if (sentToken) {
-//                    if(progressDialog.isShowing())
-//                        progressDialog.dismiss();
-//                } else {
-//                    if(progressDialog.isShowing())
-//                        progressDialog.dismiss();
-//                }
-            }
-        };
     }
 
     @Override
@@ -132,22 +93,6 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                 new ActivateCodeAsyncTask(activateCode, phoneNumber, instanceId);
 
         activateCodeAsyncTask.execute();
-    }
-
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-                        .show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
-        }
-        return true;
     }
 
     private void startGetInfoActivity() {
@@ -220,13 +165,10 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
 }

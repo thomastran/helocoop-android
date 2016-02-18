@@ -18,11 +18,13 @@ import android.widget.Toast;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
+import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Rate;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.model.WrapperRate;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.TempDataUtils;
 import com.novahub.voipcall.utils.Url;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
     private Button buttonRate;
     private List<Rate> rateList;
     private boolean isRated = false;
+    private List<Distance> distanceList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,21 +65,24 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
             Log.d("size", Asset.distanceList.size() + "");
             Asset.isRinging = false;
         }
-        connectedPeopleAdapter = new ConnectedPeopleAdapter(Asset.distanceList);
+        distanceList = new ArrayList<>();
+        distanceList.addAll(Asset.distanceList);
+        TempDataUtils.resetData();
+        connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
         String toBe = "are ";
-        if(Asset.distanceList.size() == 1) {
+        if(distanceList.size() == 1) {
             toBe = "is ";
         }
 
-        String message = "There " + toBe + Asset.distanceList.size() + " good Samaritan(s)";
+        String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
 
         rateList = new ArrayList<>();
 
         // Intent from here to check
-        for (int i = 0; i < Asset.distanceList.size(); i++) {
-            rateList.add(new Rate(null, Asset.distanceList.get(i).getToken()));
+        for (int i = 0; i < distanceList.size(); i++) {
+            rateList.add(new Rate(null, distanceList.get(i).getToken()));
         }
         connectedPeopleAdapter.setOnItemClickListener(new ConnectedPeopleAdapter.OnItemClickListener() {
             @Override
@@ -86,6 +92,7 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
+
 
     @Override
     public void onClick(View v) {

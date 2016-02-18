@@ -17,6 +17,7 @@ import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.GCMUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.StringUtils;
 import com.novahub.voipcall.utils.Url;
@@ -40,6 +41,7 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializeComponents();
+        GCMUtils.checkGCMInstanceId(getApplicationContext(), GetInfoActivity.this);
     }
 
     private void initializeComponents() {

@@ -35,10 +35,12 @@ public class EndCallListener extends PhoneStateListener {
         }
 
         if (isChecked) {
-            Intent intent = new Intent(activity, IncomingGcmRequestActivity.class);
-            intent.putExtra(Asset.IS_FROM_SERVER, false);
-            activity.startActivity(intent);
-            activity.finish();
+            if (TempDataUtils.isExistedDataOfCallerInfo()) {
+                Intent intent = new Intent(activity, IncomingGcmRequestActivity.class);
+                intent.putExtra(Asset.IS_FROM_SERVER, false);
+                activity.startActivity(intent);
+                activity.finish();
+            }
         }
 
         if(TelephonyManager.CALL_STATE_RINGING == state) {
