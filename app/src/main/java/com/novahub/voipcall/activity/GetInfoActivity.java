@@ -1,14 +1,19 @@
 package com.novahub.voipcall.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +39,7 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
     private EditText editTextDescription;
     private Button buttonUpdateInfo;
     private boolean isChangedInfo;
+    private ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +48,15 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         initializeComponents();
         GCMUtils.checkGCMInstanceId(getApplicationContext(), GetInfoActivity.this);
+
+    }
+    private void hideSoftKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void initializeComponents() {
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         isChangedInfo = isChangeInformation();
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.confirm_info));
@@ -54,6 +66,21 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         buttonUpdateInfo = (Button) findViewById(R.id.buttonUpdateInfo);
         buttonUpdateInfo.setOnClickListener(this);
+        scrollView.post(new Runnable() {
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
+
+        editTextDescription.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+        editTextDescription.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editTextDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                hideSoftKeyboard(editTextDescription);
+                return true;
+            }
+        });
         indetifyViewForUpdatingOrChanging(isChangedInfo);
     }
 

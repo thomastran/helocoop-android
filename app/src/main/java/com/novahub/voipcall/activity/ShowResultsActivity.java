@@ -154,6 +154,9 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+            if(this.progressDialog.isShowing()) {
+                this.progressDialog.dismiss();
+            }
             if(result) {
                 Intent intent = new Intent(ShowResultsActivity.this, MakingCallConferenceActivity.class);
                 startActivity(intent);
@@ -162,9 +165,7 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(ShowResultsActivity.this,
                         getString(R.string.make_conference_call_unsuccess), Toast.LENGTH_LONG).show();
             }
-            if(this.progressDialog.isShowing()) {
-                this.progressDialog.dismiss();
-            }
+
         }
 
         @Override

@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,12 +48,19 @@ public class GetPhoneNumberActivity extends AppCompatActivity implements View.On
         initilizeComponents();
         GCMUtils.checkGCMInstanceId(getApplicationContext(), GetPhoneNumberActivity.this);
         checkActionsHaveDone(getApplicationContext());
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(editTextPhoneNumber.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void initilizeComponents() {
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         buttonRegister.setOnClickListener(this);
+    }
+
+    public void showSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void checkActionsHaveDone(Context context) {

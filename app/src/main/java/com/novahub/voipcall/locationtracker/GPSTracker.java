@@ -157,7 +157,7 @@ public class GPSTracker extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle("Set GPS On");
 
         // Setting Dialog Message
         alertDialog.setMessage("Please turn on your location services so HelpCoop can find your closest helpers");

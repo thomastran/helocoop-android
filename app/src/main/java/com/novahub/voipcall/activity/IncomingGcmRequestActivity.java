@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.EndCallListener;
+import com.novahub.voipcall.utils.TempDataUtils;
 
 public class IncomingGcmRequestActivity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback {
     private TextView textViewCallerName;
@@ -62,6 +63,10 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
             textViewCallerName.setText(Asset.nameOfCaller);
             textViewAddress.setText(ADDRESS + Asset.addressOfCaller);
             textViewDescription.setText(DESCRIPTION + Asset.descriptionOfCaller);
+        }
+
+        if (!TempDataUtils.isExistedDataOfCallerInfo()) {
+            finishAffinity();
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

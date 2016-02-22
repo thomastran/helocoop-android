@@ -74,6 +74,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
     private TextView textViewWait;
     private boolean flagSwitchDoNothing;
     private LinearLayout linearLayoutChangeInfo;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -255,7 +258,13 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
     }
 
-    public void showAlert(String title, String message){
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        finishAffinity();
+    }
+
+    public void showAlert(String title, String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
 
         // Setting Dialog Title

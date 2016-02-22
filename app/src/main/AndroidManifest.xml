@@ -95,6 +95,7 @@
         <activity
             android:name=".activity.GetPhoneNumberActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.GetInfoActivity"
@@ -104,6 +105,7 @@
         <activity
             android:name=".activity.ActivateActivity"
             android:label="@string/title_activity_activate"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.MakingCallConferenceActivity"

@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -51,7 +53,8 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         initializeComponents();
         //After get the activate code from server, this will help us to get InstanceId To send GCM
         GCMUtils.checkGCMInstanceId(getApplicationContext(), ActivateActivity.this);
-    }
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(editTextActivateCode.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);    }
     private void initializeComponents() {
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewTitle.setText(getString(R.string.activate));
