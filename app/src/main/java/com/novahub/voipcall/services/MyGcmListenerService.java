@@ -35,7 +35,10 @@ import com.novahub.voipcall.activity.GetPhoneNumberActivity;
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.activity.MainActivity;
 import com.novahub.voipcall.model.Distance;
+import com.novahub.voipcall.model.SamaritanNeedHelp;
 import com.novahub.voipcall.utils.Asset;
+import com.novahub.voipcall.utils.Data;
+import com.novahub.voipcall.utils.FlagHelpCoop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -124,7 +127,16 @@ public class                                                                    
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            Log.d("=======>", latitude);
+            Log.d("=======>", longitude);
+            Asset.latitude = Float.parseFloat(latitude);
+            Asset.longitude =  Float.parseFloat(longitude);
+            Data.samaritanNeedHelp = null;
+            Data.samaritanNeedHelp = new SamaritanNeedHelp(nameOfInitialUser, addressOfInitialUser,
+                    descriptionOfInitialUser,
+                    Float.parseFloat(latitude),
+                    Float.parseFloat(longitude));
+            FlagHelpCoop.isReceivedIncomingCallFromSamaritan = true;
             Intent intent = new Intent(getApplicationContext(), IncomingGcmRequestActivity.class);
             intent.putExtra(Asset.IS_FROM_SERVER, true);
             intent.putExtra(Asset.GCM_NAME_CALLER, nameOfInitialUser);

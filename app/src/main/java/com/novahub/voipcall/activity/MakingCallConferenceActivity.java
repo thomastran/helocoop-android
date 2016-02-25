@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,20 +23,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.locationtracker.GPSTracker;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Location;
-import com.novahub.voipcall.model.Rate;
 import com.novahub.voipcall.model.Response;
-import com.novahub.voipcall.model.WrapperRate;
+import com.novahub.voipcall.services.HUD;
 import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.EndCallListener;
+import com.novahub.voipcall.utils.FlagHelpCoop;
 import com.novahub.voipcall.utils.MixPanelUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.TempDataUtils;
@@ -96,7 +94,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
     private void checkIntentFromIncomingCall() {
         if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
-            listenForEndCall();
+//            listenForEndCall();
         }
     }
 
@@ -556,6 +554,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     recyclerViewList.setAdapter(connectedPeopleAdapter);
                     linearLayoutMain.setVisibility(View.GONE);
                     linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
+                    FlagHelpCoop.isMadeSuccessCall = true;
                 }
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,

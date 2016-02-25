@@ -64,6 +64,7 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
             Asset.distanceList.addAll(Asset.distanceListRates);
             Log.d("size", Asset.distanceList.size() + "");
             Asset.isRinging = false;
+            Asset.distanceListRates = null;
         }
         distanceList = new ArrayList<>();
         distanceList.addAll(Asset.distanceList);

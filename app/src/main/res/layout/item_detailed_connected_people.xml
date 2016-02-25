@@ -146,28 +146,32 @@
                     android:layout_height="wrap_content"
                     android:text="Good"
                     android:id="@+id/radioButtonGood"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/material_blue_grey_900" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ok"
                     android:id="@+id/radioButtonOk"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/material_blue_grey_900" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Not Good"
                     android:id="@+id/radioButtonNotGood"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/material_blue_grey_900" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Abusive"
                     android:id="@+id/radioButtonAbusive"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/material_blue_grey_900" />
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>

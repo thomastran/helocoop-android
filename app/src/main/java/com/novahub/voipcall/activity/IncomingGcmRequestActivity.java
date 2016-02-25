@@ -57,7 +57,7 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
             textViewCallerName.setText(nameCaller);
             textViewAddress.setText(ADDRESS + addressCaller);
             textViewDescription.setText(DESCRIPTION + descriptionCaller);
-            listenForEndCall();
+//            listenForEndCall();
         } else {
             textViewTitle.setText(Asset.nameOfCaller + " need your help");
             textViewCallerName.setText(Asset.nameOfCaller);
