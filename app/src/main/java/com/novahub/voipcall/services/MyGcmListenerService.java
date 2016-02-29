@@ -27,13 +27,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.activity.GetPhoneNumberActivity;
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
-import com.novahub.voipcall.activity.MainActivity;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.SamaritanNeedHelp;
 import com.novahub.voipcall.utils.Asset;
@@ -103,7 +99,7 @@ public class                                                                    
     }
 
     private void startIncomingGcmActivity(Bundle data) {
-        Asset.distanceList = null;
+        Asset.listOfGoodSamaritans = null;
         if (data != null) {
             String nameOfInitialUser = "";
             String addressOfInitialUser = "";
@@ -114,8 +110,8 @@ public class                                                                    
             String gcm_users = data.getString(Asset.GCM_USERS);
             String gcm_name_room = data.getString(Asset.GCM_NAME_ROOM);
             Log.d("===============>", gcm_name_room);
-            Asset.distanceListRates = new ArrayList<>();
-            Asset.distanceListRates.addAll(convertData(gcm_intial_user, gcm_users));
+            Asset.listOfCallerAndSamaritans = new ArrayList<>();
+            Asset.listOfCallerAndSamaritans.addAll(convertData(gcm_intial_user, gcm_users));
             Asset.nameRoom = gcm_name_room;
             try {
                 JSONObject jsonObj = new JSONObject(gcm_intial_user);

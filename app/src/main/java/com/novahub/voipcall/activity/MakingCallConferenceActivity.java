@@ -13,8 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -30,11 +28,9 @@ import com.novahub.voipcall.locationtracker.GPSTracker;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.model.Location;
 import com.novahub.voipcall.model.Response;
-import com.novahub.voipcall.services.HUD;
 import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
-import com.novahub.voipcall.utils.EndCallListener;
 import com.novahub.voipcall.utils.FlagHelpCoop;
 import com.novahub.voipcall.utils.MixPanelUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
@@ -88,15 +84,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         }
         startServiceUpdateLocation();
         checkActionsHaveDone(getApplicationContext());
-        checkIntentFromIncomingCall();
         TempDataUtils.resetData();
     }
 
-    private void checkIntentFromIncomingCall() {
-        if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
-//            listenForEndCall();
-        }
-    }
 
     private void startServiceUpdateLocation() {
         if (NetworkUtil.isOnline(getApplicationContext()) &&
@@ -121,13 +111,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         switchOnOff.setText(text);
         linearLayoutStatus.setBackgroundColor(color);
     }
-
-    private void listenForEndCall() {
-        EndCallListener callListener = new EndCallListener(MakingCallConferenceActivity.this, false);
-        TelephonyManager mTM = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-        mTM.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
-    }
-
     private void checkActionsHaveDone(Context context) {
 
         boolean isRequestedCode =
@@ -363,12 +346,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         Log.d(TAG, SharePreferences.getData(getApplicationContext(), SharePreferences.ACTIVATE_CODE));
     }
 
-    private void startConferenceCallActivity() {
-        Intent intent = new Intent(MakingCallConferenceActivity.this, ConferenceCallActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
     private void startGetPhoneNumberActivity() {
         Intent intent = new Intent(MakingCallConferenceActivity.this, GetPhoneNumberActivity.class);
         startActivity(intent);
@@ -534,8 +511,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             }
             if(result) {
                 String messageDisplay = "";
-                Asset.distanceList = new ArrayList<>();
-                Asset.distanceList.addAll(distanceList);
+                Asset.listOfGoodSamaritans = new ArrayList<>();
+                Asset.listOfGoodSamaritans.addAll(distanceList);
                 switch (this.distanceList.size()) {
                     case 0:
                         showDialogNotFound();
@@ -602,21 +579,12 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
-                Asset.distanceList = null;
+                Asset.listOfGoodSamaritans = null;
                 Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
                 MakingCallConferenceActivity.this.startActivity(intent);
                 MakingCallConferenceActivity.this.finish();
             }
         });
-
-        // on pressing cancel button
-//        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-
-        // Showing Alert Message
         alertDialog.show();
     }
 

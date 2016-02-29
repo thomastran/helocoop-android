@@ -5,8 +5,8 @@ package com.novahub.voipcall.utils;
  */
 public class TempDataUtils {
     public static void resetData() {
-        Asset.distanceList = null;
-        Asset.distanceListRates = null;
+        Asset.listOfGoodSamaritans = null;
+        Asset.listOfCallerAndSamaritans = null;
         Asset.isRinging = false;
         Asset.nameOfCaller = null;
         Asset.addressOfCaller = null;

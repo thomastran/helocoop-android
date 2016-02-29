@@ -7,11 +7,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
-import com.novahub.voipcall.activity.MakingCallConferenceActivity;
 import com.novahub.voipcall.activity.ShowResultsActivity;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by samnguyen on 25/01/2016.
@@ -27,7 +23,7 @@ public class EndCallListener extends PhoneStateListener {
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
 
-        if (Asset.distanceList != null) {
+        if (Asset.listOfGoodSamaritans != null) {
             Intent intent = new Intent(activity, ShowResultsActivity.class);
             intent.putExtra(Asset.FROM_INCOMING_CALL, Asset.FROM_INCOMING_CALL);
             activity.startActivity(intent);
@@ -50,7 +46,7 @@ public class EndCallListener extends PhoneStateListener {
         if(TelephonyManager.CALL_STATE_IDLE == state) {
             //when this state occurs, and your flag is set, restart your app
             if (isChecked & Asset.isRinging) {
-                if (Asset.distanceListRates != null) {
+                if (Asset.listOfCallerAndSamaritans != null) {
                     Intent intent = new Intent(activity, ShowResultsActivity.class);
                     activity.startActivity(intent);
                     activity.finish();

@@ -11,10 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,8 +68,8 @@ public class MadeSuccessCallActivity extends AppCompatActivity implements View.O
         buttonEndCall = (Button) findViewById(R.id.buttonEndCall);
         buttonEndCall.setOnClickListener(this);
         distanceList = new ArrayList<>();
-        if (Asset.distanceList != null) {
-            distanceList.addAll(Asset.distanceList);
+        if (Asset.listOfGoodSamaritans != null) {
+            distanceList.addAll(Asset.listOfGoodSamaritans);
         }
         TempDataUtils.resetData();
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
@@ -118,7 +116,7 @@ public class MadeSuccessCallActivity extends AppCompatActivity implements View.O
                 break;
             case R.id.buttonRate:
                 if (isRated) {
-                    Asset.distanceList = null;
+                    Asset.listOfGoodSamaritans = null;
                     String token = SharePreferences.getData(MadeSuccessCallActivity.this, SharePreferences.TOKEN);
                     for (int i = 0; i < rateList.size(); i++) {
                         if(rateList.get(i).getRateStatus() == null)

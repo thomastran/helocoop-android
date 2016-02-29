@@ -34,9 +34,9 @@ public class Asset {
 
     public static final String FROM_INCOMING_CALL = "FROM_INCOMING_CALL";
 
-    public static List<Distance> distanceList;
+    public static List<Distance> listOfGoodSamaritans;
 
-    public static List<Distance> distanceListRates;
+    public static List<Distance> listOfCallerAndSamaritans;
 
     public static WrapperRate wrapperRate;
 

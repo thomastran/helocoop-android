@@ -60,14 +60,14 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
         buttonRate.setOnClickListener(this);
 
         if (getIntent().getStringExtra(Asset.FROM_INCOMING_CALL) == null) {
-            Asset.distanceList = new ArrayList<>();
-            Asset.distanceList.addAll(Asset.distanceListRates);
-            Log.d("size", Asset.distanceList.size() + "");
+            Asset.listOfGoodSamaritans = new ArrayList<>();
+            Asset.listOfGoodSamaritans.addAll(Asset.listOfCallerAndSamaritans);
+            Log.d("size", Asset.listOfGoodSamaritans.size() + "");
             Asset.isRinging = false;
-            Asset.distanceListRates = null;
+            Asset.listOfCallerAndSamaritans = null;
         }
         distanceList = new ArrayList<>();
-        distanceList.addAll(Asset.distanceList);
+        distanceList.addAll(Asset.listOfGoodSamaritans);
         TempDataUtils.resetData();
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
@@ -99,14 +99,14 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.linearLayoutBack:
-                Asset.distanceList = null;
+                Asset.listOfGoodSamaritans = null;
                 Intent intent = new Intent(ShowResultsActivity.this, MakingCallConferenceActivity.class);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.buttonRate:
                 if (isRated) {
-                    Asset.distanceList = null;
+                    Asset.listOfGoodSamaritans = null;
                     String token = SharePreferences.getData(ShowResultsActivity.this, SharePreferences.TOKEN);
                     for (int i = 0; i < rateList.size(); i++) {
                         if(rateList.get(i).getRateStatus() == null)
@@ -127,7 +127,7 @@ public class ShowResultsActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Asset.distanceList = null;
+        Asset.listOfGoodSamaritans = null;
         Intent intent = new Intent(ShowResultsActivity.this, MakingCallConferenceActivity.class);
         startActivity(intent);
         finish();
