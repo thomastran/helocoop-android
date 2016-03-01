@@ -551,7 +551,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
             String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
-            Asset.nameRoom = nameRoom;
+            Asset.nameOfConferenceRoom = nameRoom;
             try {
                 response = apiService.makeConferenceCall(this.token, nameRoom);
                 this.distanceList.addAll(response.getDistanceList());

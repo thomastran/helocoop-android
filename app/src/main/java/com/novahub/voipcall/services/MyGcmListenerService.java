@@ -16,24 +16,14 @@
 
 package com.novahub.voipcall.services;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.novahub.voipcall.R;
-import com.novahub.voipcall.activity.GetPhoneNumberActivity;
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.model.Distance;
-import com.novahub.voipcall.model.SamaritanNeedHelp;
 import com.novahub.voipcall.utils.Asset;
-import com.novahub.voipcall.utils.Data;
 import com.novahub.voipcall.utils.FlagHelpCoop;
 
 import org.json.JSONArray;
@@ -58,46 +48,8 @@ public class                                                                    
     @Override
     public void onMessageReceived(String from, Bundle data) {
         Log.d("=========>", data.toString());
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + data.toString());
-
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
         startIncomingGcmActivity(data);
-
-
     }
-    // [END receive_message]
-
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
-     */
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, GetPhoneNumberActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("GCM Message")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-    }
-
     private void startIncomingGcmActivity(Bundle data) {
         Asset.listOfGoodSamaritans = null;
         if (data != null) {
@@ -109,10 +61,9 @@ public class                                                                    
             String gcm_intial_user = data.getString(Asset.GCM_INITIAL_USER);
             String gcm_users = data.getString(Asset.GCM_USERS);
             String gcm_name_room = data.getString(Asset.GCM_NAME_ROOM);
-            Log.d("===============>", gcm_name_room);
             Asset.listOfCallerAndSamaritans = new ArrayList<>();
             Asset.listOfCallerAndSamaritans.addAll(convertData(gcm_intial_user, gcm_users));
-            Asset.nameRoom = gcm_name_room;
+            Asset.nameOfConferenceRoom = gcm_name_room;
             try {
                 JSONObject jsonObj = new JSONObject(gcm_intial_user);
                 nameOfInitialUser = jsonObj.getString(Asset.GCM_NAME_CALLER);
@@ -123,18 +74,9 @@ public class                                                                    
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d("=======>", latitude);
-            Log.d("=======>", longitude);
-            Asset.latitude = Float.parseFloat(latitude);
-            Asset.longitude =  Float.parseFloat(longitude);
-            Data.samaritanNeedHelp = null;
-            Data.samaritanNeedHelp = new SamaritanNeedHelp(nameOfInitialUser, addressOfInitialUser,
-                    descriptionOfInitialUser,
-                    Float.parseFloat(latitude),
-                    Float.parseFloat(longitude));
+
             FlagHelpCoop.isReceivedIncomingCallFromSamaritan = true;
             Intent intent = new Intent(getApplicationContext(), IncomingGcmRequestActivity.class);
-            intent.putExtra(Asset.IS_FROM_SERVER, true);
             intent.putExtra(Asset.GCM_NAME_CALLER, nameOfInitialUser);
             intent.putExtra(Asset.GCM_ADDRESS_CALLER, addressOfInitialUser);
             intent.putExtra(Asset.GCM_DESCRIPTION_CALLER, descriptionOfInitialUser);

@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.novahub.voipcall.R;
-import com.novahub.voipcall.activity.ShowResultsActivity;
 import com.novahub.voipcall.services.RegistrationIntentService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 

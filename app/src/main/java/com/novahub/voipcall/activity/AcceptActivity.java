@@ -38,7 +38,6 @@ public class AcceptActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
         registerCallStateReceiver();
         updateWindowFlags();
         acceptCall();

@@ -122,7 +122,7 @@ public class MadeSuccessCallActivity extends AppCompatActivity implements View.O
                         if(rateList.get(i).getRateStatus() == null)
                             rateList.remove(i);
                     }
-                    Asset.wrapperRate = new WrapperRate(token, Asset.nameRoom, rateList);
+                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
                     RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
                     rateAsyncTask.execute();
                 } else {

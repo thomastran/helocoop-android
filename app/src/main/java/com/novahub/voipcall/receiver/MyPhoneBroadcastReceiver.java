@@ -37,7 +37,7 @@ import java.util.TimerTask;
 import static com.google.android.gms.internal.zzip.runOnUiThread;
 
 public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
-    public static long timeAfter = 100;
+    public static final long timeAfter = 100;
     private RecyclerView recyclerViewList;
     private RecyclerView.LayoutManager layoutManager;
     private ConnectedPeopleAdapter connectedPeopleAdapter;
@@ -46,12 +46,14 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
     private List<Distance> distanceList;
     private Timer timer;
     private boolean isAccepted = false;
+    private TextView textViewCount;
     public MyPhoneBroadcastReceiver() {
     }
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
+        // TODO: When Samaritan receives an incoming call from Caller
         if (FlagHelpCoop.isReceivedIncomingCallFromSamaritan) {
             FlagHelpCoop.isReceivedIncomingCallFromSamaritan = false;
             new Handler().postDelayed(new Runnable() {
@@ -81,6 +83,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    // TODO: This function looks stupid, but no way to do it, because it's just a system view
     private void initilizeViewForCaller(final Context context, List<Distance> dataListRate) {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -94,11 +97,13 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
         final View myView = inflater.inflate(R.layout.receive_incoming_samaritan
                 , null);
-        final TextView textViewCount = (TextView) myView.findViewById(R.id.textViewCount);
+        textViewCount = (TextView) myView.findViewById(R.id.textViewCount);
 
         final Button buttonAccept = (Button) myView.findViewById(R.id.buttonAccept);
         final Button buttonReject = (Button) myView.findViewById(R.id.buttonReject);
         final TextView textViewAlert = (TextView) myView.findViewById(R.id.textViewAlert);
+        TextView textViewTitle = (TextView) myView.findViewById(R.id.textViewTitle);
+
         textViewAlert.setVisibility(View.GONE);
         buttonReject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +176,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
             }
         });
 
-        TextView textViewTitle = (TextView) myView.findViewById(R.id.textViewTitle);
+
         textViewTitle.setText("Samaritan Need Help");
 
         recyclerViewList = (RecyclerView) myView.findViewById(R.id.recyclerViewList);
@@ -184,6 +189,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
         TempDataUtils.resetData();
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
+
         String toBe = "are ";
         if(distanceList.size() == 1) {
             toBe = "is ";
@@ -217,7 +223,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
                         if (rateList.get(i).getRateStatus() == null)
                             rateList.remove(i);
                     }
-                    Asset.wrapperRate = new WrapperRate(token, Asset.nameRoom, rateList);
+                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
                     wm.removeViewImmediate(myView);
                     Intent intent = new Intent(context, SubmitRateActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -231,7 +237,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
         // Add layout to window manager
         wm.addView(myView, params);
     }
-
+    // TODO: This function looks stupid, but no way to do it, because it's just a system view
     private void initilizeViewForGoodSamaritan(final Context context, List<Distance> dataListRate) {
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -246,7 +252,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
         final View myView = inflater.inflate(R.layout.receive_incoming_samaritan
                 , null);
-        final TextView textViewCount = (TextView) myView.findViewById(R.id.textViewCount);
+        textViewCount = (TextView) myView.findViewById(R.id.textViewCount);
 
         final Button buttonAccept = (Button) myView.findViewById(R.id.buttonAccept);
         final Button buttonReject = (Button) myView.findViewById(R.id.buttonReject);
@@ -365,7 +371,7 @@ public class MyPhoneBroadcastReceiver extends BroadcastReceiver {
                         if (rateList.get(i).getRateStatus() == null)
                             rateList.remove(i);
                     }
-                    Asset.wrapperRate = new WrapperRate(token, Asset.nameRoom, rateList);
+                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
                     wm.removeViewImmediate(myView);
                     Intent intent = new Intent(context, SubmitRateActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

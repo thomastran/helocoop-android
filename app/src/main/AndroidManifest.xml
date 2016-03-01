@@ -111,10 +111,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.ShowResultsActivity"
-            android:label="@string/title_activity_show_results"
-            android:theme="@style/AppTheme" />
         <activity android:name=".activity.IncomingGcmRequestActivity" />
 
         <!-- Goolge API Key -->

@@ -40,17 +40,7 @@ public class Asset {
 
     public static WrapperRate wrapperRate;
 
-    public static String nameRoom;
-
-    public static String nameOfCaller = null;
-
-    public static String addressOfCaller = null;
-
-    public static String descriptionOfCaller = null;
-
-    public static float latitude;
-
-    public static float longitude;
+    public static String nameOfConferenceRoom;
 
     public static final String IS_FROM_SERVER = "IS_FROM_SERVER";
 
@@ -73,8 +63,6 @@ public class Asset {
     public static final String GCM_USERS = "gcm_users";
 
     public static final String GCM_NAME_ROOM = "gcm_name_room";
-
-    public static boolean isRinging = false;
 
     public static String projectToken = "287de2ed49bf63670af7ec0d3c21f7b2";
 }
