@@ -40,6 +40,8 @@ import com.novahub.voipcall.utils.Url;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -550,7 +552,10 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             EndPointInterface apiService =
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
-            String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
+//            String nameRoom = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            SecureRandom random = new SecureRandom();
+            String nameRoom = new BigInteger(130, random).toString(32);
+
             Asset.nameOfConferenceRoom = nameRoom;
             try {
                 response = apiService.makeConferenceCall(this.token, nameRoom);
