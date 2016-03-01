@@ -21,6 +21,7 @@ public class SharePreferences {
     public static final String IS_UPDATED_INFO = "IS_UPDATED_INFO";
     public static final String ON_SAMARITANS = "IS_ON_SAMARITANS";
     public static final String EMPTY = " ";
+    public static final String IS_UPDATED_INSTANCE_ID = "IS_UPDATED_INSTANCE_ID";
 
     public static void saveData(Context context, String typeOfAction, String data) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(typeOfAction, Context.MODE_PRIVATE);

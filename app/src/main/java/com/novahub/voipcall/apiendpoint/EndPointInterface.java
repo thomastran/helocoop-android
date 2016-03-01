@@ -30,8 +30,7 @@ public interface EndPointInterface {
     @FormUrlEncoded
     @POST("/users/verifycode/")
     Response verifyActivateCode(@Field("phone_number") String phone_number,
-                                @Field("activate_code") String activate_code,
-                                @Field("instance_id") String instance_id );
+                                @Field("activate_code") String activate_code);
 
     @FormUrlEncoded
     @POST("/users/update/")
@@ -68,6 +67,10 @@ public interface EndPointInterface {
     Response turnOnSamaritan(@Field("token") String token);
 
     @FormUrlEncoded
+    @POST("/users/getinstanceid/")
+    Response updateInstanceId(@Field("token") String token, @Field("instance_id") String instance_id);
+
+    @FormUrlEncoded
     @POST("/users/makeconferencecall/")
     Response makeConferenceCall(@Field("token") String token, @Field("name_room") String nameRoom);
 
@@ -79,5 +82,7 @@ public interface EndPointInterface {
 
     @POST("/users/rating")
     Response rate(@Body WrapperRate wrapperRate);
+
+
 
 }

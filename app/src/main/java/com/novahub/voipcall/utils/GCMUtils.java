@@ -9,6 +9,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.services.RegistrationIntentService;
+import com.novahub.voipcall.services.UpdateInstanceIdService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 
 /**
@@ -57,5 +58,10 @@ public class GCMUtils {
                 ShowToastUtils.showMessage(activity, activity.getString(R.string.turn_on_the_internet));
             }
         }
+    }
+
+    public static void startServiceUpdateInstanceId(Context context) {
+        Intent intent = new Intent(context, UpdateInstanceIdService.class);
+        context.startService(intent);
     }
 }

@@ -93,7 +93,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         String instanceId = SharePreferences.getData(ActivateActivity.this, SharePreferences.INSTANCE_ID);
 
         ActivateCodeAsyncTask activateCodeAsyncTask =
-                new ActivateCodeAsyncTask(activateCode, phoneNumber, instanceId);
+                new ActivateCodeAsyncTask(activateCode, phoneNumber);
 
         activateCodeAsyncTask.execute();
     }
@@ -109,12 +109,10 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
         private ProgressDialog progressDialog;
         private String activeCode;
         private String phoneNumber;
-        private String instanceId;
 
-        public ActivateCodeAsyncTask(String activeCode, String phoneNumber, String instanceId) {
+        public ActivateCodeAsyncTask(String activeCode, String phoneNumber) {
             this.activeCode = activeCode;
             this.phoneNumber = phoneNumber;
-            this.instanceId = instanceId;
         }
 
         @Override
@@ -155,7 +153,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                     restAdapter.create(EndPointInterface.class);
             Boolean success = false;
             try {
-                response = apiService.verifyActivateCode(this.phoneNumber, this.activeCode, this.instanceId);
+                response = apiService.verifyActivateCode(this.phoneNumber, this.activeCode);
                 success = response.isSuccess();
 
             } catch (RetrofitError retrofitError) {

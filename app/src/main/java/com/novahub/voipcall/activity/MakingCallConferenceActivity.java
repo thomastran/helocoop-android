@@ -32,6 +32,7 @@ import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.FlagHelpCoop;
+import com.novahub.voipcall.utils.GCMUtils;
 import com.novahub.voipcall.utils.MixPanelUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.TempDataUtils;
@@ -85,10 +86,18 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             showAlert("Internet Available", "Please turn on the internet");
         }
         startServiceUpdateLocation();
+        updateInstanceId(getApplicationContext());
         checkActionsHaveDone(getApplicationContext());
         TempDataUtils.resetData();
     }
 
+    private void updateInstanceId(Context context) {
+        if (NetworkUtil.isOnline(context) &&
+                !SharePreferences.isDoneAction(context, SharePreferences.IS_UPDATED_INSTANCE_ID) &&
+                GCMUtils.isExistedGcmInstanceId(context)) {
+            GCMUtils.startServiceUpdateInstanceId(context);
+        }
+    }
 
     private void startServiceUpdateLocation() {
         if (NetworkUtil.isOnline(getApplicationContext()) &&

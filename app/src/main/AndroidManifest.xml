@@ -82,6 +82,10 @@
         <service
             android:name=".services.UpdateLocationService"
             android:exported="false" />
+
+        <service
+            android:name=".services.UpdateInstanceIdService"
+            android:exported="false" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8341a3edd71d469edbfa4e926c07ddc1dae4ff14" />

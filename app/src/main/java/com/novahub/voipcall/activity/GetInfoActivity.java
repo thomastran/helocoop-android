@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Response;
+import com.novahub.voipcall.services.UpdateInstanceIdService;
+import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.GCMUtils;
@@ -48,7 +50,6 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         initializeComponents();
         GCMUtils.checkGCMInstanceId(getApplicationContext(), GetInfoActivity.this);
-
     }
     private void hideSoftKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
