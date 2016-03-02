@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelpCoop</string>
+    <string name="app_name">VoipCall</string>
     <string name="logging_in">Logging in...</string>
     <string name="outgoing_ok">Outgoing calls allowed</string>
     <string name="incoming_ok">Incoming calls allowed</string>
@@ -54,87 +54,5 @@
     </string>
 
     <string name="login_message">You are log in with</string>
-
-    <string name="connecting">Connecting...</string>
-    <string name="title_activity_register">RegisterActivity</string>
-
-    <!-- Register Activity-->
-    <string name="name_hint">name</string>
-    <string name="email_hint">email</string>
-    <string name="phonenumber_hint">phone number</string>
-    <string name="address_hint">home city</string>
-    <string name="description_hint">short description</string>
-    <string name="title_activity_get_info">GetInfoActivity</string>
-    <string name="title_activity_activate">ActivateActivity</string>
-    <string name="activate_hint">Enter activate code</string>
-    <string name="activate_action">ACTIVATE</string>
-    <string name="save_action">Save</string>
-    <string name="title_activity_making_call_conference">MakingCallConferenceActivity</string>
-    <string name="title_activity_conference_call">ConferenceCallActivity</string>
-    <string name="title_activity_rating">RatingActivity</string>
-
-
-    <!-- Register Activity-->
-
-    <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
-        send downstream messages to this app.</string>
-    <string name="registering_message">Generating InstanceID token...</string>
-    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
-        sending the fetched token to the server or subscribing to the PubSub topic. Please try
-        running the sample again.</string>
-
-    <string name="request_code">An activation code is being texted to you now to activate and verify your phone. Please enter the activation number in the box <below></below></string>
-    <string name="request_code_success">Requested code successfully !</string>
-    <string name="request_code_unsuccess">Requested code unsuccessfully !</string>
-    <string name="updating_info">Please wait for updating information !</string>
-
-    <string name="activate_code">Please wait for verifing the activate code !</string>
-    <string name="activate_code_success">Activated code successfully !</string>
-    <string name="activate_code_unsuccess">Activated code unsuccessfully !</string>
-
-
-    <string name="request_gcm">Please wait for request code from GCM!</string>
-    <string name="activate">Activate</string>
-    <string name="confirm_info">Confirm Information</string>
-
-    <string name="update_success">Updated info successfully !</string>
-    <string name="update_unsuccess">Updated info unsuccessfully !</string>
-
-    <string name="fill_alert">Please fill the fields!</string>
-    <string name="making_call">Making Call</string>
-
-    <string name="update_location">Turning on Samaritan, Updating location !</string>
-    <string name="update_location_without_turn_on">Updating location !</string>
-    <string name="update_location_success">Turned on Samaritan and updated location successfully</string>
-    <string name="update_location_unsuccess">Turned on Samaritan and updated location unsuccessfully</string>
-
-    <string name="turn_off_samaritan">Turning off Samaritan</string>
-    <string name="turn_off_samaritan_success">Turned off Samaritan successfully</string>
-    <string name="turn_off_samaritan_unsuccess">Turned off Samaritan unsuccessfully</string>
-
-    <string name="turn_on_the_internet">There is no internet connection</string>
-    <string name="register">REGISTER</string>
-    <string name="help">CALL</string>
-
-    <string name="turn_on_samaritan_alert">Please turn on your Samaritan status</string>
-    <string name="on">ON</string>
-    <string name="off">OFF</string>
-
-    <string name="make_conference_call">Please wait we are setting up a room for you, you will recieve an incoming call soon !</string>
-    <string name="make_conference_call_success">The conference room has been set up, please wait for incoming call</string>
-    <string name="make_conference_call_unsuccess">Something wrong happened !</string>
-    <string name="gsp_setting">GPS is settings</string>
-    <string name="gps_message">GPS is not enabled. You have to turn on the location identification</string>
-    <string name="setting">Settings</string>
-    <string name="gps_cancel">Cancel</string>
-    <string name="app_version">\@ 2016 Help Coop v0.2.1</string>
-    <string name="not_found">We are sorry about that !</string>
-    <string name="found_zero">We could not find any one with radius within 10 miles</string>
-    <string name="found_one">We have found 1 person ready to help you</string>
-    <string name="found_two">We have found 2 people ready to help you</string>
-    <string name="waiting_incoming_call">Waiting for the incoming call from server</string>
-    <string name="title_activity_show_results">ShowResultsActivity</string>
-    <string name="rating">Please wait </string>
-    <string name="rate_toast">Please rate for Samaritans </string>
 
 </resources>
