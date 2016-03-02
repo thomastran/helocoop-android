@@ -42,8 +42,11 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_address">Home City</string>
+    <string name="prompt_description">Short Description</string>
     <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Resgister</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -53,6 +56,54 @@
         completions."
     </string>
 
+    <!-- Related to Register Activity-->
     <string name="login_message">You are log in with</string>
+    <string name="title_activity_register">Sign in</string>
+    <string name="title_toolbar_register">Register New Account</string>
+    <string name="title_activity_login_example">Sign in</string>
+
+    <!-- Related to -Utils-->
+    <string name="turn_on_the_internet">There is no internet connection</string>
+
+    <!-- related to making conference room-->
+    <string name="waiting_incoming_call">Waiting for the incoming call from server</string>
+    <string name="register">REGISTER</string>
+    <string name="help">CALL</string>
+
+    <string name="turn_on_samaritan_alert">Please turn on your Samaritan status</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+
+    <string name="confirm_info">Confirm Information</string>
+
+    <string name="update_success">Updated info successfully !</string>
+    <string name="update_unsuccess">Updated info unsuccessfully !</string>
+
+    <string name="fill_alert">Please fill the fields!</string>
+    <string name="making_call">Making Call</string>
+
+    <string name="update_location">Turning on Samaritan, Updating location !</string>
+    <string name="update_location_without_turn_on">Updating location !</string>
+    <string name="update_location_success">Turned on Samaritan and updated location successfully</string>
+    <string name="update_location_unsuccess">Turned on Samaritan and updated location unsuccessfully</string>
+
+    <string name="turn_off_samaritan">Turning off Samaritan</string>
+    <string name="turn_off_samaritan_success">Turned off Samaritan successfully</string>
+    <string name="turn_off_samaritan_unsuccess">Turned off Samaritan unsuccessfully</string>
+    <string name="make_conference_call">Please wait we are setting up a room for you, you will recieve an incoming call soon !</string>
+    <string name="make_conference_call_success">The conference room has been set up, please wait for incoming call</string>
+    <string name="make_conference_call_unsuccess">Something wrong happened !</string>
+    <string name="gsp_setting">GPS is settings</string>
+    <string name="gps_message">GPS is not enabled. You have to turn on the location identification</string>
+    <string name="setting">Settings</string>
+    <string name="gps_cancel">Cancel</string>
+    <string name="app_version">\@ 2016 Help Coop v0.2.1</string>
+    <string name="not_found">We are sorry about that !</string>
+    <string name="found_zero">We could not find any one with radius within 10 miles</string>
+    <string name="found_one">We have found 1 person ready to help you</string>
+    <string name="found_two">We have found 2 people ready to help you</string>
+    <string name="title_activity_show_results">ShowResultsActivity</string>
+    <string name="rating">Please wait </string>
+    <string name="rate_toast">Please rate for Samaritans </string>
 
 </resources>
