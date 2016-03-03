@@ -522,24 +522,32 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 Asset.listOfGoodSamaritans.addAll(distanceList);
                 switch (this.distanceList.size()) {
                     case 0:
-                        showDialogNotFound();
+//                        showDialogNotFound();
+                        Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectTwillioActivity.class);
+                        startActivity(intent);
+                        finish();
                         break;
-                    case 1:
-                        messageDisplay = getString(R.string.found_one);
-                        textViewNumberFound.setText(messageDisplay);
-                        break;
-                    case 2:
-                        messageDisplay = getString(R.string.found_two);
-                        textViewNumberFound.setText(messageDisplay);
+//                    case 1:
+//                        messageDisplay = getString(R.string.found_one);
+//                        textViewNumberFound.setText(messageDisplay);
+//                        break;
+//                    case 2:
+//                        messageDisplay = getString(R.string.found_two);
+//                        textViewNumberFound.setText(messageDisplay);
+//                        break;
+                    default:
+//                        Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectTwillioActivity.class);
+//                        startActivity(intent);
+//                        finish();
                         break;
                 }
-                if (this.distanceList.size() > 0) {
-                    connectedPeopleAdapter = new ConnectedPeopleAdapter(this.distanceList);
-                    recyclerViewList.setAdapter(connectedPeopleAdapter);
-                    linearLayoutMain.setVisibility(View.GONE);
-                    linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
-                    FlagHelpCoop.isMadeSuccessCall = true;
-                }
+//                if (this.distanceList.size() > 0) {
+//                    connectedPeopleAdapter = new ConnectedPeopleAdapter(this.distanceList);
+//                    recyclerViewList.setAdapter(connectedPeopleAdapter);
+//                    linearLayoutMain.setVisibility(View.GONE);
+//                    linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
+//                    FlagHelpCoop.isMadeSuccessCall = true;
+//                }
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,
                         getString(R.string.make_conference_call_unsuccess), Toast.LENGTH_LONG).show();

@@ -24,16 +24,16 @@ public interface EndPointInterface {
     Status getStatusAfterCall(@Field("People") String people);
 
     @FormUrlEncoded
-    @POST("/users/requestcode/")
+    @POST("/voip/requestcode/")
     Response requestActivateCode(@Field("phone_number") String phone_number);
 
     @FormUrlEncoded
-    @POST("/users/verifycode/")
+    @POST("/voip/verifycode/")
     Response verifyActivateCode(@Field("phone_number") String phone_number,
                                 @Field("activate_code") String activate_code);
 
     @FormUrlEncoded
-    @POST("/users/update/")
+    @POST("/voip/update/")
     Response updateInfo(
             @Field("phone_number") String phone_number,
             @Field("email") String email,
@@ -43,7 +43,7 @@ public interface EndPointInterface {
     );
 
     @FormUrlEncoded
-    @POST("/users/changeinfo/")
+    @POST("/voip/changeinfo/")
     Response changeInfo(
             @Field("token") String token,
             @Field("email") String email,
@@ -53,21 +53,21 @@ public interface EndPointInterface {
     );
 
     @FormUrlEncoded
-    @POST("/users/updatelocation/")
+    @POST("/voip/updatelocation/")
     Response updateLocation(@Field("latitude") float latitude,
                             @Field("longitude") float longitude,
                             @Field("token") String token);
 
     @FormUrlEncoded
-    @POST("/users/turnoff/")
+    @POST("/voip/turnoff/")
     Response turnOffSamaritan(@Field("token") String token);
 
     @FormUrlEncoded
-    @POST("/users/turnon/")
+    @POST("/voip/turnon/")
     Response turnOnSamaritan(@Field("token") String token);
 
     @FormUrlEncoded
-    @POST("/users/getinstanceid/")
+    @POST("/voip/getinstanceid/")
     Response updateInstanceId(@Field("token") String token, @Field("instance_id") String instance_id);
 
     @FormUrlEncoded
@@ -75,7 +75,7 @@ public interface EndPointInterface {
     Response makeConferenceCall(@Field("token") String token, @Field("name_room") String nameRoom);
 
     @FormUrlEncoded
-    @POST("/users/updatelocationservice/")
+    @POST("/voip/updatelocationservice/")
     Response updateLocationService(@Field("latitude") float latitude,
                                    @Field("longitude") float longitude, @Field("token") String token);
 

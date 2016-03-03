@@ -66,11 +66,9 @@
         <service
             android:name=".services.RegistrationIntentService"
             android:exported="false" />
-
         <service
             android:name=".services.UpdateLocationService"
             android:exported="false" />
-
         <service
             android:name=".services.UpdateInstanceIdService"
             android:exported="false" />
@@ -104,16 +102,14 @@
 
         <activity
             android:name=".activity.RegisterActivity"
-            android:label="@string/title_activity_register"></activity>
+            android:label="@string/title_activity_register" />
         <activity
             android:name=".activity.LoginExampleActivity"
             android:label="@string/title_activity_login_example" />
-        <activity android:name=".activity.MakingCallConferenceActivity">
-
-        </activity>
+        <activity android:name=".activity.MakingCallConferenceActivity"></activity>
         <activity
             android:name=".activity.GetPhoneNumberActivity"
-            android:windowSoftInputMode="stateVisible" >
+            android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -130,6 +126,7 @@
             android:label="@string/title_activity_activate"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".activity.ConnectTwillioActivity"></activity>
     </application>
 
 </manifest>
