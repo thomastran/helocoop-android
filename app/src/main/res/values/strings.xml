@@ -106,4 +106,35 @@
     <string name="rating">Please wait </string>
     <string name="rate_toast">Please rate for Samaritans </string>
 
+
+    <!-- Register Activity-->
+    <string name="name_hint">name</string>
+    <string name="email_hint">email</string>
+    <string name="phonenumber_hint">phone number</string>
+    <string name="address_hint">home city</string>
+    <string name="description_hint">short description</string>
+    <string name="title_activity_get_info">GetInfoActivity</string>
+    <string name="title_activity_activate">ActivateActivity</string>
+    <string name="activate_hint">Enter activate code</string>
+    <string name="activate_action">ACTIVATE</string>
+    <string name="save_action">Save</string>
+    <string name="title_activity_making_call_conference">MakingCallConferenceActivity</string>
+    <string name="title_activity_conference_call">ConferenceCallActivity</string>
+    <string name="title_activity_rating">RatingActivity</string>
+
+    <string name="request_code">An activation code is being texted to you now to activate and verify your phone. Please enter the activation number in the box <below></below></string>
+    <string name="request_code_success">Requested code successfully !</string>
+    <string name="request_code_unsuccess">Requested code unsuccessfully !</string>
+    <string name="updating_info">Please wait for updating information !</string>
+
+    <string name="activate_code">Please wait for verifing the activate code !</string>
+    <string name="activate_code_success">Activated code successfully !</string>
+    <string name="activate_code_unsuccess">Activated code unsuccessfully !</string>
+
+
+    <string name="request_gcm">Please wait for request code from GCM!</string>
+    <string name="activate">Activate</string>
+    <!-- Related to Getphonenumber activity-->
+    <string name="action_get_phone_short">Done</string>
+
 </resources>

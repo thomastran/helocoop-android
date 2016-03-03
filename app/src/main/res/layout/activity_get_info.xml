@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:id="@+id/scrollView">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activity.MainActivity">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:weightSum="2"
+            android:background="#ffffff"
+            android:id="@+id/linearLayoutMain"
+            android:visibility="visible"
+            android:gravity="center_horizontal">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar_layout_register" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/editTextEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/email_hint"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_get_phone_short"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--<EditText-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:inputType="textEmailAddress"-->
+                        <!--android:ems="10"-->
+                        <!--android:id="@+id/editTextEmail"-->
+                        <!--android:hint="@string/email_hint"-->
+                        <!--android:layout_marginBottom="20dp"-->
+                        <!--android:singleLine="true" />-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/editTextName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/name_hint"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_get_phone_short"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--<EditText-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/editTextName"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:hint="@string/name_hint"-->
+                        <!--android:layout_marginBottom="20dp"-->
+                    <!--android:singleLine="true" />-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/editTextAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/address_hint"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_get_phone_short"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--<EditText-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/editTextAddress"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:hint="@string/address_hint"-->
+                        <!--android:layout_marginBottom="20dp"-->
+                    <!--android:singleLine="true" />-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/editTextDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/description_hint"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_get_phone_short"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--<EditText-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/editTextDescription"-->
+                        <!--android:hint="@string/description_hint"-->
+                    <!--android:singleLine="true" />-->
+
+                <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/save_action"
+                        android:id="@+id/buttonUpdateInfo"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/colorWhite"
+                        android:background="@color/material_green_500"
+                        android:layout_marginTop="10dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

@@ -27,6 +27,7 @@ import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.novahub.voipcall.R;
+import com.novahub.voipcall.sharepreferences.SharePreferences;
 
 import java.io.IOException;
 
@@ -56,6 +57,7 @@ public class RegistrationIntentService extends IntentService {
 
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
+            SharePreferences.saveData(getApplicationContext(), SharePreferences.INSTANCE_ID, token);
 
             // TODO: Implement this method to send any registration to your app's servers.
             sendRegistrationToServer(token);

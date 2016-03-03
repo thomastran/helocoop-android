@@ -140,18 +140,18 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 textViewAction.setText(getString(R.string.register));
                 isRegistered = false;
                 break;
-//            case 2:
-//                Intent intentActivateCode = new Intent(context, ActivateActivity.class);
-//                intentActivateCode.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intentActivateCode);
-//                finish();
-//                break;
-//            case 3:
-//                Intent intentUpdateInfo = new Intent(context, GetInfoActivity.class);
-//                intentUpdateInfo.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intentUpdateInfo);
-//                finish();
-//                break;
+            case 2:
+                Intent intentActivateCode = new Intent(context, ActivateActivity.class);
+                intentActivateCode.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intentActivateCode);
+                finish();
+                break;
+            case 3:
+                Intent intentUpdateInfo = new Intent(context, GetInfoActivity.class);
+                intentUpdateInfo.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intentUpdateInfo);
+                finish();
+                break;
             case 4:
                 textViewAction.setText(getString(R.string.help));
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
@@ -315,7 +315,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 }
                 break;
             case R.id.linearLayoutChangeInfo:
-                Intent intent = new Intent(MakingCallConferenceActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(MakingCallConferenceActivity.this, GetInfoActivity.class);
                 intent.putExtra(Asset.IS_CHANGED_INFO, true);
                 startActivity(intent);
                 finish();

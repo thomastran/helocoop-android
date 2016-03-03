@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/title_toolbar_register"
-                android:id="@+id/textViewCurrentUser"
+                android:id="@+id/textViewTitle"
                 android:textColor="#ffffff"
                 android:textStyle="bold" />
         </LinearLayout>

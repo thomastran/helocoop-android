@@ -67,6 +67,14 @@
             android:name=".services.RegistrationIntentService"
             android:exported="false" />
 
+        <service
+            android:name=".services.UpdateLocationService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.UpdateInstanceIdService"
+            android:exported="false" />
+
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation"
@@ -96,19 +104,32 @@
 
         <activity
             android:name=".activity.RegisterActivity"
-            android:label="@string/title_activity_register">
-
-        </activity>
+            android:label="@string/title_activity_register"></activity>
         <activity
             android:name=".activity.LoginExampleActivity"
             android:label="@string/title_activity_login_example" />
         <activity android:name=".activity.MakingCallConferenceActivity">
+
+        </activity>
+        <activity
+            android:name=".activity.GetPhoneNumberActivity"
+            android:windowSoftInputMode="stateVisible" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.GetInfoActivity"
+            android:label="@string/title_activity_get_info"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.ActivateActivity"
+            android:label="@string/title_activity_activate"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateVisible" />
     </application>
 
 </manifest>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout_register" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:weightSum="2"
+        android:background="#ffffff"
+        android:id="@+id/linearLayoutMain"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:weightSum="2"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editTextActivateCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activate_hint"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_get_phone_short"
+                    android:imeOptions="actionUnspecified"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:inputType="phone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<EditText-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/editTextActivateCode"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:hint="@string/activate_hint" />-->
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activate_action"
+                android:id="@+id/buttonActivate"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorWhite"
+                android:background="@color/material_green_500" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5">
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
