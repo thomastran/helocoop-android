@@ -90,7 +90,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"></activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -106,16 +106,16 @@
         <activity
             android:name=".activity.LoginExampleActivity"
             android:label="@string/title_activity_login_example" />
-        <activity android:name=".activity.MakingCallConferenceActivity"></activity>
-        <activity
-            android:name=".activity.GetPhoneNumberActivity"
-            android:windowSoftInputMode="stateVisible">
+        <activity android:name=".activity.MakingCallConferenceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.GetPhoneNumberActivity"
+            android:windowSoftInputMode="stateVisible"></activity>
         <activity
             android:name=".activity.GetInfoActivity"
             android:label="@string/title_activity_get_info"
@@ -127,6 +127,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.ConnectTwillioActivity"></activity>
+        <activity android:name=".activity.IncomingGcmRequestActivity"></activity>
     </application>
 
 </manifest>

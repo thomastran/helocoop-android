@@ -20,6 +20,10 @@ public interface EndPointInterface {
     Token getAuthToken(@Field("from_contact") String from_contact);
 
     @FormUrlEncoded
+    @POST("/voip/generatetoken/")
+    Token getVoipToken(@Field("from_token") String from_token);
+
+    @FormUrlEncoded
     @POST("/conference/")
     Status getStatusAfterCall(@Field("People") String people);
 
@@ -71,7 +75,7 @@ public interface EndPointInterface {
     Response updateInstanceId(@Field("token") String token, @Field("instance_id") String instance_id);
 
     @FormUrlEncoded
-    @POST("/users/makeconferencecall/")
+    @POST("/voip/makeconferencecall/")
     Response makeConferenceCall(@Field("token") String token, @Field("name_room") String nameRoom);
 
     @FormUrlEncoded

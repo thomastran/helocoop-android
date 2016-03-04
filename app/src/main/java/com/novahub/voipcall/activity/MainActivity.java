@@ -29,6 +29,7 @@ import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ChooseClientAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.ClientToCall;
+import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.twilio.BasicPhone;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.Url;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements BasicPhone.LoginL
 
         if(getIntent().getStringExtra(Asset.CURRENT_CONTACT) != null) {
 
-            currentClient = getIntent().getStringExtra(Asset.CURRENT_CONTACT);
+            currentClient = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
 

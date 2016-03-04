@@ -448,7 +448,7 @@ public class TwillioPhone implements DeviceListener, ConnectionListener
                     restAdapter.create(EndPointInterface.class);
             String capabilityToken = null;
             try {
-                token = apiService.getAuthToken(lastClientName);
+                token = apiService.getVoipToken(lastClientName);
                 capabilityToken = token.getToken();
                 Log.d("capabilityToken", capabilityToken);
 
