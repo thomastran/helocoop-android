@@ -44,12 +44,12 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     private Button buttonEnd;
     private Button buttonRate;
 
-    private RecyclerView recyclerViewList;
-    private RecyclerView.LayoutManager layoutManager;
-    private ConnectedPeopleAdapter connectedPeopleAdapter;
-    private List<Rate> rateList;
-    private boolean isRated = false;
-    private List<Distance> distanceList;
+//    private RecyclerView recyclerViewList;
+//    private RecyclerView.LayoutManager layoutManager;
+//    private ConnectedPeopleAdapter connectedPeopleAdapter;
+//    private List<Rate> rateList;
+//    private boolean isRated = false;
+//    private List<Distance> distanceList;
 
 
     @Override
@@ -65,10 +65,11 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     private void connectTwillio() {
         if (!twillioPhone.isConnected()) {
             Map<String, String> params = new HashMap<String, String>();
-            final String name_room = "name_room";
+            final String name_room = "nameroom";
             final String token = "token";
             String token_local = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
-            params.put("name_room", Asset.nameOfConferenceRoom);
+//            params.put("name_room", Asset.nameOfConferenceRoom);
+            params.put("nameroom", "qqqqqqq");
             params.put("token", token_local);
             params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
             twillioPhone.connect(params);
@@ -82,35 +83,35 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         buttonRate = (Button) findViewById(R.id.buttonRate);
         buttonRate.setOnClickListener(this);
 
-        recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
-        layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewList.setLayoutManager(layoutManager);
-        recyclerViewList.setHasFixedSize(true);
-        distanceList = new ArrayList<>();
-        distanceList.addAll(Asset.listOfCallerAndSamaritans);
-        connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
-        recyclerViewList.setAdapter(connectedPeopleAdapter);
-
-        String toBe = "are ";
-        if(distanceList.size() == 1) {
-            toBe = "is ";
-        }
-        String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
-//        textViewTitle.setText(message);
-
-        rateList = new ArrayList<>();
-
-        // Intent from here to check
-        for (int i = 0; i < distanceList.size(); i++) {
-            rateList.add(new Rate(null, distanceList.get(i).getToken()));
-        }
-        connectedPeopleAdapter.setOnItemClickListener(new ConnectedPeopleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(String estimation, int position) {
-                isRated = true;
-                rateList.get(position).setRateStatus(estimation);
-            }
-        });
+//        recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
+//        layoutManager = new LinearLayoutManager(getApplicationContext());
+//        recyclerViewList.setLayoutManager(layoutManager);
+//        recyclerViewList.setHasFixedSize(true);
+//        distanceList = new ArrayList<>();
+//        distanceList.addAll(Asset.listOfCallerAndSamaritans);
+//        connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
+//        recyclerViewList.setAdapter(connectedPeopleAdapter);
+//
+//        String toBe = "are ";
+//        if(distanceList.size() == 1) {
+//            toBe = "is ";
+//        }
+//        String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
+////        textViewTitle.setText(message);
+//
+//        rateList = new ArrayList<>();
+//
+//        // Intent from here to check
+//        for (int i = 0; i < distanceList.size(); i++) {
+//            rateList.add(new Rate(null, distanceList.get(i).getToken()));
+//        }
+//        connectedPeopleAdapter.setOnItemClickListener(new ConnectedPeopleAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(String estimation, int position) {
+//                isRated = true;
+//                rateList.get(position).setRateStatus(estimation);
+//            }
+//        });
 
     }
 
@@ -352,7 +353,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onDeviceStartedListening()
     {
-        connectTwillio();
+//        connectTwillio();
         addStatusMessage(R.string.device_listening);
     }
 
@@ -372,21 +373,21 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                 twillioPhone.disconnect();
                 break;
             case R.id.buttonRate:
-                if (isRated) {
-                    Asset.listOfGoodSamaritans = null;
-                    String token = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
-                    for (int i = 0; i < rateList.size(); i++) {
-                        if (rateList.get(i).getRateStatus() == null)
-                            rateList.remove(i);
-                    }
-                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
-                    RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
-                    rateAsyncTask.execute();
-                } else {
-                    Toast.makeText(ConnectTwillioActivity.this,
-                            getString(R.string.rate_toast), Toast.LENGTH_LONG).show();
-                }
-//                connectTwillio();
+//                if (isRated) {
+//                    Asset.listOfGoodSamaritans = null;
+//                    String token = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
+//                    for (int i = 0; i < rateList.size(); i++) {
+//                        if (rateList.get(i).getRateStatus() == null)
+//                            rateList.remove(i);
+//                    }
+//                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
+//                    RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
+//                    rateAsyncTask.execute();
+//                } else {
+//                    Toast.makeText(ConnectTwillioActivity.this,
+//                            getString(R.string.rate_toast), Toast.LENGTH_LONG).show();
+//                }
+                connectTwillio();
 
                 break;
         }

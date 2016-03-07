@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/home/samnguyen/AndroidStudioProjects/VoipCall/app/libs/twilioclient-android.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="85b3ee687fa41023146047578db59e6e7681ab66">
+        <dex dex="/home/samnguyen/AndroidStudioProjects/VoipCall/app/build/intermediates/pre-dexed/debug/twilioclient-android_02e268027277622527774beff208ffad7e33d499.jar" />
+    </item>
+
+</items>

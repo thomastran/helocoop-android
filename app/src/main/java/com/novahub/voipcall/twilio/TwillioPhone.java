@@ -401,8 +401,6 @@ public class TwillioPhone implements DeviceListener, ConnectionListener
 
     private class GetAuthTokenAsyncTask extends AsyncTask<String, Void, String> {
 
-        private ProgressDialog progressDialog;
-
         private String currentClient;
 
         private Context context;
@@ -418,20 +416,12 @@ public class TwillioPhone implements DeviceListener, ConnectionListener
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.progressDialog = new ProgressDialog(this.context);
-            this.progressDialog.setMessage("You are log in with user name " + this.currentClient);
-            this.progressDialog.setCancelable(false);
-            this.progressDialog.setIndeterminate(true);
-            this.progressDialog.show();
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             TwillioPhone.this.reallyLogin(result);
-            if( this.progressDialog.isShowing() ) {
-                this.progressDialog.dismiss();
-            }
             Toast.makeText(this.context, "Log in successfully !", Toast.LENGTH_LONG).show();
         }
 
