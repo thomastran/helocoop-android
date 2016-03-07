@@ -84,7 +84,7 @@ public interface EndPointInterface {
                                    @Field("longitude") float longitude, @Field("token") String token);
 
 
-    @POST("/users/rating")
+    @POST("/voip/rating")
     Response rate(@Body WrapperRate wrapperRate);
 
 }

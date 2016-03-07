@@ -421,8 +421,12 @@ public class TwillioPhone implements DeviceListener, ConnectionListener
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            TwillioPhone.this.reallyLogin(result);
-            Toast.makeText(this.context, "Log in successfully !", Toast.LENGTH_LONG).show();
+            if (result != null) {
+                TwillioPhone.this.reallyLogin(result);
+
+            } else {
+                obtainCapabilityToken(currentClient, true, true);
+            }
         }
 
         @Override

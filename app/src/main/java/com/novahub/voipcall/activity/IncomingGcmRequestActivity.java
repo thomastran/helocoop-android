@@ -88,6 +88,7 @@ public class IncomingGcmRequestActivity extends FragmentActivity implements View
             case R.id.buttonAccept:
                 mPlayer.stop();
                 Intent intent = new Intent(IncomingGcmRequestActivity.this, ConnectTwillioActivity.class);
+                intent.putExtra(Asset.FROM_SAMARITAN, Asset.FROM_SAMARITAN);
                 startActivity(intent);
                 finish();
                 break;

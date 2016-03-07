@@ -539,6 +539,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     linearLayoutMain.setVisibility(View.GONE);
                     linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
                     FlagHelpCoop.isMadeSuccessCall = true;
+                    Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectTwillioActivity.class);
+                    intent.putExtra(Asset.FROM_CALLER, Asset.FROM_CALLER);
+                    startActivity(intent);
                 }
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,

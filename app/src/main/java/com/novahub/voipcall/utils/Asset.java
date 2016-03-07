@@ -61,4 +61,8 @@ public class Asset {
     public static final String GCM_USERS = "gcm_users";
 
     public static final String GCM_NAME_ROOM = "gcm_name_room";
+
+    public static final String FROM_CALLER = "FROM_CALLER";
+
+    public static final String FROM_SAMARITAN = "FROM_SAMARITAN";
 }

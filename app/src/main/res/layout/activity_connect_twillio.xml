@@ -27,8 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Connecting to twillio"
-                android:id="@+id/textView6"
+                android:text="Connecting to twillio ..."
+                android:id="@+id/textViewCount"
                 android:layout_gravity="center_horizontal"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -40,14 +40,14 @@
             android:layout_weight="0.4"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
-            <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/recyclerViewList"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:scrollbars="vertical"-->
-                <!--android:visibility="visible"-->
-                <!--android:layout_weight="0.15"-->
-                <!--android:background="#ffffff" />-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:visibility="visible"
+                android:layout_weight="0.15"
+                android:background="#ffffff" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,7 +61,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Call"
+                android:text="Rate"
                 android:id="@+id/buttonRate"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/colorWhite"
@@ -76,7 +76,7 @@
                 android:id="@+id/buttonEnd"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/colorWhite"
-                android:background="@color/material_green_500"
+                android:background="@color/material_red_A700"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1" />
