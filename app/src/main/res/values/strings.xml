@@ -124,12 +124,12 @@
 
     <string name="request_code">An activation code is being texted to you now to activate and verify your phone. Please enter the activation number in the box <below></below></string>
     <string name="request_code_success">Requested code successfully !</string>
-    <string name="request_code_unsuccess">Requested code unsuccessfully !</string>
+    <string name="request_code_unsuccess">Requested code unsuccessfully !, The phone number is wrong, please enter again</string>
     <string name="updating_info">Please wait for updating information !</string>
 
     <string name="activate_code">Please wait for verifing the activate code !</string>
     <string name="activate_code_success">Activated code successfully !</string>
-    <string name="activate_code_unsuccess">Activated code unsuccessfully !</string>
+    <string name="activate_code_unsuccess">Activated code unsuccessfully, Wrong code, Please enter the code again !</string>
 
 
     <string name="request_gcm">Please wait for request code from GCM!</string>

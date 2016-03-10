@@ -29,6 +29,7 @@ import com.novahub.voipcall.utils.Url;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 
 public class GetInfoActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -243,6 +244,7 @@ public class GetInfoActivity extends AppCompatActivity implements View.OnClickLi
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(Url.BASE_URL)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setClient(new OkClient())
                     .build();
             Response response = null;
             EndPointInterface apiService =

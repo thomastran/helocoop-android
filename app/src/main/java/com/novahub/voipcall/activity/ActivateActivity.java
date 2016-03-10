@@ -125,7 +125,7 @@ public class ActivateActivity extends AppCompatActivity implements View.OnClickL
                 if(this.progressDialog.isShowing()) {
                     this.progressDialog.dismiss();
                 }
-                Toast.makeText(ActivateActivity.this, getString(R.string.activate_code_success), Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivateActivity.this, getString(R.string.activate_code_unsuccess), Toast.LENGTH_LONG).show();
             }
 
         }
