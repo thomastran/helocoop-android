@@ -4,6 +4,7 @@ package com.novahub.voipcall.locationtracker;
  * Created by sam on 22/10/2015.
  */
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,6 +47,10 @@ public class GPSTracker extends Service implements LocationListener {
         this.mContext = context;
         getLocation();
     }
+
+//    public GPSTracker(Context context, boolean isShowing) {
+//
+//    }
 
     public Location getLocation() {
         try {
@@ -98,6 +103,8 @@ public class GPSTracker extends Service implements LocationListener {
                         }
                     }
                 }
+
+
             }
 
         } catch (Exception e) {
@@ -153,14 +160,16 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
      * */
-    public void showSettingsAlert(){
+    public void showSettingsAlert(String title, String message){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
         alertDialog.setTitle("Set GPS On");
+        alertDialog.setTitle(title);
 
         // Setting Dialog Message
         alertDialog.setMessage("Please turn on your location services so HelpCoop can find your closest helpers");
+        alertDialog.setMessage(message);
 
         alertDialog.setCancelable(false);
 
@@ -187,9 +196,6 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
-
-
     }
 
     @Override

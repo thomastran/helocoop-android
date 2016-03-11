@@ -1,19 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" >
-
-    <item
-        jar="/home/samnguyen/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.2.0/959c454243581fdf730abfd4f4745441724bcf2c/okhttp-2.2.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="959c454243581fdf730abfd4f4745441724bcf2c">
-        <dex dex="/home/samnguyen/AndroidStudioProjects/VoipCall/app/build/intermediates/pre-dexed/release/okhttp-2.2.0_8e639a5122fbf83be965819c00ed1989cc1b45a7.jar" />
-    </item>
-    <item
-        jar="/home/samnguyen/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.2.0/c0b52915a48fa91b1b94a28d4a2997bac5f524df/okio-1.2.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="c0b52915a48fa91b1b94a28d4a2997bac5f524df">
-        <dex dex="/home/samnguyen/AndroidStudioProjects/VoipCall/app/build/intermediates/pre-dexed/release/okio-1.2.0_7df692ca8d407debb9a7586500cc191f8371c63e.jar" />
-    </item>
-
-</items>
+<items version="2" />

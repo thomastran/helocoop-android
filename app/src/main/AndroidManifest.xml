@@ -90,7 +90,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -106,17 +106,18 @@
         <activity
             android:name=".activity.LoginExampleActivity"
             android:label="@string/title_activity_login_example" />
-        <activity android:name=".activity.MakingCallConferenceActivity">
+        <activity android:name=".activity.MakingCallConferenceActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.GetPhoneNumberActivity"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".activity.GetInfoActivity"
             android:label="@string/title_activity_get_info"
@@ -127,10 +128,13 @@
             android:label="@string/title_activity_activate"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".activity.ConnectTwillioActivity">
-
-        </activity>
-        <activity android:name=".activity.IncomingGcmRequestActivity"></activity>
+        <activity android:name=".activity.ConnectTwillioActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.IncomingGcmRequestActivity" />
+        <activity android:name=".activity.ConnectToGoodSamaritanTwillioActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

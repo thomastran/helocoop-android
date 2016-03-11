@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +15,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
@@ -26,12 +37,16 @@ import com.novahub.voipcall.model.WrapperRate;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.twilio.TwillioPhone;
 import com.novahub.voipcall.utils.Asset;
-import com.novahub.voipcall.utils.FlagHelpCoop;
+import com.novahub.voipcall.utils.ShowToastUtils;
 import com.novahub.voipcall.utils.Url;
 
+import org.w3c.dom.Text;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,16 +54,14 @@ import java.util.TimerTask;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
-import static com.google.android.gms.internal.zzip.runOnUiThread;
-
-public class ConnectTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener {
+public class ConnectTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener, OnMapReadyCallback {
     private static final Handler handler = new Handler();
     private TwillioPhone twillioPhone;
     private boolean isMuted;
     private boolean isSpeaker;
     private AlertDialog incomingConferenceAlert;
-    private Button buttonEnd;
-    private Button buttonRate;
+    private Button buttonRed;
+    private Button buttonGreen;
 
     private RecyclerView recyclerViewList;
     private RecyclerView.LayoutManager layoutManager;
@@ -59,13 +72,39 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     private TextView textViewCount;
     private TextView textViewTitle;
     private Timer timer;
+    private GoogleMap googleMap;
+    private String nameCaller;
+    private String addressCaller;
+    private String descriptionCaller;
+    private float latitude;
+    private float longitude;
+    final String ADDRESS = "Address : ";
+    final String DESCRIPTION = "Description : ";
+    private MediaPlayer mPlayer;
+
+    private final int INCOMING_CALL = 0;
+    private final int ACCEPTED_CALL = 1;
+    private final int REJECTED_CALL = 2;
+    private final int FINISHED_CALL = 3;
+    private int callStatus;
+
+    private LinearLayout linearLayoutListRate;
+    private LinearLayout linearLayoutMap;
+    private TextView textViewNameOfCaller;
+    private TextView textViewDescription;
+
+    private boolean isFromCaller;
+    private boolean statusForTwillioConnecttion = true;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_twillio);
         intilizeTwillioPhone();
-        loginTwillioPhone();
+//        loginTwillioPhone();
         initializeComponents();
+        getBundle();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 //        connectTwillio();
     }
 
@@ -79,7 +118,34 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             params.put(token, token_local);
             twillioPhone.connect(params);
             twillioPhone.setSpeakerEnabled(true);
+            callStatus = ACCEPTED_CALL;
         }
+    }
+
+    private void getBundle() {
+
+        nameCaller = getIntent().getStringExtra(Asset.GCM_NAME_CALLER);
+        addressCaller = getIntent().getStringExtra(Asset.GCM_ADDRESS_CALLER);
+        descriptionCaller = getIntent().getStringExtra(Asset.GCM_DESCRIPTION_CALLER);
+        latitude = Float.parseFloat(getIntent().getStringExtra(Asset.LATITUDE));
+        longitude = Float.parseFloat(getIntent().getStringExtra(Asset.LONGITUDE));
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        callStatus = INCOMING_CALL;
+        startMusicRinging();
+        textViewNameOfCaller.setText(nameCaller + " need your help !");
+        textViewDescription.setText(ADDRESS + identifyLocation(latitude, longitude) + ", " + DESCRIPTION + descriptionCaller);
+    }
+
+    private void startMusicRinging() {
+        mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.ringtone);
+        mPlayer.start();
+    }
+
+    private void stopMusicRinging() {
+        mPlayer.stop();
     }
 
     private boolean isFromCaller() {
@@ -137,13 +203,21 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     }
 
     private void initializeComponents() {
-        buttonEnd = (Button) findViewById(R.id.buttonEnd);
-        buttonEnd.setOnClickListener(this);
-        buttonRate = (Button) findViewById(R.id.buttonRate);
-        buttonRate.setOnClickListener(this);
+        buttonRed = (Button) findViewById(R.id.buttonRed);
+        buttonRed.setOnClickListener(this);
+        buttonGreen = (Button) findViewById(R.id.buttonGreen);
+        buttonGreen.setOnClickListener(this);
         textViewCount = (TextView) findViewById(R.id.textViewCount);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
+        linearLayoutListRate = (LinearLayout) findViewById(R.id.linearLayoutListRate);
+        linearLayoutMap = (LinearLayout) findViewById(R.id.linearLayoutMap);
+        textViewDescription = (TextView) findViewById(R.id.textViewDescription);
+        textViewNameOfCaller = (TextView) findViewById(R.id.textViewNameOfCaller);
+        progressDialog = new ProgressDialog(ConnectTwillioActivity.this);
+        progressDialog.setMessage("PLease wait, we are connecting to the conference room !");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
@@ -187,6 +261,40 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         String token = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
         twillioPhone.login(token, true, true);
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng sydney = new LatLng(latitude, longitude);
+        this.googleMap.addMarker(new MarkerOptions().position(sydney).title("Location"));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+
+    }
+
+    private String identifyLocation(float latitude, float longitude) {
+        Geocoder geocoder;
+        geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        String city = "Unknown";
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            if (addresses != null && addresses.size() >= 1)
+            {
+                if (addresses.get(0).getLocality() != null)
+                {
+                    city = addresses.get(0).getLocality();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
     @Override
     public void onNewIntent(Intent intent)
     {
@@ -198,15 +306,15 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     public void onResume()
     {
         super.onResume();
-        if (twillioPhone.handleIncomingIntent(getIntent())) {
-            showIncomingConferenceAlert();
-            addStatusMessage(R.string.got_incoming);
-            syncMainButton();
-
-        } else {
-            twillioPhone.ignoreIncomingConnection();
-
-        }
+//        if (twillioPhone.handleIncomingIntent(getIntent())) {
+//            showIncomingConferenceAlert();
+//            addStatusMessage(R.string.got_incoming);
+//            syncMainButton();
+//
+//        } else {
+//            twillioPhone.ignoreIncomingConnection();
+//
+//        }
     }
 
     @Override
@@ -222,9 +330,9 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
-        exitTwillio();
+//        super.onBackPressed();
+        Toast.makeText(ConnectTwillioActivity.this, "Please rate for the samaritans", Toast.LENGTH_SHORT).show();
+//        exitTwillio();
 
     }
 
@@ -401,14 +509,19 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onConnectionDisconnected()
     {
+        if (timer != null)
+            timer.cancel();
         addStatusMessage(R.string.disconnected);
         syncMainButton();
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (timer != null)
-                    timer.cancel();
-                buttonEnd.setVisibility(View.GONE);
+                buttonRed.setVisibility(View.GONE);
+                linearLayoutMap.setVisibility(View.GONE);
+                linearLayoutListRate.setVisibility(View.VISIBLE);
+                callStatus = FINISHED_CALL;
+                buttonGreen.setVisibility(View.VISIBLE);
+                ShowToastUtils.showMessage(ConnectTwillioActivity.this, "End of the call, Please rate for the good samaritans");
             }
         });
 
@@ -427,9 +540,24 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onDeviceStartedListening()
     {
-        connectTwillio();
+        if (statusForTwillioConnecttion) {
+            connectTwillio();
+            countingTime();
+            statusForTwillioConnecttion = false;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    textViewCount.setText("Connected successfully !");
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    ShowToastUtils.showMessage(ConnectTwillioActivity.this, "Connected successfully !");
+
+                }
+            });
+
+        }
+
         addStatusMessage(R.string.device_listening);
-        countingTime();
     }
 
     @Override
@@ -444,25 +572,49 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.buttonEnd:
-                twillioPhone.disconnect();
-                break;
-            case R.id.buttonRate:
-                if (isRated) {
-                    Asset.listOfGoodSamaritans = null;
-                    String token = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
-                    for (int i = 0; i < rateList.size(); i++) {
-                        if (rateList.get(i).getRateStatus() == null)
-                            rateList.remove(i);
-                    }
-                    Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
-                    RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
-                    rateAsyncTask.execute();
-                } else {
-                    Toast.makeText(ConnectTwillioActivity.this,
-                            getString(R.string.rate_toast), Toast.LENGTH_LONG).show();
+            case R.id.buttonRed:
+                switch (callStatus) {
+                    case INCOMING_CALL:
+                        stopMusicRinging();
+                        Intent intent = new Intent(ConnectTwillioActivity.this, MakingCallConferenceActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case ACCEPTED_CALL:
+                        twillioPhone.disconnect();
+                        callStatus = FINISHED_CALL;
+                        buttonRed.setVisibility(View.GONE);
+                        buttonGreen.setText("Rate");
+                        break;
                 }
-
+                break;
+            case R.id.buttonGreen:
+                switch (callStatus) {
+                    case INCOMING_CALL:
+                        progressDialog.show();
+                        stopMusicRinging();
+                        loginTwillioPhone();
+                        buttonGreen.setText("Rate");
+                        buttonGreen.setVisibility(View.GONE);
+                        buttonRed.setText("End Call");
+                        break;
+                    case FINISHED_CALL:
+                        if (isRated) {
+                            Asset.listOfGoodSamaritans = null;
+                            String token = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
+                            for (int i = 0; i < rateList.size(); i++) {
+                                if (rateList.get(i).getRateStatus() == null)
+                                    rateList.remove(i);
+                            }
+                            Asset.wrapperRate = new WrapperRate(token, Asset.nameOfConferenceRoom, rateList);
+                            RateAsyncTask rateAsyncTask = new RateAsyncTask(Asset.wrapperRate);
+                            rateAsyncTask.execute();
+                        } else {
+                            Toast.makeText(ConnectTwillioActivity.this,
+                                    getString(R.string.rate_toast), Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                }
                 break;
         }
     }

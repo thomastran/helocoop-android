@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -86,6 +88,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         startServiceUpdateLocation();
         updateInstanceId(getApplicationContext());
         checkActionsHaveDone(getApplicationContext());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void updateInstanceId(Context context) {
@@ -158,11 +161,37 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 if (!gps.canGetLocation()) {
                     if(!isShowingDialog){
                         showAlert("GSP Setting", "Did you turn on Location Indentification");
-                        gps.showSettingsAlert();
+                        gps.showSettingsAlert("Set GPS On", "Please turn on your location services so HelpCoop can find your closest helpers");
+                    }
+                }
+                else {
+                    if (gps.getLatitude() == 0.0 & gps.getLongitude() == 0.0) {
+//                        showAlert("GSP Setting", "Did you turn on Location Indentification");
+//                        gps.showSettingsAlert("GSP Setting", "GSP is on, but Untill now, The system has not indentified your real location gps, Please choose the option :  'Uses GPS, Wifi, and mobile network to estimate your location' ");
+                        showAlert("GSP Setting", "GPS is ON, but we could not detect your location now. Please wait a few seconds and press Retry");
+//                        Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
+//                        startActivity(intent);
+//                        finish();
                     }
                 }
                 break;
         }
+    }
+
+    private void indetifyRealLocation() {
+        ProgressDialog progressDialog = new ProgressDialog(MakingCallConferenceActivity.this);
+        progressDialog.setMessage("Indentifing your real location, please wait !");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+        GPSTracker gps;
+        do {
+            gps = null;
+            gps = new GPSTracker(MakingCallConferenceActivity.this);
+        }while (gps.getLatitude() == 0.0 & gps.getLongitude() == 0.0);
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        startServiceUpdateLocation();
     }
 
     private void initilizeComponents() {
@@ -218,7 +247,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                                 isShowingDialog = true;
                                 showAlert("GPS Setting", "Did you turn on Location Identification");
                                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
-                                gps.showSettingsAlert();
+                                gps.showSettingsAlert("Set GPS On", "Please turn on your location services so HelpCoop can find your closest helpers");
                             }
                         } else {
 
@@ -539,9 +568,10 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     linearLayoutMain.setVisibility(View.GONE);
                     linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
                     FlagHelpCoop.isMadeSuccessCall = true;
-                    Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectTwillioActivity.class);
+                    Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectToGoodSamaritanTwillioActivity.class);
                     intent.putExtra(Asset.FROM_CALLER, Asset.FROM_CALLER);
                     startActivity(intent);
+                    finish();
                 }
             } else {
                 Toast.makeText(MakingCallConferenceActivity.this,
@@ -576,6 +606,8 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
             return success;
         }
     }
+
+
 
     public void showDialogNotFound() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);

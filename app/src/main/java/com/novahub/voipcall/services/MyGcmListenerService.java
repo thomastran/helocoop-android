@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.novahub.voipcall.activity.ConnectTwillioActivity;
 import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.utils.Asset;
@@ -73,7 +74,7 @@ public class                                                                    
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Intent intent = new Intent(getApplicationContext(), IncomingGcmRequestActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ConnectTwillioActivity.class);
             intent.putExtra(Asset.GCM_NAME_CALLER, nameOfInitialUser);
             intent.putExtra(Asset.GCM_ADDRESS_CALLER, addressOfInitialUser);
             intent.putExtra(Asset.GCM_DESCRIPTION_CALLER, descriptionOfInitialUser);

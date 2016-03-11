@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.locationtracker.GPSTracker;
@@ -62,18 +63,23 @@ public class UpdateLocationService extends Service {
             public void run() {
                 Location location = getLocation();
                 if(location != null) {
-                    RestAdapter restAdapter = new RestAdapter.Builder()
-                            .setEndpoint(Url.BASE_URL)
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .build();
-                    Response response;
-                    EndPointInterface apiService = restAdapter.create(EndPointInterface.class);
-                    Boolean success = false;
-                    try {
-                        response = apiService.updateLocationService(location.getLatitude(), location.getLongtitude(), token);
-                        success = response.isSuccess();
-                    } catch (RetrofitError retrofitError) {
+                    if (location.getLatitude() != 0.0 & location.getLongtitude() != 0.0) {
+                        RestAdapter restAdapter = new RestAdapter.Builder()
+                                .setEndpoint(Url.BASE_URL)
+                                .setLogLevel(RestAdapter.LogLevel.FULL)
+                                .build();
+                        Response response;
+                        EndPointInterface apiService = restAdapter.create(EndPointInterface.class);
+                        Boolean success = false;
+                        try {
+                            response = apiService.updateLocationService(location.getLatitude(), location.getLongtitude(), token);
+                            success = response.isSuccess();
+                            if (success) {
+                                Toast.makeText(getApplicationContext(), "Update location successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (RetrofitError retrofitError) {
 
+                        }
                     }
                 }
                 stopSelf();
