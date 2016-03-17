@@ -65,4 +65,6 @@ public class Asset {
     public static final String FROM_CALLER = "FROM_CALLER";
 
     public static final String FROM_SAMARITAN = "FROM_SAMARITAN";
+
+    public static final long TIMEREPEATEALARM = 1*60*1000;
 }

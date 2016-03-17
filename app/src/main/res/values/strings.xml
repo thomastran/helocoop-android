@@ -136,5 +136,16 @@
     <string name="activate">Activate</string>
     <!-- Related to Getphonenumber activity-->
     <string name="action_get_phone_short">Done</string>
+    <string name="alert_cannot_detect_location">GPS is ON, but we could not detect your location now. Please wait a few seconds and press Retry</string>
+    <string name="alert_gsp_settinng">GSP Setting</string>
+    <string name="alert_verify_location">Did you turn on Location Indentification</string>
+    <string name="alert_location_message">Please turn on your location services so HelpCoop can find your closest helpers</string>
+    <string name="alert_location_title">Set GPS On</string>
+
+    <string name="alert_internet_unavalable">Internet Available</string>
+    <string name="alert_internet_message">Please turn on the internet</string>
+    <string name="alert">Alert</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_retry">Retry</string>
 
 </resources>

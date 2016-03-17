@@ -24,6 +24,12 @@ public class Distance {
     @SerializedName("token")
     private String token;
 
+    @SerializedName("latitude")
+    private String latitude;
+
+    @SerializedName("longitude")
+    private String longitude;
+
     public Distance(float mile, String phoneNumber, String description, String name, String address, String token) {
         this.mile = mile;
         this.phoneNumber = phoneNumber;
@@ -38,6 +44,15 @@ public class Distance {
         this.name = name;
         this.address = address;
         this.token = token;
+    }
+
+    public Distance(String description, String name, String address, String token, String latitude, String longitude) {
+        this.description = description;
+        this.name = name;
+        this.address = address;
+        this.token = token;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 
@@ -101,5 +116,21 @@ public class Distance {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }
