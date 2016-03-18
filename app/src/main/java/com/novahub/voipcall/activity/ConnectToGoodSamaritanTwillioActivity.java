@@ -14,9 +14,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
@@ -40,7 +50,7 @@ import java.util.TimerTask;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
-public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener {
+public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener, OnMapReadyCallback {
     private static final Handler handler = new Handler();
     private TwillioPhone twillioPhone;
     private boolean isMuted;
@@ -60,6 +70,10 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     private Timer timer;
     private boolean statustTwillioConnect = true;
     private ProgressDialog progressDialog;
+    private LinearLayout linearLayoutListRate;
+    private LinearLayout linearLayoutMap;
+    private GoogleMap googleMap;
+    private Marker mMarker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +94,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             params.put(name_room, Asset.nameOfConferenceRoom);
             params.put(token, token_local);
             twillioPhone.connect(params);
-            twillioPhone.setSpeakerEnabled(true);
+            twillioPhone.setSpeakerEnabled(false);
         }
     }
 
@@ -138,6 +152,11 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
         buttonRate.setOnClickListener(this);
         textViewCount = (TextView) findViewById(R.id.textViewCount);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        linearLayoutListRate = (LinearLayout) findViewById(R.id.linearLayoutListRate);
+        linearLayoutMap = (LinearLayout) findViewById(R.id.linearLayoutMap);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         progressDialog = new ProgressDialog(ConnectToGoodSamaritanTwillioActivity.this);
         progressDialog.setMessage("Please wait, We are connecting to conference room !");
         progressDialog.setIndeterminate(true);
@@ -411,6 +430,8 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 buttonEnd.setVisibility(View.GONE);
                 buttonRate.setVisibility(View.VISIBLE);
                 ShowToastUtils.showMessage(ConnectToGoodSamaritanTwillioActivity.this, "End of the call, Please rate for the good samaritan");
+                linearLayoutMap.setVisibility(View.GONE);
+                linearLayoutListRate.setVisibility(View.VISIBLE);
             }
         });
 
@@ -482,6 +503,46 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 }
                 break;
         }
+    }
+
+    private void addMarkersToMap(List<Distance> distances) {
+        this.googleMap.clear();
+        for (int i = 0; i < distances.size(); i++) {
+            LatLng ll = new LatLng(Float.parseFloat(distances.get(i).getLatitude()), Float.parseFloat(distances.get(i).getLongitude()));
+            BitmapDescriptor bitmapMarker = null;
+            switch (i) {
+                case 0:
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                    Log.i("TAG", "RED");
+                    break;
+                case 1:
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                    Log.i("TAG", "GREEN");
+                    break;
+            }
+            this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(i).getName())
+                    .snippet("Sam").icon(bitmapMarker));
+                    this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
+            this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 15));
+
+        }
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+//        LatLng sydney = new LatLng(Float.parseFloat(distanceList.get(0).getLatitude()), Float.parseFloat(distanceList.get(0).getLongitude()));
+//        this.googleMap.addMarker(new MarkerOptions().position(sydney).title("Location"));
+//
+//        LatLng sydney1 = new LatLng(17.05969, 109.21177);
+//        this.googleMap.addMarker(new MarkerOptions().position(sydney1).title("DM"));
+//        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        addMarkersToMap(distanceList);
+
     }
 
     private class RateAsyncTask extends AsyncTask<String, Boolean, Boolean> {

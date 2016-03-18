@@ -110,11 +110,14 @@
         <activity
             android:name=".activity.LoginExampleActivity"
             android:label="@string/title_activity_login_example" />
-        <activity
-            android:name=".activity.MakingCallConferenceActivity"
+        <activity android:name=".activity.MakingCallConferenceActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.GetPhoneNumberActivity"
@@ -129,22 +132,13 @@
             android:label="@string/title_activity_activate"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateVisible" />
-        <activity
-            android:name=".activity.ConnectTwillioActivity"
+        <activity android:name=".activity.ConnectTwillioActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".activity.IncomingGcmRequestActivity" />
-        <activity
-            android:name=".activity.ConnectToGoodSamaritanTwillioActivity"
+        <activity android:name=".activity.ConnectToGoodSamaritanTwillioActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <activity android:name=".activity.MapActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

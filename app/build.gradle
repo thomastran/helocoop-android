@@ -26,7 +26,6 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -34,12 +33,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-        preDexLibraries = false
-    }
-
 }
 
 dependencies {
@@ -56,5 +49,4 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
-    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }

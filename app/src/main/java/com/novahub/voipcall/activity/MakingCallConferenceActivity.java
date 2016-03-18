@@ -84,7 +84,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         initilizeComponents();
         checkSamaritan();
         if(!NetworkUtil.isOnline(getApplicationContext())) {
-            showAlert(getString(R.string.alert_internet_unavalable), getString(R.string.alert_internet_message));
+            showAlert("Internet Available", "Please turn on the internet");
         }
         startServiceUpdateLocation();
         updateInstanceId(getApplicationContext());
@@ -161,15 +161,15 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                 if (!gps.canGetLocation()) {
                     if(!isShowingDialog){
-                        showAlert(getString(R.string.alert_gsp_settinng), getString(R.string.alert_verify_location));
-                        gps.showSettingsAlert(getString(R.string.alert_location_title), getString(R.string.alert_location_message));
+                        showAlert("GSP Setting", "Did you turn on Location Indentification");
+                        gps.showSettingsAlert("Set GPS On", "Please turn on your location services so HelpCoop can find your closest helpers");
                     }
                 }
                 else {
                     if (gps.getLatitude() == 0.0 & gps.getLongitude() == 0.0) {
 //                        showAlert("GSP Setting", "Did you turn on Location Indentification");
 //                        gps.showSettingsAlert("GSP Setting", "GSP is on, but Untill now, The system has not indentified your real location gps, Please choose the option :  'Uses GPS, Wifi, and mobile network to estimate your location' ");
-                        showAlert(getString(R.string.alert_gsp_settinng), getString(R.string.alert_cannot_detect_location));
+                        showAlert("GSP Setting", "GPS is ON, but we could not detect your location now. Please wait a few seconds and press Retry");
 //                        Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
 //                        startActivity(intent);
 //                        finish();
@@ -179,6 +179,21 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         }
     }
 
+    private void indetifyRealLocation() {
+        ProgressDialog progressDialog = new ProgressDialog(MakingCallConferenceActivity.this);
+        progressDialog.setMessage("Indentifing your real location, please wait !");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+        GPSTracker gps;
+        do {
+            gps = null;
+            gps = new GPSTracker(MakingCallConferenceActivity.this);
+        }while (gps.getLatitude() == 0.0 & gps.getLongitude() == 0.0);
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        startServiceUpdateLocation();
+    }
 
     private void initilizeComponents() {
         flagSwitchDoNothing = false;
@@ -233,9 +248,9 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                                 }
 
                                 isShowingDialog = true;
-                                showAlert(getString(R.string.alert_gsp_settinng), getString(R.string.alert_verify_location));
+                                showAlert("GPS Setting", "Did you turn on Location Identification");
                                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
-                                gps.showSettingsAlert(getString(R.string.alert_gsp_settinng), getString(R.string.alert_location_message));
+                                gps.showSettingsAlert("Set GPS On", "Please turn on your location services so HelpCoop can find your closest helpers");
                             }
                         } else {
 
@@ -284,7 +299,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         alertDialog.setCancelable(false);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton(getString(R.string.alert_retry), new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
                 Intent intent = new Intent(MakingCallConferenceActivity.this, MakingCallConferenceActivity.class);
@@ -603,7 +618,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
 
         // Setting Dialog Title
-        alertDialog.setTitle(getString(R.string.alert));
+        alertDialog.setTitle("Alert");
 
         // Setting Dialog Message
         alertDialog.setMessage(getString(R.string.found_zero));
@@ -611,7 +626,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         alertDialog.setCancelable(false);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton(getString(R.string.alert_ok), new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
                 Asset.listOfGoodSamaritans = null;

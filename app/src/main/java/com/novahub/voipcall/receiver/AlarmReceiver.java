@@ -7,11 +7,14 @@ import android.content.Intent;
 import com.novahub.voipcall.services.UpdateLocationService;
 
 /**
- * Created by samnguyen on 17/03/2016.
+ * Created by samnguyen on 18/03/2016.
  */
 public class AlarmReceiver extends BroadcastReceiver {
     public static final int REQUEST_CODE = 12345;
     public static final String ACTION = "com.codepath.example.servicesdemo.alarm";
+
+
+
 
 
 

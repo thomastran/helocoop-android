@@ -1,5 +1,8 @@
 package com.novahub.voipcall.utils;
 
+/**
+ * Created by samnguyen on 18/03/2016.
+ */
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,10 +10,12 @@ import android.content.Intent;
 
 import com.novahub.voipcall.receiver.AlarmReceiver;
 
+
 /**
  * Created by samnguyen on 17/03/2016.
  */
 public class AlarmUtils {
+
 
     public static void scheduleAlarm(Context activity) {
         // Construct an intent that will execute the AlarmReceiver
@@ -26,14 +31,20 @@ public class AlarmUtils {
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, Asset.TIMEREPEATEALARM, pIntent);
     }
 
+
     public static void cancelAlarm(Context activity) {
         Intent intent = new Intent(activity, AlarmReceiver.class);
 
+
         final PendingIntent pIntent = PendingIntent.getBroadcast(activity, AlarmReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         AlarmManager alarm = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
 
+
         alarm.cancel(pIntent);
+
+
 
 
     }

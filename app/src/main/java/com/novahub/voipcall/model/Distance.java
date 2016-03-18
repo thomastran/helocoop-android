@@ -27,6 +27,7 @@ public class Distance {
     @SerializedName("latitude")
     private String latitude;
 
+
     @SerializedName("longitude")
     private String longitude;
 
@@ -45,6 +46,7 @@ public class Distance {
         this.address = address;
         this.token = token;
     }
+
 
     public Distance(String description, String name, String address, String token, String latitude, String longitude) {
         this.description = description;
