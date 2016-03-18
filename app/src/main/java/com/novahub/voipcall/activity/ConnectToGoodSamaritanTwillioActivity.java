@@ -511,7 +511,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             LatLng ll = new LatLng(Float.parseFloat(distances.get(0).getLatitude()), Float.parseFloat(distances.get(0).getLongitude()));
             BitmapDescriptor bitmapMarker =  BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(0).getName())
-                    .snippet(distances.get(0).getDescription()).icon(bitmapMarker));
+                    .snippet(distances.get(0).getDescription()).icon(bitmapMarker)).showInfoWindow();
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
             this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
         } else {
@@ -533,7 +533,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                         break;
                 }
                 this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(i).getName())
-                        .snippet(distances.get(i).getDescription()).icon(bitmapMarker));
+                        .snippet(distances.get(i).getDescription()).icon(bitmapMarker)).showInfoWindow();
 
 
             }

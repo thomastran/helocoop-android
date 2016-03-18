@@ -268,7 +268,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
 
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(latitude, longitude);
-        this.googleMap.addMarker(new MarkerOptions().position(sydney).title(nameCaller).snippet(descriptionCaller));
+        this.googleMap.addMarker(new MarkerOptions().position(sydney).title(nameCaller).snippet(descriptionCaller)).showInfoWindow();
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
 
