@@ -94,7 +94,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             params.put(name_room, Asset.nameOfConferenceRoom);
             params.put(token, token_local);
             twillioPhone.connect(params);
-            twillioPhone.setSpeakerEnabled(false);
+            twillioPhone.setSpeakerEnabled(true);
         }
     }
 
@@ -506,26 +506,45 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     }
 
     private void addMarkersToMap(List<Distance> distances) {
-        this.googleMap.clear();
-        for (int i = 0; i < distances.size(); i++) {
-            LatLng ll = new LatLng(Float.parseFloat(distances.get(i).getLatitude()), Float.parseFloat(distances.get(i).getLongitude()));
-            BitmapDescriptor bitmapMarker = null;
-            switch (i) {
-                case 0:
-                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    Log.i("TAG", "RED");
-                    break;
-                case 1:
-                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                    Log.i("TAG", "GREEN");
-                    break;
-            }
-            this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(i).getName())
-                    .snippet("Sam").icon(bitmapMarker));
-                    this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
-            this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 15));
+//        this.googleMap.clear();
+        if (distances.size() == 1) {
+            LatLng ll = new LatLng(Float.parseFloat(distances.get(0).getLatitude()), Float.parseFloat(distances.get(0).getLongitude()));
+            BitmapDescriptor bitmapMarker =  BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(0).getName())
+                    .snippet(distances.get(0).getDescription()).icon(bitmapMarker));
+            this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
+            this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
+        } else {
+            float total_latitude = 0;
+            float total_longtitude = 0;
+            for (int i = 0; i < distances.size(); i++) {
+                LatLng ll = new LatLng(Float.parseFloat(distances.get(i).getLatitude()), Float.parseFloat(distances.get(i).getLongitude()));
+                total_latitude = total_latitude + Float.parseFloat(distances.get(i).getLatitude());
+                total_longtitude = total_longtitude + Float.parseFloat(distances.get(i).getLongitude());
+                BitmapDescriptor bitmapMarker = null;
+                switch (i%2) {
+                    case 0:
+                        bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                        Log.i("TAG", "RED");
+                        break;
+                    case 1:
+                        bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        Log.i("TAG", "GREEN");
+                        break;
+                }
+                this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(i).getName())
+                        .snippet(distances.get(i).getDescription()).icon(bitmapMarker));
 
+
+            }
+            LatLng latLng = new LatLng(total_latitude/distances.size(), total_longtitude/distances.size());
+            this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
         }
+
+
+
+
 
     }
 
