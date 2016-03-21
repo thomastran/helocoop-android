@@ -77,24 +77,10 @@
             android:name=".receiver.AlarmReceiver"
             android:process=":remote" />
 
-        <activity
-            android:name=".activity.MainActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-
         <service
             android:name="com.twilio.client.TwilioClientService"
             android:exported="false"
             android:stopWithTask="true" />
-
-        <activity
-            android:name=".activity.IncomingCallActivity"
-            android:label="@string/title_activity_incoming_call"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.LoginActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -104,12 +90,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC6aXtvQBxqEueZ3MYN9EmSp3Kqv1JY-EM" />
 
-        <activity
-            android:name=".activity.RegisterActivity"
-            android:label="@string/title_activity_register" />
-        <activity
-            android:name=".activity.LoginExampleActivity"
-            android:label="@string/title_activity_login_example" />
         <activity android:name=".activity.MakingCallConferenceActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
@@ -135,7 +115,6 @@
         <activity android:name=".activity.ConnectTwillioActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.IncomingGcmRequestActivity" />
         <activity android:name=".activity.ConnectToGoodSamaritanTwillioActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +31,7 @@ import com.novahub.voipcall.model.Location;
 import com.novahub.voipcall.model.Response;
 import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
-import com.novahub.voipcall.utils.AlarmUtils;
+import com.novahub.voipcall.utils.AlarmRepeatServiceUtils;
 import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.FlagHelpCoop;
 import com.novahub.voipcall.utils.GCMUtils;
@@ -166,7 +165,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     }
                 }
                 else {
-                    if (gps.getLatitude() == 0.0 & gps.getLongitude() == 0.0) {
+                    if (!gps.isGetLocationDone()) {
                         showAlert(getString(R.string.alert_gsp_settinng), getString(R.string.alert_cannot_detect_location));
                     }
                 }
@@ -216,7 +215,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                                 turnOnSamaritanAsyncTask.execute();
 
-                                AlarmUtils.scheduleAlarm(getApplicationContext());
+                                AlarmRepeatServiceUtils.updateLocationService(getApplicationContext());
 
                             } else {
                                 flagSwitchDoNothing =true;
@@ -238,7 +237,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                             turnOffSamaritanAsyncTask.execute();
 
-                            AlarmUtils.cancelAlarm(getApplicationContext());
+                            AlarmRepeatServiceUtils.cancelUpdateLocationService(getApplicationContext());
                         }
                     } else {
                         Toast.makeText(MakingCallConferenceActivity.this,

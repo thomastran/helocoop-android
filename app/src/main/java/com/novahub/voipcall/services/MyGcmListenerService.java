@@ -22,10 +22,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.novahub.voipcall.activity.ConnectTwillioActivity;
-import com.novahub.voipcall.activity.IncomingGcmRequestActivity;
 import com.novahub.voipcall.model.Distance;
 import com.novahub.voipcall.utils.Asset;
-import com.novahub.voipcall.utils.FlagHelpCoop;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,15 +1,13 @@
 package com.novahub.voipcall.twilio;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.novahub.voipcall.activity.MainActivity;
+import com.novahub.voipcall.activity.ConnectToGoodSamaritanTwillioActivity;
 import com.novahub.voipcall.apiendpoint.EndPointInterface;
 import com.novahub.voipcall.model.Token;
 import com.novahub.voipcall.utils.Url;
@@ -174,7 +172,7 @@ public class TwillioPhone implements DeviceListener, ConnectionListener
         try {
             if (device == null) {
                 device = Twilio.createDevice(capabilityToken, this);
-                Intent intent = new Intent(context, MainActivity.class);
+                Intent intent = new Intent(context, ConnectToGoodSamaritanTwillioActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 device.setIncomingIntent(pendingIntent);
 

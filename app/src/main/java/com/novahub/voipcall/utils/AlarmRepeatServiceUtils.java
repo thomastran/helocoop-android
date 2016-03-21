@@ -14,10 +14,10 @@ import com.novahub.voipcall.receiver.AlarmReceiver;
 /**
  * Created by samnguyen on 17/03/2016.
  */
-public class AlarmUtils {
+public class AlarmRepeatServiceUtils {
 
 
-    public static void scheduleAlarm(Context activity) {
+    public static void updateLocationService(Context activity) {
         // Construct an intent that will execute the AlarmReceiver
         Intent intent = new Intent(activity, AlarmReceiver.class);
         // Create a PendingIntent to be triggered when the alarm goes off
@@ -32,7 +32,7 @@ public class AlarmUtils {
     }
 
 
-    public static void cancelAlarm(Context activity) {
+    public static void cancelUpdateLocationService(Context activity) {
         Intent intent = new Intent(activity, AlarmReceiver.class);
 
 

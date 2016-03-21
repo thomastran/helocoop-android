@@ -194,6 +194,13 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.show();
     }
 
+    public boolean isGetLocationDone() {
+        if (latitude != 0.0 && longitude != 0.0)
+            return true;
+        else
+            return false;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
     }
