@@ -166,17 +166,17 @@ public class GPSTracker extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
-        alertDialog.setTitle(getString(R.string.alert_location_title));
+        alertDialog.setTitle("Set GPS On");
         alertDialog.setTitle(title);
 
         // Setting Dialog Message
-        alertDialog.setMessage(getString(R.string.alert_location_message));
+        alertDialog.setMessage("Please turn on your location services so HelpCoop can find your closest helpers");
         alertDialog.setMessage(message);
 
         alertDialog.setCancelable(false);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton(getString(R.string.setting), new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Setting", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
