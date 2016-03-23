@@ -34,18 +34,8 @@ public class AlarmRepeatServiceUtils {
 
     public static void cancelUpdateLocationService(Context activity) {
         Intent intent = new Intent(activity, AlarmReceiver.class);
-
-
         final PendingIntent pIntent = PendingIntent.getBroadcast(activity, AlarmReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
         AlarmManager alarm = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-
-
         alarm.cancel(pIntent);
-
-
-
-
     }
 }

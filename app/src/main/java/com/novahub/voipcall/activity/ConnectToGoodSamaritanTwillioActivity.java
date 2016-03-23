@@ -53,8 +53,6 @@ import retrofit.RetrofitError;
 public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener, OnMapReadyCallback {
     private static final Handler handler = new Handler();
     private TwillioPhone twillioPhone;
-    private boolean isMuted;
-    private boolean isSpeaker;
     private AlertDialog incomingConferenceAlert;
     private Button buttonEnd;
     private Button buttonRate;
@@ -73,7 +71,6 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     private LinearLayout linearLayoutListRate;
     private LinearLayout linearLayoutMap;
     private GoogleMap googleMap;
-    private Marker mMarker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +87,11 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             Map<String, String> params = new HashMap<String, String>();
             final String name_room = "name_room";
             final String token = "token";
+            final String is_from_caller = "is_from_caller";
             String token_local = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
             params.put(name_room, Asset.nameOfConferenceRoom);
             params.put(token, token_local);
+            params.put(is_from_caller, "true");
             twillioPhone.connect(params);
             twillioPhone.setSpeakerEnabled(true);
         }
@@ -100,6 +99,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
 
     private void countingTime() {
         timer=new Timer();
+        final long second = 1000;
 
         timer.scheduleAtFixedRate(new TimerTask() {
             int hour = 0;
@@ -142,7 +142,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                     }
                 });
             }
-        }, 1000, 1000);
+        }, second, second);
     }
 
     private void initializeComponents() {
@@ -158,7 +158,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         progressDialog = new ProgressDialog(ConnectToGoodSamaritanTwillioActivity.this);
-        progressDialog.setMessage("Please wait, We are connecting to conference room !");
+        progressDialog.setMessage(getString(R.string.progress_message_connect_twillio_room));
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -239,10 +239,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        Toast.makeText(ConnectToGoodSamaritanTwillioActivity.this, "Please rate for the samaritans", Toast.LENGTH_SHORT).show();
-
-//        exitTwillio();
+        Toast.makeText(ConnectToGoodSamaritanTwillioActivity.this, getString(R.string.toast_rate_for_samaritan), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -253,8 +250,8 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             twillioPhone = null;
         }
 
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+//        int pid = android.os.Process.myPid();
+//        android.os.Process.killProcess(pid);
     }
 
     private void addStatusMessage(final String message)
@@ -429,11 +426,14 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
 //                textViewCount.setVisibility(View.GONE);
                 buttonEnd.setVisibility(View.GONE);
                 buttonRate.setVisibility(View.VISIBLE);
-                ShowToastUtils.showMessage(ConnectToGoodSamaritanTwillioActivity.this, "End of the call, Please rate for the good samaritan");
+                ShowToastUtils.showMessage(ConnectToGoodSamaritanTwillioActivity.this, getString(R.string.toast_finish_the_twillio_call));
                 linearLayoutMap.setVisibility(View.GONE);
                 linearLayoutListRate.setVisibility(View.VISIBLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
+
+//        exitTwillio();
 
     }
 
@@ -456,8 +456,8 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                     if(progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
-                    textViewCount.setText("Connected successfully!");
-                    ShowToastUtils.showMessage(ConnectToGoodSamaritanTwillioActivity.this, "Connected successfully !");
+                    textViewCount.setText(getString(R.string.alert_connect_success_twillio));
+                    ShowToastUtils.showMessage(ConnectToGoodSamaritanTwillioActivity.this, getString(R.string.alert_connect_success_twillio));
 
                 }
             });
@@ -506,7 +506,6 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     }
 
     private void addMarkersToMap(List<Distance> distances) {
-//        this.googleMap.clear();
         if (distances.size() == 1) {
             LatLng ll = new LatLng(Float.parseFloat(distances.get(0).getLatitude()), Float.parseFloat(distances.get(0).getLongitude()));
             BitmapDescriptor bitmapMarker =  BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
@@ -541,11 +540,6 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
         }
-
-
-
-
-
     }
 
     @Override

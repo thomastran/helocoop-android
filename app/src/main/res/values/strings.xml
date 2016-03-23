@@ -148,5 +148,13 @@
     <string name="alert_ok">OK</string>
     <string name="alert_retry">Retry</string>
 
+    <string name="progress_message_connect_twillio_room">Please wait, We are connecting to conference room !</string>
+    <string name="toast_rate_for_samaritan">Please rate for the samaritans</string>
+    <string name="toast_finish_the_twillio_call">End of the call, Please rate for the good samaritan</string>
+    <string name="alert_connect_success_twillio">Connected successfully !</string>
+
+    <!-- Connect Twillio Activity-->
+    <string name="button_rate">Rate</string>
+    <string name="button_end_call">End Call</string>
 
 </resources>

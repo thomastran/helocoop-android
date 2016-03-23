@@ -33,7 +33,6 @@ import com.novahub.voipcall.services.UpdateLocationService;
 import com.novahub.voipcall.sharepreferences.SharePreferences;
 import com.novahub.voipcall.utils.AlarmRepeatServiceUtils;
 import com.novahub.voipcall.utils.Asset;
-import com.novahub.voipcall.utils.FlagHelpCoop;
 import com.novahub.voipcall.utils.GCMUtils;
 import com.novahub.voipcall.utils.NetworkUtil;
 import com.novahub.voipcall.utils.Url;
@@ -88,7 +87,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         startServiceUpdateLocation();
         updateInstanceId(getApplicationContext());
         checkActionsHaveDone(getApplicationContext());
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void updateInstanceId(Context context) {
@@ -550,7 +548,6 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                     recyclerViewList.setAdapter(connectedPeopleAdapter);
                     linearLayoutMain.setVisibility(View.GONE);
                     linearLayoutShowConnectedPeople.setVisibility(View.VISIBLE);
-                    FlagHelpCoop.isMadeSuccessCall = true;
                     Intent intent = new Intent(MakingCallConferenceActivity.this, ConnectToGoodSamaritanTwillioActivity.class);
                     intent.putExtra(Asset.FROM_CALLER, Asset.FROM_CALLER);
                     startActivity(intent);
@@ -596,7 +593,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
 
         // Setting Dialog Title
-        alertDialog.setTitle("Alert");
+        alertDialog.setTitle(getString(R.string.alert));
 
         // Setting Dialog Message
         alertDialog.setMessage(getString(R.string.found_zero));
@@ -604,7 +601,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         alertDialog.setCancelable(false);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getString(R.string.alert_ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
                 Asset.listOfGoodSamaritans = null;

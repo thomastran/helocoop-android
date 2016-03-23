@@ -114,8 +114,10 @@ public class UpdateLocationService extends Service {
             Log.d("Lat", latitude + "");
             Log.d("Long", longitude + "");
             Location location = new Location((float)latitude, (float) longitude);
+            gps.stopUsingGPS();
             return location;
         }
+        gps.stopUsingGPS();
         return null;
     }
 }

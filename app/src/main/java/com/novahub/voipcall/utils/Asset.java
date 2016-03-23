@@ -9,18 +9,6 @@ import java.util.List;
  * Created by samnguyen on 18/12/2015.
  */
 public class Asset {
-    public static final String CURRENT_CONTACT = "Current_Contact";
-
-    public static final String Twillio_Conference = "Conference";
-
-    public static final String Twillio_Room = "Myroom";
-
-    public static final String Twillio_People = "People";
-
-    public static final String VIOP_CALL = "VIOPCALL";
-
-    public static final String Current_Client = "CurrentClient";
-
     public static List<Distance> listOfGoodSamaritans;
 
     public static List<Distance> listOfCallerAndSamaritans;
@@ -28,8 +16,6 @@ public class Asset {
     public static WrapperRate wrapperRate;
 
     public static String nameOfConferenceRoom;
-
-    public static final String IS_FROM_SERVER = "IS_FROM_SERVER";
 
     public static final String IS_CHANGED_INFO = "IS_CHANGED_INFO";
 
@@ -52,8 +38,6 @@ public class Asset {
     public static final String GCM_NAME_ROOM = "gcm_name_room";
 
     public static final String FROM_CALLER = "FROM_CALLER";
-
-    public static final String FROM_SAMARITAN = "FROM_SAMARITAN";
 
     public static final long TIMEREPEATEALARM = 60*60*1000;
 }

@@ -113,9 +113,11 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             Map<String, String> params = new HashMap<String, String>();
             final String name_room = "name_room";
             final String token = "token";
+            final String is_from_caller = "is_from_caller";
             String token_local = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
             params.put(name_room, Asset.nameOfConferenceRoom);
             params.put(token, token_local);
+            params.put(is_from_caller, "false");
             twillioPhone.connect(params);
             twillioPhone.setSpeakerEnabled(true);
             callStatus = ACCEPTED_CALL;
@@ -148,14 +150,8 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         mPlayer.stop();
     }
 
-    private boolean isFromCaller() {
-        if (getIntent().getStringExtra(Asset.FROM_CALLER) != null)
-            return true;
-        else
-            return false;
-    }
-
     private void countingTime() {
+        final long second = 1000;
         timer=new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -199,7 +195,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                     }
                 });
             }
-        }, 1000, 1000);
+        }, second, second);
     }
 
     private void initializeComponents() {
@@ -215,17 +211,14 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         textViewDescription = (TextView) findViewById(R.id.textViewDescription);
         textViewNameOfCaller = (TextView) findViewById(R.id.textViewNameOfCaller);
         progressDialog = new ProgressDialog(ConnectTwillioActivity.this);
-        progressDialog.setMessage("PLease wait, we are connecting to the conference room !");
+        progressDialog.setMessage(getString(R.string.progress_message_connect_twillio_room));
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
         distanceList = new ArrayList<>();
-        if (isFromCaller())
-            distanceList.addAll(Asset.listOfGoodSamaritans);
-        else
-            distanceList.addAll(Asset.listOfCallerAndSamaritans);
+        distanceList.addAll(Asset.listOfCallerAndSamaritans);
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
 
@@ -233,6 +226,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         if(distanceList.size() == 1) {
             toBe = "is ";
         }
+
         String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
 
@@ -331,7 +325,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        Toast.makeText(ConnectTwillioActivity.this, "Please rate for the samaritans", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ConnectTwillioActivity.this, getString(R.string.toast_rate_for_samaritan), Toast.LENGTH_SHORT).show();
 //        exitTwillio();
 
     }
@@ -343,8 +337,8 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             twillioPhone = null;
         }
 
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+//        int pid = android.os.Process.myPid();
+//        android.os.Process.killProcess(pid);
     }
 
     private void addStatusMessage(final String message)
@@ -521,10 +515,10 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                 linearLayoutListRate.setVisibility(View.VISIBLE);
                 callStatus = FINISHED_CALL;
                 buttonGreen.setVisibility(View.VISIBLE);
-                ShowToastUtils.showMessage(ConnectTwillioActivity.this, "End of the call, Please rate for the good samaritans");
+                ShowToastUtils.showMessage(ConnectTwillioActivity.this, getString(R.string.toast_finish_the_twillio_call));
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
-
     }
 
     @Override
@@ -547,10 +541,10 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    textViewCount.setText("Connected successfully !");
+                    textViewCount.setText(getString(R.string.alert_connect_success_twillio));
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
-                    ShowToastUtils.showMessage(ConnectTwillioActivity.this, "Connected successfully !");
+                    ShowToastUtils.showMessage(ConnectTwillioActivity.this, getString(R.string.alert_connect_success_twillio));
 
                 }
             });
@@ -584,7 +578,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                         twillioPhone.disconnect();
                         callStatus = FINISHED_CALL;
                         buttonRed.setVisibility(View.GONE);
-                        buttonGreen.setText("Rate");
+                        buttonGreen.setText(getString(R.string.button_rate));
                         break;
                 }
                 break;
@@ -594,9 +588,9 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                         progressDialog.show();
                         stopMusicRinging();
                         loginTwillioPhone();
-                        buttonGreen.setText("Rate");
+                        buttonGreen.setText(getString(R.string.button_rate));
                         buttonGreen.setVisibility(View.GONE);
-                        buttonRed.setText("End Call");
+                        buttonRed.setText(getString(R.string.button_end_call));
                         break;
                     case FINISHED_CALL:
                         if (isRated) {

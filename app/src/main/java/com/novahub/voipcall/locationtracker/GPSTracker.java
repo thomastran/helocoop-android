@@ -17,6 +17,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.novahub.voipcall.R;
+
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context mContext;
@@ -35,10 +37,10 @@ public class GPSTracker extends Service implements LocationListener {
     double longitude; // longitude
 
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 100; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 60; // 1 minute
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -164,17 +166,17 @@ public class GPSTracker extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
-        alertDialog.setTitle("Set GPS On");
+        alertDialog.setTitle(getString(R.string.alert_location_title));
         alertDialog.setTitle(title);
 
         // Setting Dialog Message
-        alertDialog.setMessage("Please turn on your location services so HelpCoop can find your closest helpers");
+        alertDialog.setMessage(getString(R.string.alert_location_message));
         alertDialog.setMessage(message);
 
         alertDialog.setCancelable(false);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getString(R.string.setting), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 dialog.cancel();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
