@@ -121,16 +121,17 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         linearLayoutStatus.setBackgroundColor(color);
     }
     private void checkActionsHaveDone(Context context) {
-
+        // Did user request the code when entering the phone number
         boolean isRequestedCode =
                 SharePreferences.isDoneAction(context, SharePreferences.IS_REQUESTED_CODE);
-
+        // Did user enter the right code to activate the application
         boolean isActivatedCode =
                 SharePreferences.isDoneAction(context, SharePreferences.IS_ACTIVATED_CODE);
-
+        // Did user update information
         boolean isUpdatedInfo =
                 SharePreferences.isDoneAction(context, SharePreferences.IS_UPDATED_INFO);
 
+        // Check current status for application
         int whatAtionsHaveDone =
                 SharePreferences.checkDoneAction(isRequestedCode, isActivatedCode, isUpdatedInfo);
 
@@ -141,19 +142,19 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
                 textViewAction.setText(getString(R.string.register));
                 isRegistered = false;
                 break;
-            case 2:
+            case 2: // Go to activity ActivateActivity to fill the code to activate application
                 Intent intentActivateCode = new Intent(context, ActivateActivity.class);
                 intentActivateCode.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intentActivateCode);
                 finish();
                 break;
-            case 3:
+            case 3: // Go to activity getInfoActivity to get user's information
                 Intent intentUpdateInfo = new Intent(context, GetInfoActivity.class);
                 intentUpdateInfo.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intentUpdateInfo);
                 finish();
                 break;
-            case 4:
+            case 4: // Ready to make a call for good samaritans
                 textViewAction.setText(getString(R.string.help));
                 GPSTracker gps = new GPSTracker(MakingCallConferenceActivity.this);
                 if (!gps.canGetLocation()) {
@@ -213,6 +214,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                                 turnOnSamaritanAsyncTask.execute();
 
+                                // Check location service for 1 hour
                                 AlarmRepeatServiceUtils.updateLocationService(getApplicationContext());
 
                             } else {
@@ -235,6 +237,7 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
 
                             turnOffSamaritanAsyncTask.execute();
 
+                            // Cancel alarm service when turn off status good samaritans
                             AlarmRepeatServiceUtils.cancelUpdateLocationService(getApplicationContext());
                         }
                     } else {
@@ -587,19 +590,13 @@ public class MakingCallConferenceActivity extends AppCompatActivity implements V
         }
     }
 
-
-
     public void showDialogNotFound() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MakingCallConferenceActivity.this);
-
         // Setting Dialog Title
         alertDialog.setTitle(getString(R.string.alert));
-
         // Setting Dialog Message
         alertDialog.setMessage(getString(R.string.found_zero));
-
         alertDialog.setCancelable(false);
-
         // On pressing Settings button
         alertDialog.setPositiveButton(getString(R.string.alert_ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {

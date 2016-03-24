@@ -2,7 +2,6 @@ package com.novahub.voipcall.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -40,8 +39,6 @@ import com.novahub.voipcall.utils.Asset;
 import com.novahub.voipcall.utils.ShowToastUtils;
 import com.novahub.voipcall.utils.Url;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +52,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
 public class ConnectTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener, OnMapReadyCallback {
+    private static final String TAG = "ConnectTwillioActivity";
     private static final Handler handler = new Handler();
     private TwillioPhone twillioPhone;
     private boolean isMuted;
@@ -101,23 +99,18 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_twillio);
         intilizeTwillioPhone();
-//        loginTwillioPhone();
         initializeComponents();
         getBundle();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        connectTwillio();
     }
 
     private void connectTwillio() {
         if (!twillioPhone.isConnected()) {
             Map<String, String> params = new HashMap<String, String>();
-            final String name_room = "name_room";
-            final String token = "token";
-            final String is_from_caller = "is_from_caller";
             String token_local = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
-            params.put(name_room, Asset.nameOfConferenceRoom);
-            params.put(token, token_local);
-            params.put(is_from_caller, "false");
+            params.put(Asset.paramsNameRoom, Asset.nameOfConferenceRoom);
+            params.put(Asset.paramsToken, token_local);
+            params.put(Asset.paramsIsFromCaller, "false");
             twillioPhone.connect(params);
             twillioPhone.setSpeakerEnabled(true);
             callStatus = ACCEPTED_CALL;
@@ -125,18 +118,21 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     }
 
     private void getBundle() {
-
+        // Get all information about the good samaritans
         nameCaller = getIntent().getStringExtra(Asset.GCM_NAME_CALLER);
         addressCaller = getIntent().getStringExtra(Asset.GCM_ADDRESS_CALLER);
         descriptionCaller = getIntent().getStringExtra(Asset.GCM_DESCRIPTION_CALLER);
         latitude = Float.parseFloat(getIntent().getStringExtra(Asset.LATITUDE));
         longitude = Float.parseFloat(getIntent().getStringExtra(Asset.LONGITUDE));
 
+        // initialize the google map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         callStatus = INCOMING_CALL;
         startMusicRinging();
+
         textViewNameOfCaller.setText(nameCaller + " need your help !");
         textViewDescription.setText(ADDRESS + identifyLocation(latitude, longitude) + ", " + DESCRIPTION + descriptionCaller);
     }
@@ -199,21 +195,33 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     }
 
     private void initializeComponents() {
+
         buttonRed = (Button) findViewById(R.id.buttonRed);
         buttonRed.setOnClickListener(this);
+
         buttonGreen = (Button) findViewById(R.id.buttonGreen);
         buttonGreen.setOnClickListener(this);
+
         textViewCount = (TextView) findViewById(R.id.textViewCount);
+
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+
+        // Recycler view list
         recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
+
+        // initialize linearLayout
         linearLayoutListRate = (LinearLayout) findViewById(R.id.linearLayoutListRate);
         linearLayoutMap = (LinearLayout) findViewById(R.id.linearLayoutMap);
         textViewDescription = (TextView) findViewById(R.id.textViewDescription);
         textViewNameOfCaller = (TextView) findViewById(R.id.textViewNameOfCaller);
+
+        // initialize progress dialog
         progressDialog = new ProgressDialog(ConnectTwillioActivity.this);
         progressDialog.setMessage(getString(R.string.progress_message_connect_twillio_room));
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
+
+        // initialize data for recycler view
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
@@ -222,23 +230,23 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
 
+        // initilize the title of toolbar
         String toBe = "are ";
         if(distanceList.size() == 1) {
             toBe = "is ";
         }
-
         String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
 
+        // initialize rate list to sent data rating to sever
         rateList = new ArrayList<>();
-
         // Intent from here to check
         for (int i = 0; i < distanceList.size(); i++) {
             rateList.add(new Rate(null, distanceList.get(i).getToken()));
         }
         connectedPeopleAdapter.setOnItemClickListener(new ConnectedPeopleAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String estimation, int position) {
+            public void onItemClick(String estimation, int position) { // Make sure that the user choose to rate
                 isRated = true;
                 rateList.get(position).setRateStatus(estimation);
             }
@@ -260,7 +268,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        // Add a marker in Sydney, Australia, and move the camera.
+        // Add a marker to the google map to see where the caller is ?
         LatLng sydney = new LatLng(latitude, longitude);
         this.googleMap.addMarker(new MarkerOptions().position(sydney).title(nameCaller).snippet(descriptionCaller)).showInfoWindow();
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -302,8 +310,8 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
         super.onResume();
 //        if (twillioPhone.handleIncomingIntent(getIntent())) {
 //            showIncomingConferenceAlert();
-//            addStatusMessage(R.string.got_incoming);
-//            syncMainButton();
+//            logMessageTwillio(R.string.got_incoming);
+//            checkStatusOfTwillio();
 //
 //        } else {
 //            twillioPhone.ignoreIncomingConnection();
@@ -324,10 +332,7 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         Toast.makeText(ConnectTwillioActivity.this, getString(R.string.toast_rate_for_samaritan), Toast.LENGTH_SHORT).show();
-//        exitTwillio();
-
     }
 
     private void exitTwillio() {
@@ -336,27 +341,24 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             twillioPhone.setListeners(null, null, null);
             twillioPhone = null;
         }
-
-//        int pid = android.os.Process.myPid();
-//        android.os.Process.killProcess(pid);
     }
 
-    private void addStatusMessage(final String message)
+    private void logMessageTwillio(final String message)
     {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d("============>", message);
+                Log.d(TAG, message);
             }
         });
     }
 
-    private void addStatusMessage(int stringId)
+    private void logMessageTwillio(int stringId)
     {
-        addStatusMessage(getString(stringId));
+        logMessageTwillio(getString(stringId));
     }
 
-    private void syncMainButton()
+    private void checkStatusOfTwillio()
     {
         handler.post(new Runnable() {
             @Override
@@ -364,76 +366,19 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
                 if (twillioPhone.isConnected()) {
                     switch (twillioPhone.getConnectionState()) {
                         case DISCONNECTED:
-                            Log.d("============>", "Disconnect");
+                            Log.d(TAG, "Disconnect");
                             break;
                         case CONNECTED:
-                            Log.d("============>", "Connected");
+                            Log.d(TAG, "Connected");
                             break;
                         default:
-                            Log.d("============>", "Nothing");
+                            Log.d(TAG, "Nothing");
                             break;
                     }
                 } else if (twillioPhone.hasPendingConnection())
-                    Log.d("============>", "Calling");
+                    Log.d(TAG, "Calling");
                 else
-                    Log.d("============>", "Idle");
-            }
-        });
-    }
-
-
-
-    private void showIncomingConferenceAlert() {
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (incomingConferenceAlert == null) {
-                    incomingConferenceAlert = new AlertDialog.Builder(ConnectTwillioActivity.this)
-                            .setTitle(R.string.incoming_call)
-                            .setMessage(R.string.incoming_call_message)
-                            .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-//                                    twillioPhone.ignoreIncomingConnection();
-//                                    Map<String, String> params = new HashMap<String, String>();
-//                                    params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
-//                                    twillioPhone.connect(params);
-//                                    incomingConferenceAlert = null;
-                                    twillioPhone.acceptConnection();
-                                    incomingConferenceAlert = null;
-                                }
-                            })
-                            .setNegativeButton(R.string.ignore, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    twillioPhone.ignoreIncomingConnection();
-                                    incomingConferenceAlert = null;
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    twillioPhone.ignoreIncomingConnection();
-                                }
-                            })
-                            .create();
-
-                    incomingConferenceAlert.show();
-                }
-            }
-        });
-    }
-
-    private void hideIncomingAlert()
-    {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (incomingConferenceAlert != null) {
-                    incomingConferenceAlert.dismiss();
-                    incomingConferenceAlert = null;
-                }
+                    Log.d(TAG, "Idle");
             }
         });
     }
@@ -441,63 +386,62 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     @Override
     public void onLoginStarted()
     {
-        addStatusMessage("Log in with account ");
+        logMessageTwillio("Log in with account ");
     }
 
     @Override
     public void onLoginFinished()
     {
-        addStatusMessage(twillioPhone.canMakeOutgoing() ? R.string.outgoing_ok : R.string.no_outgoing_capability);
-        addStatusMessage(twillioPhone.canAcceptIncoming() ? R.string.incoming_ok : R.string.no_incoming_capability);
-        syncMainButton();
+        logMessageTwillio(twillioPhone.canMakeOutgoing() ? R.string.outgoing_ok : R.string.no_outgoing_capability);
+        logMessageTwillio(twillioPhone.canAcceptIncoming() ? R.string.incoming_ok : R.string.no_incoming_capability);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onLoginError(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.login_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.login_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.login_error_unknown);
-        syncMainButton();
+            logMessageTwillio(R.string.login_error_unknown);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onIncomingConnectionDisconnected()
     {
-        Log.d("====>", "Pending incoming connection disconnected");
-        hideIncomingAlert();
-        addStatusMessage(R.string.incoming_disconnected);
-        syncMainButton();
+        Log.d(TAG, "Pending incoming connection disconnected");
+        logMessageTwillio(R.string.incoming_disconnected);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionConnecting()
     {
-        addStatusMessage(R.string.attempting_to_connect);
-        syncMainButton();
+        logMessageTwillio(R.string.attempting_to_connect);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionConnected() {
-        addStatusMessage(R.string.connected);
-        syncMainButton();
+        logMessageTwillio(R.string.connected);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionFailedConnecting(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.couldnt_establish_outgoing_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.couldnt_establish_outgoing_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.couldnt_establish_outgoing);
+            logMessageTwillio(R.string.couldnt_establish_outgoing);
     }
 
     @Override
     public void onConnectionDisconnecting()
     {
-        addStatusMessage(R.string.disconnect_attempt);
-        syncMainButton();
+        logMessageTwillio(R.string.disconnect_attempt);
+        checkStatusOfTwillio();
     }
 
     @Override
@@ -505,8 +449,8 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     {
         if (timer != null)
             timer.cancel();
-        addStatusMessage(R.string.disconnected);
-        syncMainButton();
+        logMessageTwillio(R.string.disconnected);
+        checkStatusOfTwillio();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -525,10 +469,10 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
     public void onConnectionFailed(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.connection_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.connection_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.connection_error);
-        syncMainButton();
+            logMessageTwillio(R.string.connection_error);
+        checkStatusOfTwillio();
     }
 
     @Override
@@ -550,17 +494,16 @@ public class ConnectTwillioActivity extends AppCompatActivity implements Twillio
             });
 
         }
-
-        addStatusMessage(R.string.device_listening);
+        logMessageTwillio(R.string.device_listening);
     }
 
     @Override
     public void onDeviceStoppedListening(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.device_listening_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.device_listening_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.device_not_listening);
+            logMessageTwillio(R.string.device_not_listening);
     }
 
     @Override

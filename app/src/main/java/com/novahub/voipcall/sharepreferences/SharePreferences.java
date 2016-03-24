@@ -21,6 +21,10 @@ public class SharePreferences {
     public static final String ON_SAMARITANS = "IS_ON_SAMARITANS";
     public static final String EMPTY = " ";
     public static final String IS_UPDATED_INSTANCE_ID = "IS_UPDATED_INSTANCE_ID";
+    private static final int REGISTER = 1;
+    private static final int ACTIVATED_CODE = 2;
+    private static final int GET_INFO = 3;
+    private static final int READY_TO_CALL = 4;
 
     public static void saveData(Context context, String typeOfAction, String data) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(typeOfAction, Context.MODE_PRIVATE);
@@ -62,15 +66,15 @@ public class SharePreferences {
     public static int checkDoneAction(boolean isRequestedCode, boolean isActivatedCode, boolean isUpdatedInfo) {
 
         if (!isRequestedCode && !isActivatedCode && !isUpdatedInfo) {
-            return 1;
+            return REGISTER;
         } else {
             if(isRequestedCode && !isActivatedCode && !isUpdatedInfo) {
-                return 2;
+                return ACTIVATED_CODE;
             } else {
                 if(isRequestedCode && isActivatedCode && !isUpdatedInfo) {
-                    return 3;
+                    return GET_INFO;
                 } else {
-                    return 4;
+                    return READY_TO_CALL;
                 }
             }
         }

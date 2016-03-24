@@ -78,20 +78,16 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
         intilizeTwillioPhone();
         loginTwillioPhone();
         initializeComponents();
-//        connectTwillio();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void connectTwillio() {
         if (!twillioPhone.isConnected()) {
             Map<String, String> params = new HashMap<String, String>();
-            final String name_room = "name_room";
-            final String token = "token";
-            final String is_from_caller = "is_from_caller";
             String token_local = SharePreferences.getData(getApplicationContext(), SharePreferences.TOKEN);
-            params.put(name_room, Asset.nameOfConferenceRoom);
-            params.put(token, token_local);
-            params.put(is_from_caller, "true");
+            params.put(Asset.paramsNameRoom, Asset.nameOfConferenceRoom);
+            params.put(Asset.paramsToken, token_local);
+            params.put(Asset.paramsIsFromCaller, "true");
             twillioPhone.connect(params);
             twillioPhone.setSpeakerEnabled(true);
         }
