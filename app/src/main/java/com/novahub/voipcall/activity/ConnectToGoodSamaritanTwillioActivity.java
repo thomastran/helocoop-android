@@ -1,5 +1,6 @@
 package com.novahub.voipcall.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -25,7 +26,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.novahub.voipcall.R;
 import com.novahub.voipcall.adapter.ConnectedPeopleAdapter;
@@ -51,6 +51,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
 public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity implements TwillioPhone.LoginListener, TwillioPhone.BasicConnectionListener, TwillioPhone.BasicDeviceListener, View.OnClickListener, OnMapReadyCallback {
+    private static final String TAG = "ConnectToGoodSamaritanTwillioActivity";
     private static final Handler handler = new Handler();
     private TwillioPhone twillioPhone;
     private AlertDialog incomingConferenceAlert;
@@ -142,31 +143,46 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     }
 
     private void initializeComponents() {
+        // initialize the buttons
         buttonEnd = (Button) findViewById(R.id.buttonEnd);
         buttonEnd.setOnClickListener(this);
+
         buttonRate = (Button) findViewById(R.id.buttonRate);
         buttonRate.setOnClickListener(this);
+
+        // initilize the text view
         textViewCount = (TextView) findViewById(R.id.textViewCount);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+
+        // initialize the linearLayout
         linearLayoutListRate = (LinearLayout) findViewById(R.id.linearLayoutListRate);
         linearLayoutMap = (LinearLayout) findViewById(R.id.linearLayoutMap);
+
+        // initialize the google map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // initialize for progress dialog
         progressDialog = new ProgressDialog(ConnectToGoodSamaritanTwillioActivity.this);
         progressDialog.setMessage(getString(R.string.progress_message_connect_twillio_room));
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+        // initialze recylcler view
         recyclerViewList = (RecyclerView) findViewById(R.id.recyclerViewList);
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setHasFixedSize(true);
+
+        // initilize data for recycler view
         distanceList = new ArrayList<>();
         distanceList.addAll(Asset.listOfGoodSamaritans);
         connectedPeopleAdapter = new ConnectedPeopleAdapter(distanceList);
         recyclerViewList.setAdapter(connectedPeopleAdapter);
 
+        // initialze the textview title
         String toBe = "are ";
         if(distanceList.size() == 1) {
             toBe = "is ";
@@ -174,6 +190,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
         String message = "There " + toBe + distanceList.size() + " good Samaritan(s)";
         textViewTitle.setText(message);
 
+        // initialize the ratelist to sent data rating to server
         rateList = new ArrayList<>();
 
         // Intent from here to check
@@ -212,13 +229,10 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     {
         super.onResume();
         if (twillioPhone.handleIncomingIntent(getIntent())) {
-            showIncomingConferenceAlert();
-            addStatusMessage(R.string.got_incoming);
-            syncMainButton();
-
+            logMessageTwillio(R.string.got_incoming);
+            checkStatusOfTwillio();
         } else {
             twillioPhone.ignoreIncomingConnection();
-
         }
     }
 
@@ -226,7 +240,6 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     public void onDestroy()
     {
         super.onDestroy();
-
         if (twillioPhone != null) {
             twillioPhone.setListeners(null, null, null);
             twillioPhone = null;
@@ -236,36 +249,25 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     @Override
     public void onBackPressed() {
         Toast.makeText(ConnectToGoodSamaritanTwillioActivity.this, getString(R.string.toast_rate_for_samaritan), Toast.LENGTH_SHORT).show();
-
     }
 
-    private void exitTwillio() {
-        if (twillioPhone != null) {
-            twillioPhone.shutDownTwillio();
-            twillioPhone.setListeners(null, null, null);
-            twillioPhone = null;
-        }
-
-//        int pid = android.os.Process.myPid();
-//        android.os.Process.killProcess(pid);
-    }
-
-    private void addStatusMessage(final String message)
+    private void logMessageTwillio(final String message)
     {
         handler.post(new Runnable() {
+            @SuppressLint("LongLogTag")
             @Override
             public void run() {
-                Log.d("============>", message);
+                Log.d(TAG, message);
             }
         });
     }
 
-    private void addStatusMessage(int stringId)
+    private void logMessageTwillio(int stringId)
     {
-        addStatusMessage(getString(stringId));
+        logMessageTwillio(getString(stringId));
     }
 
-    private void syncMainButton()
+    private void checkStatusOfTwillio()
     {
         handler.post(new Runnable() {
             @Override
@@ -273,147 +275,90 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 if (twillioPhone.isConnected()) {
                     switch (twillioPhone.getConnectionState()) {
                         case DISCONNECTED:
-                            Log.d("============>", "Disconnect");
+                            Log.d(TAG, "Disconnect");
                             break;
                         case CONNECTED:
-                            Log.d("============>", "Connected");
+                            Log.d(TAG, "Connected");
                             break;
                         default:
-                            Log.d("============>", "Nothing");
+                            Log.d(TAG, "Nothing");
                             break;
                     }
                 } else if (twillioPhone.hasPendingConnection())
-                    Log.d("============>", "Calling");
+                    Log.d(TAG, "Calling");
                 else
-                    Log.d("============>", "Idle");
+                    Log.d(TAG, "Idle");
             }
         });
     }
 
-
-
-    private void showIncomingConferenceAlert() {
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (incomingConferenceAlert == null) {
-                    incomingConferenceAlert = new AlertDialog.Builder(ConnectToGoodSamaritanTwillioActivity.this)
-                            .setTitle(R.string.incoming_call)
-                            .setMessage(R.string.incoming_call_message)
-                            .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-//                                    twillioPhone.ignoreIncomingConnection();
-//                                    Map<String, String> params = new HashMap<String, String>();
-//                                    params.put(Asset.Twillio_Conference, Asset.Twillio_Room);
-//                                    twillioPhone.connect(params);
-//                                    incomingConferenceAlert = null;
-                                    twillioPhone.acceptConnection();
-                                    incomingConferenceAlert = null;
-                                }
-                            })
-                            .setNegativeButton(R.string.ignore, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    twillioPhone.ignoreIncomingConnection();
-                                    incomingConferenceAlert = null;
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    twillioPhone.ignoreIncomingConnection();
-                                }
-                            })
-                            .create();
-
-                    incomingConferenceAlert.show();
-                }
-            }
-        });
-    }
-
-    private void hideIncomingAlert()
-    {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (incomingConferenceAlert != null) {
-                    incomingConferenceAlert.dismiss();
-                    incomingConferenceAlert = null;
-                }
-            }
-        });
-    }
 
     @Override
     public void onLoginStarted()
     {
-        addStatusMessage("Log in with account ");
+        logMessageTwillio("Log in with account ");
     }
 
     @Override
     public void onLoginFinished()
     {
-        addStatusMessage(twillioPhone.canMakeOutgoing() ? R.string.outgoing_ok : R.string.no_outgoing_capability);
-        addStatusMessage(twillioPhone.canAcceptIncoming() ? R.string.incoming_ok : R.string.no_incoming_capability);
-        syncMainButton();
+        logMessageTwillio(twillioPhone.canMakeOutgoing() ? R.string.outgoing_ok : R.string.no_outgoing_capability);
+        logMessageTwillio(twillioPhone.canAcceptIncoming() ? R.string.incoming_ok : R.string.no_incoming_capability);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onLoginError(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.login_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.login_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.login_error_unknown);
-        syncMainButton();
+            logMessageTwillio(R.string.login_error_unknown);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onIncomingConnectionDisconnected()
     {
-        Log.d("====>", "Pending incoming connection disconnected");
-        hideIncomingAlert();
-        addStatusMessage(R.string.incoming_disconnected);
-        syncMainButton();
+        Log.d(TAG, "Pending incoming connection disconnected");
+        logMessageTwillio(R.string.incoming_disconnected);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionConnecting()
     {
-        addStatusMessage(R.string.attempting_to_connect);
-        syncMainButton();
+        logMessageTwillio(R.string.attempting_to_connect);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionConnected() {
-        addStatusMessage(R.string.connected);
-        syncMainButton();
+        logMessageTwillio(R.string.connected);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionFailedConnecting(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.couldnt_establish_outgoing_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.couldnt_establish_outgoing_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.couldnt_establish_outgoing);
+            logMessageTwillio(R.string.couldnt_establish_outgoing);
     }
 
     @Override
     public void onConnectionDisconnecting()
     {
-        addStatusMessage(R.string.disconnect_attempt);
-        syncMainButton();
+        logMessageTwillio(R.string.disconnect_attempt);
+        checkStatusOfTwillio();
     }
 
     @Override
     public void onConnectionDisconnected()
     {
-        addStatusMessage(R.string.disconnected);
-        syncMainButton();
+        logMessageTwillio(R.string.disconnected);
+        checkStatusOfTwillio();
         if (timer != null)
             timer.cancel();
         handler.post(new Runnable() {
@@ -428,19 +373,16 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
-
-//        exitTwillio();
-
     }
 
     @Override
     public void onConnectionFailed(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.connection_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.connection_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.connection_error);
-        syncMainButton();
+            logMessageTwillio(R.string.connection_error);
+        checkStatusOfTwillio();
     }
 
     @Override
@@ -458,7 +400,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 }
             });
             connectTwillio();
-            addStatusMessage(R.string.device_listening);
+            logMessageTwillio(R.string.device_listening);
             countingTime();
             statustTwillioConnect = false;
         }
@@ -468,9 +410,9 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     public void onDeviceStoppedListening(Exception error)
     {
         if (error != null)
-            addStatusMessage(String.format(getString(R.string.device_listening_error_fmt), error.getLocalizedMessage()));
+            logMessageTwillio(String.format(getString(R.string.device_listening_error_fmt), error.getLocalizedMessage()));
         else
-            addStatusMessage(R.string.device_not_listening);
+            logMessageTwillio(R.string.device_not_listening);
     }
 
     @Override
@@ -502,14 +444,14 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     }
 
     private void addMarkersToMap(List<Distance> distances) {
-        if (distances.size() == 1) {
+        if (distances.size() == 1) { // for only one samaritans
             LatLng ll = new LatLng(Float.parseFloat(distances.get(0).getLatitude()), Float.parseFloat(distances.get(0).getLongitude()));
             BitmapDescriptor bitmapMarker =  BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             this.googleMap.addMarker(new MarkerOptions().position(ll).title(distances.get(0).getName())
                     .snippet(distances.get(0).getDescription()).icon(bitmapMarker)).showInfoWindow();
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
             this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
-        } else {
+        } else { // more than one samaritans
             float total_latitude = 0;
             float total_longtitude = 0;
             for (int i = 0; i < distances.size(); i++) {
@@ -532,6 +474,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
 
 
             }
+            // move the camera to the marker that is the center of the remaining markers
             LatLng latLng = new LatLng(total_latitude/distances.size(), total_longtitude/distances.size());
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
@@ -541,17 +484,7 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-
-        // Add a marker in Sydney, Australia, and move the camera.
-//        LatLng sydney = new LatLng(Float.parseFloat(distanceList.get(0).getLatitude()), Float.parseFloat(distanceList.get(0).getLongitude()));
-//        this.googleMap.addMarker(new MarkerOptions().position(sydney).title("Location"));
-//
-//        LatLng sydney1 = new LatLng(17.05969, 109.21177);
-//        this.googleMap.addMarker(new MarkerOptions().position(sydney1).title("DM"));
-//        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
         addMarkersToMap(distanceList);
-
     }
 
     private class RateAsyncTask extends AsyncTask<String, Boolean, Boolean> {
@@ -579,7 +512,8 @@ public class ConnectToGoodSamaritanTwillioActivity extends AppCompatActivity imp
                 this.progressDialog.dismiss();
             }
             if(result) {
-                Intent intent = new Intent(ConnectToGoodSamaritanTwillioActivity.this, MakingCallConferenceActivity.class);
+                Intent intent = new Intent(ConnectToGoodSamaritanTwillioActivity.this,
+                        MakingCallConferenceActivity.class);
                 startActivity(intent);
                 finish();
             } else {
